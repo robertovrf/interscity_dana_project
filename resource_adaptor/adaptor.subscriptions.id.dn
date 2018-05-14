@@ -1,0 +1,98 @@
+uses ws.forms.FileFormField
+
+data Capabilities {
+	char value[]
+}
+
+data DataJSON {
+	char subscription[]
+	char uuid[]
+	Capabilities capabilities[]
+	char url[]
+}
+
+
+component provides ws.Web requires io.Output out, data.IntUtil iu, data.DecUtil du, data.json.JSONParser parser, ws.FormParser fparser {
+
+	DataJSON parseJSON(char json[]) {
+		DataJSON dJ = new DataJSON()
+		JSONElement doc = parser.parseDocument(json)
+		doc = parser.getValue(doc, "subscription")
+		dJ.uuid = parser.getValue(doc, "uuid").value
+		dJ.url = parser.getValue(doc, "url").value
+		JSONElement cap = parser.getValue(doc, "capabilities")
+		dJ.capabilities = new Capabilities[cap.children.arrayLength]
+		for (int i = 0; i < cap.children.arrayLength; i++) {
+			dJ.capabilities[i] = new Capabilities(cap.children[i].value)
+		}
+		return dJ
+	}
+
+
+	bool Web:get(char path[], DocStream s)
+		{
+		//curl -d '{"subscriptions": [{"id": 23, "status": true, "uuid": "45b7d363-86fd-4f81-8681-663140b318d4","capabilities": ["semaphore","illuminate"],"url": "http://myendpoint.com", "created_at": "2018-05-05T19:52:38.380Z", "updated_at": "2018-05-05T19:52:38.380Z"}]}' -H 'Content-Type: application/json' http://localhost:2018/adaptor/subscriptions
+
+		s.write("{")
+		s.write("\"subscription\": {")
+		s.write("\"id\": 23,")
+		s.write("\"active\": true,")
+		s.write("\"uuid\": \"45b7d363-86fd-4f81-8681-663140b318d4\",")
+		s.write("\"capabilities\": [")
+		s.write("\"semaphore\",")
+    s.write("\"illuminate\"")
+    s.write("],")
+    s.write("\"url\": \"http://myendpoint.com\",")
+		s.write("\"created_at\": \"2018-05-05T19:52:38.380Z\",")
+		s.write("\"updated_at\": \"2018-05-05T19:52:38.380Z\",")
+		s.write("}")
+    s.write("}")
+
+
+		/*{
+		  "subscription": {
+		    "id": 23,
+		    "active": true,
+		    "uuid": "45b7d363-86fd-4f81-8681-663140b318d4",
+		    "capabilities": [
+		      "semaphore",
+		      "illuminate"
+		    ],
+		    "url": "http://myendpoint.com",
+		    "created_at": "2018-05-06T21:19:48.871Z",
+		    "updated_at": "2018-05-06T21:19:48.871Z"
+		  }
+		}*/
+
+
+
+
+		return true
+		}
+
+	bool Web:post(char path[], char contentType[], byte content[], DocStream stream)
+		{
+
+
+			//curl -d '{"subscription": {"uuid": "45b7d363-86fd-4f81-8681-663140b318d4","capabilities": ["semaphore","illuminate"],"url": "http://myendpoint.com"}}' -H 'Content-Type: application/json' http://localhost:2018/adaptor/subscriptions
+
+			if (content != null) {
+				DataJSON dJ = parseJSON(content)
+				/* printing info from data structure */
+				out.println("subscription: $(dJ.subscription)")
+				out.println("uuid: $(dJ.uuid)")
+				out.println("Capabilities: ")
+				for (int i = 0; i < dJ.capabilities.arrayLength; i++) {
+					out.println("\t$(dJ.capabilities[i].value)")
+				}
+				out.println("url: $(dJ.url)")
+
+				return true
+			}
+
+			return false
+
+
+		}
+
+	}
