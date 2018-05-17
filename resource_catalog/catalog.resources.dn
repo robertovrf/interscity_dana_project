@@ -163,6 +163,7 @@ component provides ws.Web requires io.Output out, data.IntUtil iu, data.DecUtil 
 				s.write("\"lon\": \"-46.731386\",")
 				s.write("\"country\": \"Brazil\",")
 				s.write("\"state\": \"São Paulo\",")
+				s.write("\"city\": \"São Paulo\",")
 				s.write("\"neighborhood\": \"Butantã\",")
 				s.write("\"postal_code\": \"null\",")
 				s.write("\"created_at\": \"2018-05-07T01:25:49.939Z\",")

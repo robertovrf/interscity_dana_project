@@ -69,7 +69,7 @@ component provides ws.Web requires net.http.HTTPRequest HttpRequest, io.Output o
 		}
 
 
-		bool Web:post(char path[], char contentType[], byte content[], DocStream stream)
+		bool Web:post(char path[], char contentType[], byte content[], DocStream s)
 			{
 
 				//curl -d '{"data": {"description": "A public bus","capabilities": ["temperature","humidity","illuminate"],"status": "active","lat": -23.559616,"lon": -46.731386}}' -H 'Content-Type: application/json' http://localhost:2018/adaptor/resources
@@ -97,6 +97,29 @@ component provides ws.Web requires net.http.HTTPRequest HttpRequest, io.Output o
 					//HTTPResponse resp = HttpRequest.post( url[], Header headers[], char postData[])
 					HTTPResponse resp = HttpRequest.post( url, headers, content)
 
+///
+					s.write("{")
+					s.write("\"data\": {")
+					s.write("\"uuid\": \"45b7d363-86fd-4f81-8681-663140b318d4\",")
+					s.write("\"description\": \"A public bus\",")
+					s.write("\"capabilities\": [")
+					s.write("\"temperature\",")
+					s.write("\"humidity\",")
+					s.write("\"illuminate\"")
+					s.write("],")
+					s.write("\"status\": \"active\",")
+					s.write("\"lat\": \"-23.559616\",")
+					s.write("\"lon\": \"-46.731386\",")
+					s.write("\"country\": \"Brazil\",")
+					s.write("\"state\": \"São Paulo\",")
+					s.write("\"city\": \"São Paulo\",")
+					s.write("\"neighborhood\": \"Butantã\",")
+					s.write("\"postal_code\": \"null\",")
+					s.write("\"created_at\": \"2018-05-07T01:25:49.939Z\",")
+					s.write("\"updated_at\": \"2018-05-07T01:25:49.939Z\",")
+					s.write("\"id\": 10")
+					s.write("}")
+					s.write("}")
 
 
 					return true
