@@ -39,7 +39,7 @@ component provides App requires net.http.HTTPRequest HttpRequest, io.Output out,
 			doc = parser.getValue(doc, "data")
 			dJ.uuid = parser.getValue(doc, "uuid").value
 			dJ.description = parser.getValue(doc, "description").value
-			dJ.status = parser.getValue(doc, "status").value
+		  dJ.status = parser.getValue(doc, "status").value
 			dJ.lat = du.decFromString(parser.getValue(doc, "lat").value)
 			dJ.lon = du.decFromString(parser.getValue(doc, "lon").value)
 			dJ.country = parser.getValue(doc, "country").value
@@ -50,7 +50,7 @@ component provides App requires net.http.HTTPRequest HttpRequest, io.Output out,
 			dJ.created_at = parser.getValue(doc, "created_at").value
 			dJ.updated_at = parser.getValue(doc, "updated_at").value
 			dJ.id = iu.intFromString(parser.getValue(doc, "id").value)
-			JSONElement cap = parser.getValue(doc, "capabilities")
+		  JSONElement cap = parser.getValue(doc, "capabilities")
 			dJ.capabilities = new Capabilities[cap.children.arrayLength]
 			for (int i = 0; i < cap.children.arrayLength; i++) {
 				dJ.capabilities[i] = new Capabilities(cap.children[i].value)
@@ -101,13 +101,13 @@ if (response_content != null) {
 	DataJSON2 dJ = parseJSON2(response_content)
 	/* printing info from data structure */
 	out.println("data: $(dJ.uuid)")
-	/*out.println("Capabilities: ")
+	out.println("Capabilities: ")
 	for (int i = 0; i < dJ.capabilities.arrayLength; i++) {
 		out.println("\t$(dJ.capabilities[i].value)")
 	}
 	out.println("Status: $(dJ.status)")
 	out.println("Lat: $(du.decToString(dJ.lat))")
-	out.println("Lon: $(du.decToString(dJ.lon))")*/
+	out.println("Lon: $(du.decToString(dJ.lon))")
 
 
 	/*{

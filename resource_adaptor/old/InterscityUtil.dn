@@ -1,0 +1,21 @@
+uses DataJSON
+
+component provides InterscityUtil requires io.Output out, data.IntUtil iu, data.DecUtil du, data.json.JSONParser parser{
+
+	DataJSON InterscityUtil:resourceMetaDataJSONParser(char json[]) {
+		DataJSON dJ = new DataJSON()
+		JSONElement doc = parser.parseDocument(json)
+		doc = parser.getValue(doc, "data")
+		dJ.description = parser.getValue(doc, "description").value
+		dJ.status = parser.getValue(doc, "status").value
+		dJ.lat = du.decFromString(parser.getValue(doc, "lat").value)
+		dJ.lon = du.decFromString(parser.getValue(doc, "lon").value)
+		JSONElement cap = parser.getValue(doc, "capabilities")
+		dJ.capabilities = new Capabilities[cap.children.arrayLength]
+		for (int i = 0; i < cap.children.arrayLength; i++) {
+			dJ.capabilities[i] = new Capabilities(cap.children[i].value)
+		}
+		return dJ
+	}
+
+}
