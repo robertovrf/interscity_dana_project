@@ -77,7 +77,7 @@ component provides ws.Web requires InterscityUtil interscityUtil, net.http.HTTPR
 			return dJ
 		}
 
-	bool Web:get(char path[], DocStream s)
+	/* bool Web:get(char path[], DocStream s)
 		{
 		s.write("<html>")
 
@@ -93,17 +93,53 @@ component provides ws.Web requires InterscityUtil interscityUtil, net.http.HTTPR
 		s.write("</body></html>")
 
 		return true
+		} */
+
+		bool Web:get(char path[], DocStream s, HashTable params) {
+			if (params != null) {
+				String id = params.get("id")
+				String device = params.get("device")
+				if (id != null) { out.println("$(id.string)") }
+				if (device != null) { out.println("$(device.string)") }
+			}
+			s.write("<html>")
+			s.write("<title>My page!</title>")
+			s.write("<link href=\"swc/css/main.css\" rel=\"stylesheet\" type=\"text/css\">")
+			s.write("<body>")
+			s.write("<div class = \"pagebox\">")
+			s.write("<div class = \"section_header\">A section</div>")
+			s.write(new char[]("<div style = \"margin-top: 10pt;\">",
+												"<span style = \"display: inline-block; text-align:center; width: 49%\">Some text</span>",
+												"<span style = \"display: inline-block; text-align:center; width: 49%\">More text</span>",
+												"</div>"))
+			s.write("<div class = \"section_header\">Another section</div>")
+			s.write(new char[]("<form action=\"\" method=\"post\" enctype=\"multipart/form-data\">",
+								"<input type=\"file\" name=\"filename\" size=\"40\"> a file <br/>",
+								"<p><input type=\"submit\" value=\"Submit file\" id=\"formbutton\"></p>",
+								"</form>"))
+			s.write("</div>")
+			s.write("</body></html>")
+			return true
 		}
 
 
 
-
-				bool Web:post(char path[], char contentType[], byte content[], DocStream s)
-					{
+		//bool Web:post(char path[], char contentType[], byte content[], DocStream s)
+		bool Web:post(char path[], char contentType[], byte content[], DocStream s, HashTable params)
+		{
 
 						//curl -d '{"data": {"description": "A public bus","capabilities": ["temperature","humidity","illuminate"],"status": "active","lat": -23.559616,"lon": -46.731386}}' -H 'Content-Type: application/json' http://localhost:2018/adaptor/resources
 
-						if (content != null) {
+
+					 if (params != null) {
+							String id = params.get("id")
+							String device = params.get("device")
+							if (id != null) { out.println("ID: $(id.string)") }
+							if (device != null) { out.println("$(device.string)") }
+						} else {
+
+//===================================================================
+						  if (content != null) {
 							//DataJSON dJ = parseJSON(content)
 
 							DataJSON dJ = interscityUtil.resourceMetaDataJSONParser(content)
@@ -129,400 +165,90 @@ component provides ws.Web requires InterscityUtil interscityUtil, net.http.HTTPR
 							//HTTPResponse resp = HttpRequest.post( url[], Header headers[], char postData[])
 							HTTPResponse resp = HttpRequest.post( url, headers, content)
 
-							/* ==================== Storing Resource Metadata =============================*/
-							//Starting the MongoDB server:  sudo service mongod start
-							//Executing the mongo command line tool
-							/* MongoDB mongoDB = new MongoDB("127.0.0.1", 27017)
-
-							JSONElement jsonChildren3 = new JSONElement()
-							jsonChildren3.type = 4
-							jsonChildren3.name = "status"
-							jsonChildren3.value = "active"
-							jsonChildren3.children = null
-
-							JSONElement jsonChildren2 = new JSONElement()
-							jsonChildren2.type = 3
-							jsonChildren2.name = "description"
-							jsonChildren2.value = "A public bus"
-							jsonChildren2.children = jsonChildren3
-
-							JSONElement jsonChildren = new JSONElement()
-							jsonChildren.type = 2
-							jsonChildren.name = "uuid"
-							jsonChildren.value = "45b7d363-86fd-4f81-8681-663140b318d4"
-							jsonChildren.children = jsonChildren2
-
-							int type = 1
-							char name[] = "data"
-							char value[] = 10
-							JSONElement jsonQuery = new JSONElement()
-							jsonQuery.type = type
-							jsonQuery.name = name
-							jsonQuery.value = value
-							jsonQuery.children = jsonChildren
 
 
-							//JSONElement jsonQuery = new JSONElement(type, name, value, 222)
-							bool insert_ok = mongoDB.insert("resource_adaptor.resources_metadata", jsonQuery)
-							insert_ok = mongoDB.insert("resource_adaptor.resources_metadata", jsonChildren2) */
+							char response_content[] = resp.content
 
-		///
-
-		char response_content[] = resp.content
-
-		if (response_content != null) {
-			DataJSON2 dJ2 = parseJSON2(response_content)
-			/* printing info from data structure */
-			out.println("data212: $(dJ2.uuid)")
-			/*out.println("Capabilities: ")
-			for (int i = 0; i < dJ.capabilities.arrayLength; i++) {
-				out.println("\t$(dJ.capabilities[i].value)")
-			}
-			out.println("Status: $(dJ.status)")
-			out.println("Lat: $(du.decToString(dJ.lat))")
-			out.println("Lon: $(du.decToString(dJ.lon))")*/
-
-			char response_uuid[] =
-			s.write("{")
-			s.write("\"data\": {")
-			//s.write("\"uuid\": \"45b7d363-86fd-4f81-8681-663140b318d4\",")
-			//s.write("\"description\": \"A public bus\",")
-			s.write("\"uuid\":\"$(dJ2.uuid)\",")
-			s.write("\"description\": \"$(dJ2.description)\",")
-			s.write("\"capabilities\": [")
-			for (int i = 0; i < dJ.capabilities.arrayLength; i++) {
-				if (i == dJ.capabilities.arrayLength - 1)
-					s.write("\t\"$(dJ.capabilities[i].value)\"")
-				else
-					s.write("\t\"$(dJ.capabilities[i].value)\",")
-			}
-			s.write("],")
-			s.write("\"status\": \"$(dJ2.status)\",")
-			char lat_string[] = du.decToString(dJ2.lat)
-			char lon_string[] = du.decToString(dJ2.lon)
-			s.write("\"lat\": \"$(lat_string)\",")
-			s.write("\"lon\": \"$(lon_string)\",")
-			s.write("\"country\": \"$(dJ2.country)\",")
-			s.write("\"state\": \"$(dJ2.state)\",")
-			s.write("\"city\": \"$(dJ2.city)\",")
-			s.write("\"neighborhood\": \"$(dJ2.neighborhood)\",")
-			s.write("\"postal_code\": \"$(dJ2.postal_code)\",")
-			s.write("\"created_at\": \"$(dJ2.created_at)\",") 
-			s.write("\"updated_at\": \"$(dJ2.updated_at)\",")
-			char local_id_string[] = iu.intToString(local_id)
-			s.write("\"id\": \"$(local_id_string)\"")
-			s.write("}")
-			s.write("}")
-
-			//s.write("\"capabilities\": [")
-			//s.write("\"temperature\",")
-			//s.write("\"humidity\",")
-			//s.write("\"illuminate\"")
-			//s.write("],")
-			/* s.write("\"status\": \"active\",")
-			s.write("\"lat\": \"-23.559616\",")
-			s.write("\"lon\": \"-46.731386\",") */
-			/* s.write("\"country\": \"Brazil\",")
-			s.write("\"state\": \"São Paulo\",")
-			s.write("\"city\": \"São Paulo\",")
-			s.write("\"neighborhood\": \"Butantã\",")
-			s.write("\"postal_code\": \"null\",") */
-			/* s.write("\"created_at\": \"2018-05-07T01:25:49.939Z\",")
-			s.write("\"updated_at\": \"2018-05-07T01:25:49.939Z\",")
-			s.write("\"id\": 10")
-			s.write("}")
-			s.write("}") */
+							if (response_content != null) {
+								DataJSON2 dJ2 = parseJSON2(response_content)
+								/* printing info from data structure */
+								out.println("data212: $(dJ2.uuid)")
 
 
-
-			/*{
-				"data": {
-					"uuid": "45b7d363-86fd-4f81-8681-663140b318d4",
-					"description": "A public bus",
-					"capabilities": [
-						"temperature",
-						"humidity",
-						"illuminate"
-					],
-					"status": "active",
-					"lat": -23.559616,
-					"lon": -46.731386,
-					"country": "Brazil",
-					"state": "São Paulo",
-					"city": "São Paulo",
-					"neighborhood": "Butantã",
-					"postal_code": null,
-					"created_at": "2018-05-07T01:25:49.939Z",
-					"updated_at": "2018-05-07T01:25:49.939Z",
-					"id": 10
-				}
-			}*/
-
-			/*s.write("{")
-			s.write("\"data\": {")
-			s.write("\"uuid\": \"45b7d363-86fd-4f81-8681-663140b318d4\",")
-			s.write("\"description\": \"A public bus\",")
-			s.write("\"capabilities\": [")
-			s.write("\"temperature\",")
-			s.write("\"humidity\",")
-			s.write("\"illuminate\"")
-			s.write("],")
-			s.write("\"status\": \"active\",")
-			s.write("\"lat\": \"-23.559616\",")
-			s.write("\"lon\": \"-46.731386\",")
-			s.write("\"country\": \"Brazil\",")
-			s.write("\"state\": \"São Paulo\",")
-			s.write("\"neighborhood\": \"Butantã\",")
-			s.write("\"postal_code\": \"null\",")
-			s.write("\"created_at\": \"2018-05-07T01:25:49.939Z\",")
-			s.write("\"updated_at\": \"2018-05-07T01:25:49.939Z\",")
-			s.write("\"id\": 10")
-			s.write("}")
-			s.write("}")*/
-
-			//return true
-
-							//char uuid_test[] = "1234567890---" //dJ2.uuid
+								char response_uuid[] =
+								s.write("{")
+								s.write("\"data\": {")
+								//s.write("\"uuid\": \"45b7d363-86fd-4f81-8681-663140b318d4\",")
+								//s.write("\"description\": \"A public bus\",")
+								s.write("\"uuid\":\"$(dJ2.uuid)\",")
+								s.write("\"description\": \"$(dJ2.description)\",")
+								s.write("\"capabilities\": [")
+								for (int i = 0; i < dJ.capabilities.arrayLength; i++) {
+									if (i == dJ.capabilities.arrayLength - 1)
+										s.write("\t\"$(dJ.capabilities[i].value)\"")
+									else
+										s.write("\t\"$(dJ.capabilities[i].value)\",")
+								}
+								s.write("],")
+								s.write("\"status\": \"$(dJ2.status)\",")
+								char lat_string[] = du.decToString(dJ2.lat)
+								char lon_string[] = du.decToString(dJ2.lon)
+								s.write("\"lat\": \"$(lat_string)\",")
+								s.write("\"lon\": \"$(lon_string)\",")
+								s.write("\"country\": \"$(dJ2.country)\",")
+								s.write("\"state\": \"$(dJ2.state)\",")
+								s.write("\"city\": \"$(dJ2.city)\",")
+								s.write("\"neighborhood\": \"$(dJ2.neighborhood)\",")
+								s.write("\"postal_code\": \"$(dJ2.postal_code)\",")
+								s.write("\"created_at\": \"$(dJ2.created_at)\",")
+								s.write("\"updated_at\": \"$(dJ2.updated_at)\",")
+								char local_id_string[] = iu.intToString(local_id)
+								s.write("\"id\": \"$(local_id_string)\"")
+								s.write("}")
+								s.write("}")
 
 
+								//JSON to be sent to resource.
+								/*{
+									"data": {
+										"uuid": "45b7d363-86fd-4f81-8681-663140b318d4",
+										"description": "A public bus",
+										"capabilities": [
+											"temperature",
+											"humidity",
+											"illuminate"
+										],
+										"status": "active",
+										"lat": -23.559616,
+										"lon": -46.731386,
+										"country": "Brazil",
+										"state": "São Paulo",
+										"city": "São Paulo",
+										"neighborhood": "Butantã",
+										"postal_code": null,
+										"created_at": "2018-05-07T01:25:49.939Z",
+										"updated_at": "2018-05-07T01:25:49.939Z",
+										"id": 10
+									}
+								}*/
 
 
-							return true
+								return true
+							}
 						}
-						}
-
-						return false
-
 					}
+				  return false
+    }
 
 
-
-
-
-		//=============================================================
-
-/*
-		bool Web:post(char path[], char contentType[], byte content[], DocStream s)
-			{
-
-				//curl -d '{"data": {"description": "A public bus","capabilities": ["temperature","humidity","illuminate"],"status": "active","lat": -23.559616,"lon": -46.731386}}' -H 'Content-Type: application/json' http://localhost:2018/adaptor/resources
-
-				if (content != null) {
-					DataJSON dJ = parseJSON(content)
-					// printing info from data structure
-					out.println("Description: $(dJ.description)")
-					out.println("Capabilities: ")
-					for (int i = 0; i < dJ.capabilities.arrayLength; i++) {
-						out.println("\t$(dJ.capabilities[i].value)")
-					}
-					out.println("Status: $(dJ.status)")
-					out.println("Lat: $(du.decToString(dJ.lat))")
-					out.println("Lon: $(du.decToString(dJ.lon))")
-
-
-
-
-					char url[] = "http://localhost:2019/catalog/resources"
-
-
-					Header headers[] = null
-
-					//HTTPResponse resp = HttpRequest.post( url[], Header headers[], char postData[])
-					HTTPResponse resp = HttpRequest.post( url, headers, content)
-
-					/* ==================== Storing Resource Metadata =============================*/
-					//Starting the MongoDB server:  sudo service mongod start
-					//Executing the mongo command line tool
-					/*MongoDB mongoDB = new MongoDB("127.0.0.1", 27017)
-
-					JSONElement jsonChildren3 = new JSONElement()
-					jsonChildren3.type = 4
-					jsonChildren3.name = "status"
-					jsonChildren3.value = "active"
-					jsonChildren3.children = null
-
-					JSONElement jsonChildren2 = new JSONElement()
-					jsonChildren2.type = 3
-					jsonChildren2.name = "description"
-					jsonChildren2.value = "A public bus"
-					jsonChildren2.children = jsonChildren3
-
-					JSONElement jsonChildren = new JSONElement()
-					jsonChildren.type = 2
-					jsonChildren.name = "uuid"
-					jsonChildren.value = "45b7d363-86fd-4f81-8681-663140b318d4"
-					jsonChildren.children = jsonChildren2
-
-					int type = 1
-					char name[] = "data"
-					char value[] = 10
-					JSONElement jsonQuery = new JSONElement()
-					jsonQuery.type = type
-					jsonQuery.name = name
-					jsonQuery.value = value
-					jsonQuery.children = jsonChildren
-
-
-					//JSONElement jsonQuery = new JSONElement(type, name, value, 222)
-					bool insert_ok = mongoDB.insert("resource_adaptor.resources_metadata", jsonQuery)
-					insert_ok = mongoDB.insert("resource_adaptor.resources_metadata", jsonChildren2)
-
-///
-
-char response_content[] = resp.content
-
-if (response_content != null) {
-	DataJSON2 dJ2 = parseJSON2(response_content)
-	// printing info from data structure
-	out.println("data2: $(dJ2.uuid)")
-	/*out.println("Capabilities: ")
-	for (int i = 0; i < dJ.capabilities.arrayLength; i++) {
-		out.println("\t$(dJ.capabilities[i].value)")
-	}
-	out.println("Status: $(dJ.status)")
-	out.println("Lat: $(du.decToString(dJ.lat))")
-	out.println("Lon: $(du.decToString(dJ.lon))")*/
-
-
-	/*{
-		"data": {
-			"uuid": "45b7d363-86fd-4f81-8681-663140b318d4",
-			"description": "A public bus",
-			"capabilities": [
-				"temperature",
-				"humidity",
-				"illuminate"
-			],
-			"status": "active",
-			"lat": -23.559616,
-			"lon": -46.731386,
-			"country": "Brazil",
-			"state": "São Paulo",
-			"city": "São Paulo",
-			"neighborhood": "Butantã",
-			"postal_code": null,
-			"created_at": "2018-05-07T01:25:49.939Z",
-			"updated_at": "2018-05-07T01:25:49.939Z",
-			"id": 10
+					// Defina aqui todas as expressoes de URL que voce desejar.
+					// Quando a URL bater com alguma das expressoes definidas, ele colocarar os valores na HashTable
+					// Ex.: /resource/aoskdoa23, voce pode acessar assim: String id = param.get("id")
+					// Ta ilustrado nas funcoes acima... Espero que ajude...
+		String[] Web:urls() {
+			String exprs[] = new String[]()
+			exprs = new String[](exprs, new String("adaptor/resources/{id}"))
+			//exprs = new String[](exprs, new String("/resource/{id}/{device}"))
+			return exprs
 		}
-	}*/
-
-	/*s.write("{")
-	s.write("\"data\": {")
-	s.write("\"uuid\": \"45b7d363-86fd-4f81-8681-663140b318d4\",")
-	s.write("\"description\": \"A public bus\",")
-	s.write("\"capabilities\": [")
-	s.write("\"temperature\",")
-	s.write("\"humidity\",")
-	s.write("\"illuminate\"")
-	s.write("],")
-	s.write("\"status\": \"active\",")
-	s.write("\"lat\": \"-23.559616\",")
-	s.write("\"lon\": \"-46.731386\",")
-	s.write("\"country\": \"Brazil\",")
-	s.write("\"state\": \"São Paulo\",")
-	s.write("\"neighborhood\": \"Butantã\",")
-	s.write("\"postal_code\": \"null\",")
-	s.write("\"created_at\": \"2018-05-07T01:25:49.939Z\",")
-	s.write("\"updated_at\": \"2018-05-07T01:25:49.939Z\",")
-	s.write("\"id\": 10")
-	s.write("}")
-	s.write("}")*/
-
-	//return true
-
-
-					/*char response_uuid[] =
-					s.write("{")
-					s.write("\"data\": {")
-					s.write("\"uuid\": \"45b7d363-86fd-4f81-8681-663140b318d4\",")
-					//s.write("\"uuid\":$(dJ2.uuid)")
-					s.write("\"description\": \"A public bus\",")
-					s.write("\"capabilities\": [")
-					s.write("\"temperature\",")
-					s.write("\"humidity\",")
-					s.write("\"illuminate\"")
-					s.write("],")
-					s.write("\"status\": \"active\",")
-					s.write("\"lat\": \"-23.559616\",")
-					s.write("\"lon\": \"-46.731386\",")
-					s.write("\"country\": \"Brazil\",")
-					s.write("\"state\": \"São Paulo\",")
-					s.write("\"city\": \"São Paulo\",")
-					s.write("\"neighborhood\": \"Butantã\",")
-					s.write("\"postal_code\": \"null\",")
-					s.write("\"created_at\": \"2018-05-07T01:25:49.939Z\",")
-					s.write("\"updated_at\": \"2018-05-07T01:25:49.939Z\",")
-					s.write("\"id\": 10")
-					s.write("}")
-					s.write("}")
-
-
-					return true
-				}
-				}
-
-				return false
-
-			} */
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/*bool Web:post(char path[], char contentType[], byte content[], DocStream stream)
-		{
-
-			//curl -d '{"data": {"description": "A public bus","capabilities": ["temperature","humidity","illuminate"],"status": "active","lat": -23.559616,"lon": -46.731386}' -H 'Content-Type: application/json' http://localhost:2018/adaptor/resources
-			char doc[] =  "{\"data\": {\"description\": \"A public bus\",\"capabilities\": [\"temperature\",\"humidity\",\"illuminate\"],\"status\": \"active\",\"lat\": -23.559616,\"lon\": -46.731386}}"
-
-			//char doc[] = "{\"age\":100,\"name\":\"mkyong.com\",\"messages\":[\"msg 1\",\"msg 2\",\"msg 3\"]}"
-			//char doc[] = "{}"
-
-
-			JSONElement jsonelement = jsonParser.parseDocument(doc)
-
-			JSONElement jsonelement1 = jsonParser.getValue(jsonelement, "data")
-
-			char doc_toString[] = jsonParser.documentToString(jsonelement1)
-
-		//JSONElement jsonelement2 = jsonParser.getValue(jsonelement, "description")
-
-			//JSONElement[] children = jsonelement.children
-			//char description[] = children[0].value//"marcio"//jsonelement.name
-//int type = jsonelement.name
-
-		out.println("accessing HTTP POST method")
-
-		out.println("contentType: $(contentType)")
-		out.println("content: $(content)")
-
-		out.println("doc_toString: $(doc_toString)")
-		//out.println("JSONElement1: $(jsonelement.children[0].)")
-		//out.println("JSONElement: $(type)")
-		/*FormData form = fparser.getFormData(contentType, content)
-
-		for (int i = 0; i < form.fields.arrayLength; i++)
-			{
-			out.println("field: $(form.fields[i].key):$(form.fields[i].value)")
-			if (form.fields[i] hastype FileFormField)
-				{
-				FileFormField fff = form.fields[i]
-				out.println(" -- filename: $(fff.filename), encoding: $(fff.encoding)")
-				}
-			}
-
-		//get(path, stream)
-
-		return true
-		}*/
-
 	}

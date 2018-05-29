@@ -31,11 +31,12 @@ component provides ws.Web requires io.Output out, data.IntUtil iu, data.DecUtil 
 	}
 
 
-	bool Web:get(char path[], DocStream s)
+	//bool Web:get(char path[], DocStream s)
+	bool Web:get(char path[], DocStream s, HashTable params)
 		{
 
 
-			//curl http://localhost:2018/catalog/resources
+			//curl http://localhost:2019/catalog/resources
 
 			s.write("{")
 			s.write("\"resources\": [")
@@ -93,7 +94,8 @@ component provides ws.Web requires io.Output out, data.IntUtil iu, data.DecUtil 
 		}
 
 
-		bool Web:post(char path[], char contentType[], byte content[], DocStream s)
+		//bool Web:post(char path[], char contentType[], byte content[], DocStream s)
+		bool Web:post(char path[], char contentType[], byte content[], DocStream s, HashTable params)
 		{
 
 			//curl -d '{"data": {"description": "A public bus","capabilities": ["temperature","humidity","illuminate"],"status": "active","lat": -23.559616,"lon": -46.731386}}' -H 'Content-Type: application/json' http://localhost:2018/catalog/resources
@@ -179,6 +181,17 @@ component provides ws.Web requires io.Output out, data.IntUtil iu, data.DecUtil 
 
 		}
 
+
+		// Defina aqui todas as expressoes de URL que voce desejar.
+		// Quando a URL bater com alguma das expressoes definidas, ele colocarar os valores na HashTable
+		// Ex.: /resource/aoskdoa23, voce pode acessar assim: String id = param.get("id")
+		// Ta ilustrado nas funcoes acima... Espero que ajude...
+		String[] Web:urls() {
+			String exprs[] = new String[]()
+			exprs = new String[](exprs, new String("/resource/{id}"))
+			exprs = new String[](exprs, new String("/resource/{id}/{device}"))
+			return exprs
+		}
 
 }
 
