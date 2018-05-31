@@ -1,21 +1,6 @@
-//uses DataJSON
+uses DataJSON
 
-data Capabilities {
-	char value[]
-}
 
-data ResourceMetaData {
-	char description[]
-	Capabilities capabilities[]
-	char status[]
-	dec lat
-	dec lon
-
-}
-
-data InterSCityData {
-	ResourceMetaData data_
-}
 
 
 
@@ -50,22 +35,7 @@ component provides InterscityUtil requires io.Output out, data.IntUtil iu, data.
 		return dJ
 	}
 
-	int InterscityUtil:storeResourceMetaData(InterSCityData resourceMetatData) {
-		int key = id
-		id++
-
-
-
-		resourceMetaData_hashtable.put(key, resourceMetatData)
-		InterSCityData stored_dJ = resourceMetaData_hashtable.get(id)
-		char stored_status[] = dJ.status
-
-		out.println("Status armazenado no HashTable: $(stored_status)")
-
-		return key
-	}
-
-	/* int InterscityUtil:storeResourceMetaData(DataJSON dJ) {
+	int InterscityUtil:storeResourceMetaData(DataJSON dJ) {
 		int key = id
 		id++
 
@@ -78,6 +48,6 @@ component provides InterscityUtil requires io.Output out, data.IntUtil iu, data.
 		out.println("Status armazenado no HashTable: $(stored_status)")
 
 		return key
-	} */
+	}
 
 }

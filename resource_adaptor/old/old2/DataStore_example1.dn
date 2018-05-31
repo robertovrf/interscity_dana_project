@@ -1,0 +1,145 @@
+data Capabilities {
+	char value[]
+}
+
+data DataJSON {
+	char description[]
+	Capabilities capabilities[]
+	char status[]
+	dec lat
+	dec lon
+}
+
+data DataJSON2 {
+	char uuid[]
+	char description[]
+	Capabilities capabilities[]
+	char status[]
+	dec lat
+	dec lon
+	char country[]
+	char state[]
+	char city[]
+	char neighborhood[]
+	char postal_code[]
+	char created_at[]
+	char updated_at[]
+	int id
+}
+
+component provides App requires io.Output out, data.IntUtil iu, data.DecUtil du, data.json.JSONParser parser {
+
+	DataJSON parseJSON(char json[]) {
+		DataJSON dJ = new DataJSON()
+		JSONElement doc = parser.parseDocument(json)
+		doc = parser.getValue(doc, "data")
+		dJ.description = parser.getValue(doc, "description").value
+		dJ.status = parser.getValue(doc, "status").value
+		dJ.lat = du.decFromString(parser.getValue(doc, "lat").value)
+		dJ.lon = du.decFromString(parser.getValue(doc, "lon").value)
+		JSONElement cap = parser.getValue(doc, "capabilities")
+		dJ.capabilities = new Capabilities[cap.children.arrayLength]
+		for (int i = 0; i < cap.children.arrayLength; i++) {
+			dJ.capabilities[i] = new Capabilities(cap.children[i].value)
+		}
+		return dJ
+	}
+
+	DataJSON2 parseJSON2(char json[]) {
+		DataJSON2 dJ = new DataJSON2()
+		JSONElement doc = parser.parseDocument(json)
+		doc = parser.getValue(doc, "data")
+		dJ.uuid = parser.getValue(doc, "uuid").value
+		dJ.description = parser.getValue(doc, "description").value
+		dJ.status = parser.getValue(doc, "status").value
+		dJ.lat = du.decFromString(parser.getValue(doc, "lat").value)
+		dJ.lon = du.decFromString(parser.getValue(doc, "lon").value)
+		dJ.country = parser.getValue(doc, "country").value
+		dJ.state = parser.getValue(doc, "state").value
+		dJ.city = parser.getValue(doc, "city").value
+		dJ.neighborhood = parser.getValue(doc, "neighborhood").value
+		dJ.postal_code = parser.getValue(doc, "postal_code").value
+		dJ.created_at = parser.getValue(doc, "created_at").value
+		dJ.updated_at = parser.getValue(doc, "updated_at").value
+		dJ.id = iu.intFromString(parser.getValue(doc, "id").value)
+		JSONElement cap = parser.getValue(doc, "capabilities")
+		dJ.capabilities = new Capabilities[cap.children.arrayLength]
+		for (int i = 0; i < cap.children.arrayLength; i++) {
+			dJ.capabilities[i] = new Capabilities(cap.children[i].value)
+		}
+		return dJ
+	}
+
+	int App:main(AppParam params[]) {
+		/* first example */
+		char json1[] = new char[]("{",
+					"\"data\": {",
+						"\"description\": \"A public bus\",",
+						"\"capabilities\": [\"temperature\", \"humidity\", \"illuminate\"],",
+						"\"status\": \"active\",",
+						"\"lat\": -23.559616,",
+						"\"lon\": -46.731386",
+						"}",
+					"}")
+		/* parsing ... */
+		DataJSON dJ = parseJSON(json1)
+		/* printing info from data structure */
+		out.println("Description: $(dJ.description)")
+		out.println("Capabilities: ")
+		for (int i = 0; i < dJ.capabilities.arrayLength; i++) {
+			out.println("\t$(dJ.capabilities[i].value)")
+		}
+		out.println("Status: $(dJ.status)")
+		out.println("Lat: $(du.decToString(dJ.lat))")
+		out.println("Lon: $(du.decToString(dJ.lon))")
+
+
+		/* second example */
+		//NOTE: current version of JSONParser does not accept null values
+		// (this will be fixed in a future version)
+		char json2[] = new char[]("{",
+  						"\"data\": {",
+    						"\"uuid\": \"45b7d363-86fd-4f81-8681-663140b318d4\",",
+    						"\"description\": \"A public bus\",",
+    						"\"capabilities\": [",
+      							"\"temperature\",",
+      							"\"humidity\",",
+      							"\"illuminate\"",
+    						"],",
+    						"\"status\": \"active\",",
+    						"\"lat\": -23.559616,",
+    						"\"lon\": -46.731386,",
+    						"\"country\": \"Brazil\",",
+    						"\"state\": \"São Paulo\",",
+    						"\"city\": \"São Paulo\",",
+    						"\"neighborhood\": \"Butantã\",",
+    						"\"postal_code\": \"null\",",
+    						"\"created_at\": \"2018-05-05T00:26:53.019Z\",",
+    						"\"updated_at\": \"2018-05-05T00:26:53.019Z\",",
+    						"\"id\": 10",
+  						"}",
+					"}")
+		/* parsing ... */
+		DataJSON2 dJ2 = parseJSON2(json2)
+		out.println("\n\n")
+		/* printing info from data structure */
+		out.println("UUID: $(dJ2.uuid)")
+		out.println("Description: $(dJ2.description)")
+		out.println("Capabilities:")
+		for (int i = 0; i < dJ2.capabilities.arrayLength; i++) {
+			out.println("\t$(dJ2.capabilities[i].value)")
+		}
+		out.println("Status: $(dJ2.status)")
+		out.println("Lat: $(du.decToString(dJ2.lat))")
+		out.println("Lon: $(du.decToString(dJ2.lon))")
+		out.println("Country: $(dJ2.country)")
+		out.println("State: $(dJ2.state)")
+		out.println("City: $(dJ2.city)")
+		out.println("Neighborhood: $(dJ2.neighborhood)")
+		out.println("Postal code: $(dJ2.postal_code)")
+		out.println("Created at: $(dJ2.created_at)")
+		out.println("Updated at: $(dJ2.updated_at)")
+		out.println("ID: $(iu.intToString(dJ2.id))")
+		return 0
+	}
+}

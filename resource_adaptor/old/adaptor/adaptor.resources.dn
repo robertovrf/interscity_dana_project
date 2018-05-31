@@ -134,7 +134,7 @@ component provides ws.Web requires InterscityUtil interscityUtil, net.http.HTTPR
 					 if (params != null) {
 							String id = params.get("id")
 							String device = params.get("device")
-							if (id != null) { out.println("ID: $(id.string)") }
+							if (id != null) { out.println("ID......: $(id.string)") }
 							if (device != null) { out.println("$(device.string)") }
 						} else {
 
@@ -247,7 +247,7 @@ component provides ws.Web requires InterscityUtil interscityUtil, net.http.HTTPR
 					// Ta ilustrado nas funcoes acima... Espero que ajude...
 		String[] Web:urls() {
 			String exprs[] = new String[]()
-			exprs = new String[](exprs, new String("adaptor/resources/{id}"))
+			exprs = new String[](exprs, new String("/adaptor/resources/{id}"))
 			//exprs = new String[](exprs, new String("/resource/{id}/{device}"))
 			return exprs
 		}

@@ -1,0 +1,115 @@
+
+data Response {
+	char response[]
+	char id[]
+	char device[]
+	char description[]
+}
+
+//======================================
+data Capabilities {
+	char value[]
+}
+
+ data ResourceMetaData {
+	char description[]
+	Capabilities capabilities[]
+	char status[]
+	dec lat
+	dec lon
+
+}
+
+data InterSCityData {
+	ResourceMetaData data_
+}
+
+// JSON data to be sent to Resource Adaptor
+/* {
+	"data": {
+		"description": "A public bus",
+		"capabilities": [
+			"temperature",
+			"humidity",
+			"illuminate"
+		],
+		"status": "active",
+		"lat": -23.559616,
+		"lon": -46.731386
+	}
+} */
+
+
+
+
+component provides RegisterResources requires net.http.HTTPRequest request, io.Output out, data.StringUtil strUtil, data.IntUtil intUtil, data.json.JSONEncoder encoder, data.adt.HashTable {
+
+	HashTable resourceMetaData_hashtable = new HashTable()
+
+	//char uuid[]   //Not used yet!!!
+	int global_id = 1
+
+	void RegisterResources:register(byte content[], char id[], char device[], DocStream s) {
+		out.println("id: $(id)")
+
+
+		//curl -d '{"data": {"description": "A public bus","capabilities": ["temperature","humidity","illuminate"],"status": "active","lat": -23.559616,"lon": -46.731386}}' -H 'Content-Type: application/json' http://localhost:2018/adaptor/resources
+		Map map[] = new Map[](new Map("data", "data_"))
+		InterSCityData bus = encoder.jsonToData(content, typeof(InterSCityData), map)
+
+		int created_id = storeResourceMetaData(bus)
+		char created_id_str[] = intUtil.intToString(created_id)
+		out.println("created_id: $(created_id_str)")
+
+
+		// registering metadata on Resource catalog
+		char url[] = "http://localhost:2019/catalog/resources"
+		Header headers[] = null
+
+		HTTPResponse response = request.post(url, null, content)
+		//HTTPResponse response = request.post(url, null, jsonBus)
+		//HTTPResponse resp = HttpRequest.post( url[], Header headers[], char postData[])
+		//HTTPResponse resp = HttpRequest.post( url, headers, content)
+		//char response_content[] = resp.content
+
+
+
+		//=================================
+
+		Response r = new Response()
+		r.response = "success"
+		r.id = created_id_str//"111111"
+		r.device = "sensor...."
+		r.description = bus.data_.description
+
+		s.write(encoder.jsonFromData(r, null))
+
+
+
+
+
+
+
+
+
+	}
+
+	int storeResourceMetaData(InterSCityData resourceMetatData) {
+		int key = global_id
+		global_id++
+
+
+
+		resourceMetaData_hashtable.put(key, resourceMetatData)
+		InterSCityData stored_dJ = resourceMetaData_hashtable.get(key)
+		char stored_status[] = stored_dJ.data_.status
+
+		char key_str[] = intUtil.intToString(key)
+		//out.println("created_id: $(key_str)")
+		out.println("key111: $(key_str)")
+		out.println("Status armazenado no HashTable: $(stored_status)")
+
+		return key
+	}
+
+}
