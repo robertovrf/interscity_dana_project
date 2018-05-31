@@ -1,6 +1,23 @@
 uses DataJSON
 
-component provides InterscityUtil requires io.Output out, data.IntUtil iu, data.DecUtil du, data.json.JSONParser parser{
+
+
+
+
+
+component provides InterscityUtil requires io.Output out, data.IntUtil iu, data.DecUtil du,
+				data.json.JSONParser parser, data.adt.HashTable {
+
+					HashTable resourceMetaData_hashtable = new HashTable()
+
+					//char uuid[]   //Not used yet!!!
+					int id = 0
+
+
+	/* InterscityUtil:InterscityUtil() {
+		resourceMetaData_hashtable = new HashTable()
+		id = 0
+	} */
 
 	DataJSON InterscityUtil:resourceMetaDataJSONParser(char json[]) {
 		DataJSON dJ = new DataJSON()
@@ -16,6 +33,21 @@ component provides InterscityUtil requires io.Output out, data.IntUtil iu, data.
 			dJ.capabilities[i] = new Capabilities(cap.children[i].value)
 		}
 		return dJ
+	}
+
+	int InterscityUtil:storeResourceMetaData(DataJSON dJ) {
+		int key = id
+		id++
+
+
+
+		resourceMetaData_hashtable.put(key, dJ)
+		DataJSON stored_dJ = resourceMetaData_hashtable.get(id)
+		char stored_status[] = dJ.status
+
+		out.println("Status armazenado no HashTable: $(stored_status)")
+
+		return key
 	}
 
 }

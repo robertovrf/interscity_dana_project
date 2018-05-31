@@ -1,5 +1,5 @@
 // Dispatcher...
-component provides ws.Web requires io.Output out, data.StringUtil strUtil, RegisterResources registerResources {
+component provides ws.Web requires io.Output out, data.StringUtil strUtil, adaptor.RegisterResources registerResources {
 
 	bool match(char path[], char expr[]) {
 		String dirs[] = strUtil.explode(path, "/")

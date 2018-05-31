@@ -1,0 +1,111 @@
+
+
+
+component provides App requires net.http.HTTPRequest request, io.Output out, data.IntUtil iu, data.DecUtil du, data.json.JSONParser parser {
+
+
+
+
+
+	int App:main(AppParam params[]) {
+
+
+
+		/* char jsonBus[] = new char[]("{",
+  						"\"data\": {",
+    						"\"uuid\": \"45b7d363-86fd-4f81-8681-663140b318d4\",",
+    						"\"description\": \"A public bus\",",
+    						"\"capabilities\": [",
+      							"\"temperature\",",
+      							"\"humidity\",",
+      							"\"illuminate\"",
+    						"],",
+    						"\"status\": \"active\",",
+    						"\"lat\": -23.559616,",
+    						"\"lon\": -46.731386,",
+    						"\"country\": \"Brazil\",",
+    						"\"state\": \"São Paulo\",",
+    						"\"city\": \"São Paulo\",",
+    						"\"neighborhood\": \"Butantã1234\",",
+    						"\"postal_code\": \"null\",",
+    						"\"created_at\": \"2018-05-05T00:26:53.019Z\",",
+    						"\"updated_at\": \"2018-05-05T00:26:53.019Z\",",
+    						"\"id\": 10,",
+    						"\"test\": true,",
+    						"\"t\": \"t\",",
+    						"\"aInt\": [",
+      							"0,",
+      							"1,",
+      							"2",
+    						"],",
+    						"\"aDec\": [",
+      							"0.0,",
+      							"0.1,",
+      							"0.2",
+    						"],",
+    						"\"aBool\": [",
+      							"true,",
+      							"true,",
+      							"false",
+    						"]",
+  						"}",
+					"}") */
+
+					/* {
+					  "data": {
+					    "environment_monitoring": [
+					      {
+					        "temperature": 10,
+					        "humidity": 45,
+					        "pressure": 25,
+					        "timestamp": "2017-06-14T17:52:25.428Z"
+					      },
+					      {
+					        "temperature": 20,
+					        "humidity": 64,
+					        "pressure": 25,
+					        "timestamp": "2017-06-14T17:57:25.428Z"
+					      }
+					    ],
+					    "bus_monitoring": [
+					      {
+					        "location": {
+					          "lat": -10.00032,
+					          "lon": -23.200223
+					        },
+					        "speed": 54,
+					        "bus_line": "875C-10-1",
+					        "timestamp": "2017-06-14T17:52:25.428Z"
+					      }
+					    ]
+					  }
+					} */
+
+
+
+
+					char jsonBus_DataToBeSent[] = new char[]("{",
+										"\"data\": {",
+											"\"bus_monitoring\": [",
+											  "{",
+													"\"location\": {",
+														"\"lat\": -10.00032,",
+														"\"lon\": -23.559615",
+														"}",
+												"\"speed\": 54,",
+												"\"bus_line\": \"875c-10-1\",",
+												"\"timestamp\": \"2017-06-14T17:52:25.428Z\"",
+												"}",
+												"]",
+											"}")
+
+
+
+		out.println("First request:")
+		char url[] = "http://localhost:2018/adaptor/resources/1/data"
+		HTTPResponse response = request.post(url, null, jsonBus_DataToBeSent)
+		out.println("response.content: $(response.content)")
+
+		return 0
+	}
+}

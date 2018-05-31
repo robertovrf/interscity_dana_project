@@ -1,9 +1,0 @@
-uses DataJSON
-
-interface InterscityUtil {
-
-	//InterscityUtil()
-	DataJSON resourceMetaDataJSONParser(char json[])
-	int storeResourceMetaData(DataJSON dJ)
-
-}
