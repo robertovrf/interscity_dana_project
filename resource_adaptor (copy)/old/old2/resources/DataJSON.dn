@@ -1,0 +1,10 @@
+
+uses Capabilities
+
+data DataJSON {
+		char description[]
+		Capabilities capabilities[]
+		char status[]
+		dec lat
+		dec lon
+}

@@ -52,11 +52,11 @@ component provides App requires net.http.HTTPRequest request, io.Output out, dat
 
 					char jsonBus[] = new char[]("{",
 										"\"data\": {",
-											"\"description\": \"A public bussssssss123\",",
+											"\"description\": \"A public bus!!!\",",
 											"\"capabilities\": [\"temperature\", \"humidity\", \"illuminate\"],",
 											"\"status\": \"active\",",
-											"\"lat\": -23.559616,",
-											"\"lon\": -46.731386",
+											"\"lat\": -23.559615,",
+											"\"lon\": -46.731385",
 											"}",
 										"}")
 

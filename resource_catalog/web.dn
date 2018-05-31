@@ -1,5 +1,5 @@
 // Dispatcher...
-component provides ws.Web requires io.Output out, data.StringUtil strUtil, RegisterResources registerResources {
+component provides ws.Web requires io.Output out, data.StringUtil strUtil, catalog.RegisterResourcesOnCatalog registerResourcesOnCatalog {
 
 	bool match(char path[], char expr[]) {
 		String dirs[] = strUtil.explode(path, "/")
@@ -29,14 +29,14 @@ component provides ws.Web requires io.Output out, data.StringUtil strUtil, Regis
 	bool Web:post(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
 		// para cada url, voce pode mapear para uma funcao de um componente qualquer
 		// caso nao a url nao seja uma url esperada, retorne mensagem de falha
-		if (match(path ,"/adaptor/resources")) {
+		if (match(path ,"/catalog/resources")) {
 
 			if ((params == null)) { failed(stream) }
-			registerResources.register(content, "02390293023", "sensor", stream)
+			registerResourcesOnCatalog.register(content, "02390293023", "sensor", stream)
 			//test.register(content, "02390293023", "sensor", stream)
 
 		} else {
-			if (match(path ,"/adaptor/resources/*/data")) {
+			if (match(path ,"/catalog/resources/*/data")) {
 
 			 /* if ((params == null) || (params.get("id") == null) || (params.get("device") == null)) { failed(stream) }
 			 String id = params.get("id")

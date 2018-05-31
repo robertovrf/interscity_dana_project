@@ -1,0 +1,6 @@
+uses data.adt.HashTable
+uses ws.DocStream
+
+interface RegisterResources {
+	void register(byte content[], char id[], char device[], DocStream stream)
+}
