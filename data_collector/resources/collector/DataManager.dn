@@ -1,0 +1,7 @@
+uses data.adt.HashTable
+uses ws.DocStream
+
+interface DataManager {
+	//void register(byte content[], char id[], char device[], DocStream stream)
+	void storeData(byte content[], char id[], char device[], DocStream stream)
+}

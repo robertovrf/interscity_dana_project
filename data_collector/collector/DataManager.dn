@@ -11,55 +11,66 @@ data Capabilities {
 	char value[]
 }
 
- data ResourceMetaData {
+ data ResourceData {
 	char description[]
 	Capabilities capabilities[]
 	char status[]
-	dec lat
-	dec lon
-
 }
 
 data InterSCityData {
-	ResourceMetaData data_
+	ResourceData data_
 }
 
-// JSON data to be sent to Resource Adaptor
-/* {
-	"data": {
-		"description": "A public bus",
-		"capabilities": [
-			"temperature",
-			"humidity",
-			"illuminate"
-		],
-		"status": "active",
-		"lat": -23.559616,
-		"lon": -46.731386
-	}
-} */
+
+data ContentResourceData {
+	char value[]
+}
+
+// JSON data example to be stored on DataManager
+/* "\"data\": {",
+	"\"bus_monitoring\": [",
+		"{",
+			"\"location\": {",
+				"\"lat\": -10.00032,",
+				"\"lon\": -23.559615",
+				"}",
+		"\"speed\": 54,",
+		"\"bus_line\": \"875c-10-1\",",
+		"\"timestamp\": \"2017-06-14T17:52:25.428Z\"",
+		"}",
+		"]",
+	"}") */
 
 
 
 
-component provides RegisterResources requires net.http.HTTPRequest request, io.Output out, data.StringUtil strUtil, data.IntUtil intUtil, data.json.JSONEncoder encoder, data.adt.HashTable {
+component provides DataManager requires net.http.HTTPRequest request, io.Output out, data.StringUtil strUtil, data.IntUtil intUtil, data.json.JSONEncoder encoder, data.adt.HashTable {
 
-	HashTable resourceMetaData_hashtable = new HashTable()
+	HashTable resourcesData_hashtable = new HashTable()
 
 	//char uuid[]   //Not used yet!!!
 	int global_id = 1
 
 
-	void RegisterResources:sendData(byte content[], char id[], char device[], DocStream s) {
-		// registering metadata on Resource catalog
-		char url[] = "http://localhost:2020/collector/data/$(id)"
-		Header headers[] = null
+	void DataManager:storeData(byte content[], char id[], char device[], DocStream s) {
 
-		HTTPResponse response = request.post(url, null, content)
+		out.println("storing data with id: $(id)")
+
+
+		//Map map[] = new Map[](new Map("data", "data_"))
+		//InterSCityData resourceData = encoder.jsonToData(content, typeof(InterSCityData), map)
+
+		ContentResourceData contentResourceData = new ContentResourceData()
+		contentResourceData.value = content
+
+		resourcesData_hashtable.put(id, contentResourceData)
+		out.println("Data stored2111")
+
+
 	}
 
 
-	void RegisterResources:register(byte content[], char id[], char device[], DocStream s) {
+	/* void RegisterResources:register(byte content[], char id[], char device[], DocStream s) {
 		out.println("id: $(id)")
 
 
@@ -109,15 +120,15 @@ component provides RegisterResources requires net.http.HTTPRequest request, io.O
 
 
 
-	}
+	} */
 
-	int storeResourceMetaData(InterSCityData resourceMetatData) {
+	/* int storeResourceMetaData(InterSCityData resourceMetatData) {
 		int key = global_id
 		global_id++
 
 
 
-		resourceMetaData_hashtable.put(key, resourceMetatData)
+		resourceData_hashtable.put(key, resourceMetatData)
 		InterSCityData stored_dJ = resourceMetaData_hashtable.get(key)
 		char stored_status[] = stored_dJ.data_.status
 
@@ -127,6 +138,6 @@ component provides RegisterResources requires net.http.HTTPRequest request, io.O
 		out.println("Status armazenado no HashTable: $(stored_status)")
 
 		return key
-	}
+	} */
 
 }

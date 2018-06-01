@@ -1,5 +1,5 @@
 // Dispatcher...
-component provides ws.Web requires io.Output out, data.StringUtil strUtil, collector.RegisterResources registerResources {
+component provides ws.Web requires io.Output out, data.StringUtil strUtil, collector.DataManager dataManager {
 
 	bool match(char path[], char expr[]) {
 		String dirs[] = strUtil.explode(path, "/")
@@ -31,7 +31,7 @@ component provides ws.Web requires io.Output out, data.StringUtil strUtil, colle
 		// caso nao a url nao seja uma url esperada, retorne mensagem de falha
 		if (match(path ,"/collector/data/*")) {
 				out.println("URL /collector/data/* undestood!!!!")
-
+				dataManager.storeData(content, "99999999123", "sensor", stream)
 
 		} else {
 			if (match(path ,"/collector/data")) {
@@ -42,11 +42,11 @@ component provides ws.Web requires io.Output out, data.StringUtil strUtil, colle
 
 
 
-					out.println("entrou no path /adaptor/resources!!!!")
+					/* out.println("entrou no path /adaptor/resources!!!!")
 					out.println("path: $(path)")
 
 					if ((params == null)) { failed(stream) }
-					registerResources.register(content, "02390293023", "sensor", stream)
+					registerResources.register(content, "02390293023", "sensor", stream) */
 					//test.register(content, "02390293023", "sensor", stream)
 			 /* if ((params == null) || (params.get("id") == null) || (params.get("device") == null)) { failed(stream) }
 			 String id = params.get("id")
