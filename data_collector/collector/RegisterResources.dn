@@ -56,7 +56,6 @@ component provides RegisterResources requires net.http.HTTPRequest request, io.O
 		Header headers[] = null
 
 		HTTPResponse response = request.post(url, null, content)
-		
 	}
 
 

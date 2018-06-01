@@ -1,0 +1,26 @@
+//uses DataJSON
+
+data Capabilities {
+	char value[]
+}
+
+data ResourceMetaData {
+	char description[]
+	Capabilities capabilities[]
+	char status[]
+	dec lat
+	dec lon
+
+}
+
+data InterSCityData {
+	ResourceMetaData data_
+}
+
+interface InterscityUtil {
+
+	//InterscityUtil()
+	//DataJSON resourceMetaDataJSONParser(char json[])
+	int storeResourceMetaData(InterSCityData resourceMetatData)
+
+}
