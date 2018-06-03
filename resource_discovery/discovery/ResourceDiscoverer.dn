@@ -42,14 +42,25 @@ data InterSCityData {
 
 
 
-component provides RegisterResources requires net.http.HTTPRequest request, io.Output out, data.StringUtil strUtil, data.IntUtil intUtil, data.json.JSONEncoder encoder, data.adt.HashTable {
+component provides discovery.ResourceDiscoverer requires net.http.HTTPRequest request, io.Output out, data.StringUtil strUtil, data.IntUtil intUtil, data.json.JSONEncoder encoder, data.adt.HashTable {
 
 	HashTable resourceMetaData_hashtable = new HashTable()
 
 	//char uuid[]   //Not used yet!!!
 	int global_id = 1
 
-	void RegisterResources:register(byte content[], char id[], char device[], DocStream s) {
+
+	void ResourceDiscoverer:discoveryResourceByCapability(char capability_value[], DocStream s) {
+		/* // registering metadata on Resource catalog
+		char url[] = "http://localhost:2020/collector/data/$(id)"
+		Header headers[] = null
+
+		HTTPResponse response = request.post(url, null, content) */
+		out.println("inside discoveryResourceByCapability()...\nanalising capability value = $(capability_value)")
+	}
+
+
+	/* void RegisterResources:register(byte content[], char id[], char device[], DocStream s) {
 		out.println("id: $(id)")
 
 
@@ -117,6 +128,6 @@ component provides RegisterResources requires net.http.HTTPRequest request, io.O
 		out.println("Status armazenado no HashTable: $(stored_status)")
 
 		return key
-	}
+	} */
 
 }
