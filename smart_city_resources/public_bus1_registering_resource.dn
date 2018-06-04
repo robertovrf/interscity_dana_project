@@ -1,11 +1,8 @@
 
 
 
-component provides App requires net.http.HTTPRequest request, io.Output out, data.IntUtil iu, data.DecUtil du, data.json.JSONParser parser {
-
-
-
-
+component provides App requires net.http.HTTPRequest request, io.Output out, data.IntUtil iu,
+														data.DecUtil du, data.json.JSONParser parser {
 
 	int App:main(AppParam params[]) {
 
@@ -17,28 +14,13 @@ component provides App requires net.http.HTTPRequest request, io.Output out, dat
 				"\"lat\": -23.559615,",
 				"\"lon\": -46.731385",
 				"}",
-			"}")					
+			"}")
 
-		out.println("First request:")
+		out.println("Registering resource on Platform...")
 		char url[] = "http://localhost:2018/adaptor/resources"
 		HTTPResponse response = request.post(url, null, jsonBus)
-		out.println("response.content: $(response.content)")
-
-		/* out.println("Second request:")
-		response = request.get("localhost:2018/resource/test2/list", null)
-		out.println("$(response.content)") */
-
+		out.println("Received response: $(response.content)")
 
 		return 0
-
-
-
-
-
-
-
-
-
 	}
-
 }

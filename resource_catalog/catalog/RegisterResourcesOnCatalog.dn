@@ -104,7 +104,7 @@ component provides RegisterResourcesOnCatalog requires io.Output out, data.Strin
 		Response r = new Response()
 		r.response = "success"
 		r.uuid = created_id_str//"111111"
-		r.device = "sensor...."
+		r.device = "sensor....123"
 		r.description = bus.data_.description
 
 		r.capabilities = new Capabilities[bus.data_.capabilities.arrayLength]
@@ -116,13 +116,13 @@ component provides RegisterResourcesOnCatalog requires io.Output out, data.Strin
 		r.status = bus.data_.status
 		r.lat = bus.data_.lat
 		r.lon = bus.data_.lon
-		r.country = "Brazil"
-		r.state = "São Paulo"
-		r.city = "São Paulo"
-		r.neighborhood = "Butantã"
+		r.country = "Brazil2222"
+		r.state = "São Paulo333"
+		r.city = "São Paulo4444"
+		r.neighborhood = "Butantã5555"
 		r.postal_code = null
-		r.created_at = "2018-05-07T01:25:49.939Z"
-		r.updated_at = "2018-05-07T01:25:49.939Z"
+		r.created_at = "99992018-05-07T01:25:49.939Z"
+		r.updated_at = "88882018-05-07T01:25:49.939Z"
 		r.id = created_id
 
 		s.write(encoder.jsonFromData(r, null))

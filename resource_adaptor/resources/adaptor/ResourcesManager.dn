@@ -1,0 +1,7 @@
+uses data.adt.HashTable
+uses ws.DocStream
+
+interface ResourcesManager {
+	void register(byte content[], DocStream stream)
+	void sendData(byte content[], char id[], char device[], DocStream stream)
+}

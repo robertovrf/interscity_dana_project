@@ -1,5 +1,5 @@
 // Dispatcher...
-component provides ws.Web requires io.Output out, data.StringUtil strUtil, adaptor.RegisterResources registerResources {
+component provides ws.Web requires io.Output out, data.StringUtil strUtil, adaptor.ResourcesManager resourcesManager {
 
 	bool match(char path[], char expr[]) {
 		String dirs[] = strUtil.explode(path, "/")
@@ -32,22 +32,16 @@ component provides ws.Web requires io.Output out, data.StringUtil strUtil, adapt
 		if (match(path ,"/adaptor/resources/*/data")) {
 				out.println("URL undestood123!!!!")
 				if ((params == null)) { failed(stream) }
-				registerResources.sendData(content, "02390293023", "sensor", stream)
+				resourcesManager.sendData(content, "02390293023", "sensor", stream)
 
 		} else {
 			if (match(path ,"/adaptor/resources")) {
-
-
-
-
-
-
 
 					out.println("entrou no path /adaptor/resources!!!!")
 					out.println("path: $(path)")
 
 					if ((params == null)) { failed(stream) }
-					registerResources.register(content, "02390293023", "sensor", stream)
+					resourcesManager.register(content, stream)
 					//test.register(content, "02390293023", "sensor", stream)
 			 /* if ((params == null) || (params.get("id") == null) || (params.get("device") == null)) { failed(stream) }
 			 String id = params.get("id")
