@@ -1,8 +1,58 @@
 
+data Capabilities {
+	char value[]
+}
+
+data ResourceMetaData {
+	char description[]
+	Capabilities capabilities[]
+	char status[]
+	dec lat
+	dec lon
+}
+
+data Response {
+	char response[]
+	char uuid[]
+	char device[]
+	char description[]
+	Capabilities capabilities[]
+  char status[]
+  dec lat
+  dec lon
+  char country[]
+  char state[]
+  char city[]
+  char neighborhood[]
+  char postal_code[]
+  char created_at[]
+  char updated_at[]
+  int id
+}
+
+/* data ResourceMetaData {
+ char description[]
+ Capabilities capabilities[]
+ char status[]
+ dec lat
+ dec lon
+ char country[]
+ char state[]
+ char city[]
+ char neighborhood[]
+ char postal_code[]
+ char created_at[]
+ char updated_at[]
+ int id
+} */
+
+data InterSCityData {
+	ResourceMetaData data_
+}
 
 
 component provides App requires net.http.HTTPRequest request, io.Output out, data.IntUtil iu,
-														data.DecUtil du, data.json.JSONParser parser {
+														data.DecUtil du, data.json.JSONParser parser, data.json.JSONEncoder encoder {
 
 	int App:main(AppParam params[]) {
 
@@ -16,10 +66,30 @@ component provides App requires net.http.HTTPRequest request, io.Output out, dat
 				"}",
 			"}")
 
-		out.println("Registering resource on Platform...")
+		out.println("Registering Resource on InterSCity Platform...\n")
 		char url[] = "http://localhost:2018/adaptor/resources"
 		HTTPResponse response = request.post(url, null, jsonBus)
-		out.println("Received response: $(response.content)")
+
+		// Showing received values of InterSCity Platform
+		Response formatedResponse = encoder.jsonToData(response.content, typeof(Response), null)
+		out.println("Received Values of InterSCity Platform:")
+		out.println("UUID:.........$(formatedResponse.uuid)")
+		out.println("DESCRIPTION:..$(formatedResponse.description)")
+		out.println("CAPABILITIES: ")
+		for (int i = 0; i < formatedResponse.capabilities.arrayLength; i++) {
+			out.println("   CAPABILITY $(iu.intToString(i)): $(formatedResponse.capabilities[i].value)")
+		}
+		out.println("STATUS:.......$(formatedResponse.status)")
+		out.println("LATITUDE:.....$(du.decToString(formatedResponse.lat))")
+		out.println("LONGITUDE:....$(du.decToString(formatedResponse.lon))")
+		out.println("COUNTRY:......$(formatedResponse.country)")
+		out.println("STATE:........$(formatedResponse.state)")
+		out.println("CITY:.........$(formatedResponse.city)")
+		out.println("NEIGHBORHOOD:.$(formatedResponse.neighborhood)")
+		out.println("POSTAL CODE:..$(formatedResponse.postal_code)")
+		out.println("CREATED AT:...$(formatedResponse.created_at)")
+		out.println("UPDATED AT:...$(formatedResponse.updated_at)")
+		out.println("ID:...........$(iu.intToString(formatedResponse.id))")
 
 		return 0
 	}

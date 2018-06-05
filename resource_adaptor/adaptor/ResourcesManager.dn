@@ -61,7 +61,8 @@ data InterSCityData {
 
 
 
-component provides ResourcesManager requires net.http.HTTPRequest request, io.Output out, data.StringUtil strUtil, data.IntUtil intUtil, data.json.JSONEncoder encoder, data.adt.HashTable {
+component provides ResourcesManager requires net.http.HTTPRequest request, io.Output out, data.StringUtil strUtil,
+data.IntUtil intUtil, data.json.JSONEncoder encoder, data.adt.HashTable {
 
 	HashTable resourceMetaData_hashtable = new HashTable()
 
@@ -113,7 +114,7 @@ component provides ResourcesManager requires net.http.HTTPRequest request, io.Ou
 
 		//Map map[] = new Map[](new Map("data", "data_"))
 		ResponseToResource resourceCatalogResponse = encoder.jsonToData(response.content, typeof(ResponseToResource), map)
-		out.println("response.content.uuid: $(resourceCatalogResponse.uuid)")
+		//out.println("response.content.uuid: $(resourceCatalogResponse.uuid)")
 		out.println("response.contentFromCatalog: $(response.content)")
 
 
@@ -126,6 +127,7 @@ component provides ResourcesManager requires net.http.HTTPRequest request, io.Ou
 		ResponseToResource r = new ResponseToResource()
 		r.device = resourceCatalogResponse.device
 		r.description = resourceCatalogResponse.description
+		r.uuid = resourceCatalogResponse.uuid
 
 		r.capabilities = new Capabilities[resourceCatalogResponse.capabilities.arrayLength]
 		for (int i = 0; i < resourceCatalogResponse.capabilities.arrayLength; i++) {

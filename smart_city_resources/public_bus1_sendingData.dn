@@ -101,7 +101,7 @@ component provides App requires net.http.HTTPRequest request, io.Output out, dat
 
 
 
-		out.println("First request:")
+		out.println("Sending Data to the Platform...")
 		char url[] = "http://localhost:2018/adaptor/resources/1/data"
 		HTTPResponse response = request.post(url, null, jsonBus_DataToBeSent)
 		out.println("response.content: $(response.content)")
