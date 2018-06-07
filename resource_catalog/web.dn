@@ -1,10 +1,27 @@
 // Dispatcher...
-component provides ws.Web requires io.Output out, data.StringUtil strUtil, catalog.RegisterResourcesOnCatalog registerResourcesOnCatalog {
+component provides ws.Web requires io.Output out, data.StringUtil strUtil, catalog.ResourceCatalogManager resourceCatalogManager {
+	char id[]
 
-	bool match(char path[], char expr[]) {
+	/* bool match(char path[], char expr[]) {
 		String dirs[] = strUtil.explode(path, "/")
 		String exprDirs[] = strUtil.explode(expr, "/")
 		if (dirs.arrayLength < exprDirs.arrayLength) { return false }
+		for (int i = 0; i < exprDirs.arrayLength; i++) {
+			if ((dirs[i].string != exprDirs[i].string) && (exprDirs[i].string != "*")) {
+				return false
+			}
+		}
+		return true
+	} */
+
+	bool match(char path[], char expr[]) {
+		String helper[] = strUtil.explode(path, "?")
+		String dirs[] = strUtil.explode(helper[0].string, "/")
+		String exprDirs[] = strUtil.explode(expr, "/")
+
+		if (dirs.arrayLength != exprDirs.arrayLength) { return false }
+		if (dirs.arrayLength == 4)  {id = dirs[2].string}  // storing resource id.
+
 		for (int i = 0; i < exprDirs.arrayLength; i++) {
 			if ((dirs[i].string != exprDirs[i].string) && (exprDirs[i].string != "*")) {
 				return false
@@ -32,7 +49,7 @@ component provides ws.Web requires io.Output out, data.StringUtil strUtil, catal
 		if (match(path ,"/catalog/resources")) {
 
 			if ((params == null)) { failed(stream) }
-			registerResourcesOnCatalog.register(content, "02390293023", "sensor", stream)
+			resourceCatalogManager.register(content, stream)
 			//test.register(content, "02390293023", "sensor", stream)
 
 		} else {
@@ -55,8 +72,8 @@ component provides ws.Web requires io.Output out, data.StringUtil strUtil, catal
 
 	String[] Web:urls() {
 		String exprs[] = new String[]()
-		exprs = new String[](exprs, new String("/adaptor/resources"))
-		exprs = new String[](exprs, new String("/adaptor/resources/{id}/data"))
+		exprs = new String[](exprs, new String("/catalog/resources"))
+		exprs = new String[](exprs, new String("/catalog/resources/{id}/data"))
 		return exprs
 	}
 }

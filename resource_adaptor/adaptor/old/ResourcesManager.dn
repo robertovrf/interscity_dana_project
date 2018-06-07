@@ -70,13 +70,16 @@ data.IntUtil intUtil, data.json.JSONEncoder encoder, data.adt.HashTable {
 	int global_id = 1
 
 
-	void ResourcesManager:sendData(byte content[], char id[], char device[], DocStream s) {
+	void ResourcesManager:sendData(byte content[], char id[], char device[], DocStream docStream) {
 		// registering metadata on Resource catalog
 		char url[] = "http://localhost:2020/collector/data/$(id)"
 		Header headers[] = null
 
 		HTTPResponse response = request.post(url, null, content)
-		//return response
+
+		
+
+
 	}
 
 
