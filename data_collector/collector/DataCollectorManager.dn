@@ -1,0 +1,25 @@
+
+data CityResourceData {
+	byte resourceData[]
+}
+
+component provides DataCollectorManager requires net.http.HTTPRequest request, io.Output out, data.StringUtil strUtil, data.IntUtil intUtil, data.json.JSONEncoder encoder, data.adt.HashTable {
+
+	HashTable resourcesData_hashtable = new HashTable()
+
+	void DataCollectorManager:storeData(byte content[], char id[], DocStream s) {
+
+		out.println("Storing data with id: $(id)...")
+
+		CityResourceData data_ = new CityResourceData()
+		data_.resourceData = content
+		resourcesData_hashtable.put(id, data_)
+
+		//recovering data from HashTable.
+		CityResourceData storedData = new CityResourceData()
+		storedData = resourcesData_hashtable.get(id)
+		byte storeContent[] = storedData.resourceData
+
+		out.println("Stored content: $(storeContent)")
+	}
+}

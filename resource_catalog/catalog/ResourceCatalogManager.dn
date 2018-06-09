@@ -53,7 +53,6 @@ component provides ResourceCatalogManager requires io.Output out, data.StringUti
 		out.println("ID stored on Resource Catalog Microservice: $(created_id_str)")
 
 		//Composing response message to Resource Adaptor Microservice
-		out.println("Sending response to Resource Adaptor...")
 		ResponseToResource r = new ResponseToResource()
 		r.response = "success"
 		r.uuid = created_id_str
@@ -75,6 +74,7 @@ component provides ResourceCatalogManager requires io.Output out, data.StringUti
 		r.updated_at = "2018-05-07T01:25:49.939Z"		// getUpdatedAt()
 		r.id = created_id
 
+		out.println("Sending response to Resource Adaptor...")
 		s.write(encoder.jsonFromData(r, null))
 	}
 

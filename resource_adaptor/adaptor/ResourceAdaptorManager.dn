@@ -73,7 +73,6 @@ component provides ResourceAdaptorManager requires net.http.HTTPRequest request,
 		r.capabilities = new Capabilities[resourceCatalogResponse.capabilities.arrayLength]
 		for (int i = 0; i < resourceCatalogResponse.capabilities.arrayLength; i++) {
 			r.capabilities[i] = resourceCatalogResponse.capabilities[i]
-			out.println("capabilities: $(resourceCatalogResponse.capabilities[i].value)")
 		}
 		r.status = resourceCatalogResponse.status
 		r.lat = resourceCatalogResponse.lat
@@ -88,7 +87,7 @@ component provides ResourceAdaptorManager requires net.http.HTTPRequest request,
 		r.id = created_local_id
 
 		out.println("UUID sent by Resource Catalog: $(resourceCatalogResponse.uuid)")
-
+		out.println("Sending response to Resource...")
 		s.write(encoder.jsonFromData(r, null))
 	}
 
