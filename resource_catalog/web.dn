@@ -1,6 +1,6 @@
 // Dispatcher...
 component provides ws.Web requires io.Output out, data.StringUtil strUtil, catalog.ResourceCatalogManager resourceCatalogManager {
-	char id[]
+	char capability[]
 
 	/* bool match(char path[], char expr[]) {
 		String dirs[] = strUtil.explode(path, "/")
@@ -20,7 +20,7 @@ component provides ws.Web requires io.Output out, data.StringUtil strUtil, catal
 		String exprDirs[] = strUtil.explode(expr, "/")
 
 		if (dirs.arrayLength != exprDirs.arrayLength) { return false }
-		if (dirs.arrayLength == 4)  {id = dirs[2].string}  // storing resource id.
+		if (dirs.arrayLength == 3)  {capability = dirs[2].string}  // storing resource id.
 
 		for (int i = 0; i < exprDirs.arrayLength; i++) {
 			if ((dirs[i].string != exprDirs[i].string) && (exprDirs[i].string != "*")) {
@@ -36,12 +36,21 @@ component provides ws.Web requires io.Output out, data.StringUtil strUtil, catal
 
 	bool Web:get(char path[], DocStream stream, HashTable params) {
 		// para cada url, voce pode mapear para uma funcao de um componente qualquer
-		// caso nao a url nao seja uma url esperada, retorne mensagem de falha
-		/* if (match(path, "/resource/test2/list")) {
-			test2.list(stream)
-		} else { failed(stream) } */
+		// caso a url nao seja uma url esperada, retorne mensagem de falha
+		if (match(path, "/resource/test2/list")) {
+			//test2.list(stream)
+		// pra entrar nesse else if, faca um requisicao para: localhost:2018/resources/test?something=something_else
+		} else if (match(path, "/catalog/capabilities/*")) {
+			if (params != null) {
+				if ((params == null)) { failed(stream) }
+				resourceCatalogManager.getResourcesByCapability(content, capability, stream)
+				}
+
+		} else { failed(stream) }
 		return true
 	}
+
+
 
 	bool Web:post(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
 		// para cada url, voce pode mapear para uma funcao de um componente qualquer
@@ -74,6 +83,7 @@ component provides ws.Web requires io.Output out, data.StringUtil strUtil, catal
 		String exprs[] = new String[]()
 		exprs = new String[](exprs, new String("/catalog/resources"))
 		exprs = new String[](exprs, new String("/catalog/resources/{id}/data"))
+		exprs = new String[](exprs, new String("/catalog/capabilities/{name}"))
 		return exprs
 	}
 }

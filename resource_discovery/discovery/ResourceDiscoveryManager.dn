@@ -1,0 +1,214 @@
+
+data Response {
+	char response[]
+	char id[]
+	char device[]
+	char description[]
+}
+
+//======================================
+data Capabilities {
+	char value[]
+}
+
+ data ResourceMetaData {
+	char description[]
+	Capabilities capabilities[]
+	char status[]
+	dec lat
+	dec lon
+
+}
+
+data InterSCityData {
+	ResourceMetaData data_
+}
+
+// JSON data to be sent to Resource Adaptor
+/* {
+	"data": {
+		"description": "A public bus",
+		"capabilities": [
+			"temperature",
+			"humidity",
+			"illuminate"
+		],
+		"status": "active",
+		"lat": -23.559616,
+		"lon": -46.731386
+	}
+} */
+
+data ResourceCapabilitiesToSendToApplication {
+	char id[]
+	char name[]
+	char function[]
+	char description[]
+}
+
+data ResponseToApplication {
+	ResourceCapabilitiesToSendToApplication resourceCapabilitiesToSendToApplication[]
+	/* {
+  "capabilities": [
+    {
+      "id": 1,
+      "name": "semaphore",
+      "function": 1,
+      "description": "Manipulate the semaphore status"
+    },
+    {
+      "id": 2,
+      "name": "temperature",
+      "function": 0,
+      "description": "Measure the temperature of the environment"
+    }
+  ]
+} */
+}
+
+
+component provides discovery.ResourceDiscoveryManager requires net.http.HTTPRequest request, io.Output out, data.StringUtil strUtil,
+							data.IntUtil intUtil, data.json.JSONEncoder encoder, data.adt.HashTable,  {
+
+	HashTable resourceMetaData_hashtable = new HashTable()
+
+	//char uuid[]   //Not used yet!!!
+	int global_id = 1
+
+
+	void ResourceDiscoveryManager:discoveryResourceByCapability(char capability_value[], DocStream s) {
+
+		//curl -H "Content-Type: application/json" -X POST -d '{"capabilities":["environment_monitoring"]}' http://localhost:8000/collector/resources/data
+
+		out.println("inside discoveryResourceByCapability()...\n analising capability value = $(capability_value)")
+
+		char url[] = "http://localhost:2019/catalog/capabilities/$(capability_value)"
+		Header headers[] = null
+		HTTPResponse response = request.get(url, null)//request.post(url, null, content)
+		ResponseToApplication responseToApplication = encoder.jsonToData(response.content, typeof(ResponseToApplication), null)
+
+		out.println("ResponseToApplication.capability_resource1.id: $(responseToApplication.resourceCapabilitiesToSendToApplication[0].id)")
+		out.println("ResponseToApplication.capability_resource1.name: $(responseToApplication.resourceCapabilitiesToSendToApplication[0].name)")
+
+
+
+
+
+
+
+
+
+		/* // registering metadata on Resource catalog
+		char url[] = "http://localhost:2020/collector/data/$(id)"
+		Header headers[] = null
+
+		HTTPResponse response = request.post(url, null, content) */
+
+
+
+		/* char url[] = "http://localhost:2020/collector/data/$(id)"
+		Header headers[] = null
+
+		HTTPResponse response = request.post(url, null, content) */
+
+
+		/* {
+  "resources": [
+    {
+      "uuid": "45b7d363-86fd-4f81-8681-663140b318d4",
+      "description": "A public bus",
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "illuminate"
+      ],
+      "status": "active",
+      "lat": -23.559616,
+      "lon": -46.731386,
+      "country": "Brazil",
+      "state": "São Paulo",
+      "city": "São Paulo",
+      "neighborhood": "Butantã",
+      "postal_code": null,
+      "created_at": "2018-06-03T12:47:37.730Z",
+      "updated_at": "2018-06-03T12:47:37.730Z",
+      "id": 10
+    }
+  ]
+} */
+
+
+	}
+
+
+	/* void RegisterResources:register(byte content[], char id[], char device[], DocStream s) {
+		out.println("id: $(id)")
+
+
+		//curl -d '{"data": {"description": "A public bus","capabilities": ["temperature","humidity","illuminate"],"status": "active","lat": -23.559616,"lon": -46.731386}}' -H 'Content-Type: application/json' http://localhost:2018/adaptor/resources
+		Map map[] = new Map[](new Map("data", "data_"))
+		InterSCityData bus = encoder.jsonToData(content, typeof(InterSCityData), map)
+
+		int created_id = storeResourceMetaData(bus)
+		char created_id_str[] = intUtil.intToString(created_id)
+		out.println("created_id: $(created_id_str)")
+
+
+		for (int i = 0; i < bus.data_.capabilities.arrayLength; i++) {
+		 out.println("capabilities: $(bus.data_.capabilities[i].value)")
+	  }
+
+
+
+
+		// registering metadata on Resource catalog
+		char url[] = "http://localhost:2019/catalog/resources"
+		Header headers[] = null
+
+		HTTPResponse response = request.post(url, null, content)
+		//HTTPResponse response = request.post(url, null, jsonBus)
+		//HTTPResponse resp = HttpRequest.post( url[], Header headers[], char postData[])
+		//HTTPResponse resp = HttpRequest.post( url, headers, content)
+		//char response_content[] = resp.content
+
+
+
+		//=================================
+
+		Response r = new Response()
+		r.response = "success"
+		r.id = created_id_str//"111111"
+		r.device = "sensor...."
+		r.description = bus.data_.description
+
+		s.write(encoder.jsonFromData(r, null))
+
+
+
+
+
+
+
+
+
+	}
+
+	int storeResourceMetaData(InterSCityData resourceMetatData) {
+		int key = global_id
+		global_id++
+
+
+
+		resourceMetaData_hashtable.put(key, resourceMetatData)
+		InterSCityData stored_dJ = resourceMetaData_hashtable.get(key)
+		char stored_status[] = stored_dJ.data_.status
+
+		char key_str[] = intUtil.intToString(key)
+		//out.println("created_id: $(key_str)")
+		out.println("key111: $(key_str)")
+		out.println("Status armazenado no HashTable: $(stored_status)")
+
+		return key
+	} */
+
+}

@@ -1,5 +1,5 @@
 // Dispatcher...
-component provides ws.Web requires io.Output out, data.StringUtil strUtil, discovery.ResourceDiscoverer resourceDiscoverer {
+component provides ws.Web requires io.Output out, data.StringUtil strUtil, discovery.ResourceDiscoveryManager resourceDiscoveryManager {
 
 	/* bool match(char path[], char expr[]) {
 		String dirs[] = strUtil.explode(path, "/")
@@ -41,7 +41,7 @@ component provides ws.Web requires io.Output out, data.StringUtil strUtil, disco
 				String value = params.get("capability")
 				if (value != null) {
 					out.println("$(value.string)")
-					resourceDiscoverer.discoveryResourceByCapability(value.string, stream)
+					resourceDiscoveryManager.discoveryResourceByCapability(value.string, stream)
 				}
 			}
 		} else { failed(stream) }

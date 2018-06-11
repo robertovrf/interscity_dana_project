@@ -3,4 +3,5 @@ uses ws.DocStream
 
 interface ResourceCatalogManager {
 	void register(byte content[], DocStream stream)
+	void getResourcesByCapability(byte content[], char capability[], DocStream stream)
 }

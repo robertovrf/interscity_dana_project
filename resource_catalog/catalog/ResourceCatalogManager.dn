@@ -1,4 +1,33 @@
 
+
+
+data ResourceCapabilitiesToSendToApplication {
+	/*char id[]
+	char name[]
+	char function[]
+	char description[] */
+}
+
+data ResponseToApplication {
+	ResourceCapabilitiesToSendToApplication resourceCapabilitiesToSendToApplication[]
+	/* {
+  "capabilities": [
+    {
+      "id": 1,
+      "name": "semaphore",
+      "function": 1,
+      "description": "Manipulate the semaphore status"
+    },
+    {
+      "id": 2,
+      "name": "temperature",
+      "function": 0,
+      "description": "Measure the temperature of the environment"
+    }
+  ]
+} */
+}
+
 data Capabilities {
 	char value[]
 }
@@ -77,6 +106,38 @@ component provides ResourceCatalogManager requires io.Output out, data.StringUti
 		out.println("Sending response to Resource Adaptor...")
 		s.write(encoder.jsonFromData(r, null))
 	}
+
+	void ResourceCatalogManager:getResourcesByCapability(byte content[], char capability[], DocStream stream) {
+		//ResponseToApplication responseToApplication = getListOfResourcesByCapability(char capability)
+
+		out.println("Sending response to Resource Discovery...")
+		//s.write(encoder.jsonFromData(responseToApplication, null))
+
+	}
+
+	/* ResponseToApplication getListOfResourcesByCapability(char capability) {
+		ResourceCapabilitiesToSendToApplication capability_resource1 = new ResourceCapabilitiesToSendToApplication()
+		capability_resource1.id = "1"
+		capability_resource1.name = "environment_monitoring"
+		capability_resource1.function = "1"
+		capability_resource1.description = "Measure the luminosity of the environment"
+
+
+
+		ResourceCapabilitiesToSendToApplication capability_resource2 = new ResourceCapabilitiesToSendToApplication()
+		capability_resource2.id = "2"
+		capability_resource2.name = "environment_monitoring"
+		capability_resource2.function = "0"
+		capability_resource2.description = "Measure the temperature of the environment"
+
+
+
+
+		ResponseToApplication responseToApplication = new ResponseToApplication(capability_resource1, capability_resource2)
+		return responseToApplication
+
+	} */
+
 
 	int storeResourceMetaData(InterSCityData resourceMetatData) {
 		int key = global_id

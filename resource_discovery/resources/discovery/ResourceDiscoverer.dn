@@ -1,6 +1,0 @@
-uses data.adt.HashTable
-uses ws.DocStream
-
-interface ResourceDiscoverer {
-	void discoveryResourceByCapability(char capability_value[], DocStream s) 
-}

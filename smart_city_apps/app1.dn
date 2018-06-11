@@ -19,9 +19,9 @@ component provides App requires net.http.HTTPRequest request, io.Output out, dat
 				"}",
 			"}")					 */
 
-		out.println("Accessing Resource discovery...")
+		out.println("Accessing the Resource Discovery...")
 		out.println("Searching for resources which have the ability to monitor the environment...")
-		char url[] = "http://localhost:2021/discovery/resources?capability=environment_monitoring"
+		char url[] = "http://localhost:2021/discovery/resources?capability=environment_monitoring123"
 		HTTPResponse response = request.get(url, null)
 		//response = request.get("localhost:2018/resource/test2/list", null)
 		out.println("Discovered resources:")
