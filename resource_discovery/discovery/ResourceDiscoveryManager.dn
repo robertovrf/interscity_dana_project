@@ -1,4 +1,21 @@
 
+data ResourceCapabilitiesToBeSendToApplication {
+	char id[]
+	char name[]
+	char function[]
+	char description[]
+}
+
+data FinalResponse {
+	ResourceCapabilitiesToBeSendToApplication resourceCapabilitiesToBeSendToApplication[]
+}
+
+data ResponseToApplication {
+	FinalResponse resp
+}
+
+
+//============================
 data Response {
 	char response[]
 	char id[]
@@ -39,7 +56,7 @@ data InterSCityData {
 	}
 } */
 
-data ResourceCapabilitiesToSendToApplication {
+/* data ResourceCapabilitiesToSendToApplication {
 	char id[]
 	char name[]
 	char function[]
@@ -63,8 +80,8 @@ data ResponseToApplication {
       "description": "Measure the temperature of the environment"
     }
   ]
-} */
 }
+} */
 
 
 component provides discovery.ResourceDiscoveryManager requires net.http.HTTPRequest request, io.Output out, data.StringUtil strUtil,
@@ -76,7 +93,7 @@ component provides discovery.ResourceDiscoveryManager requires net.http.HTTPRequ
 	int global_id = 1
 
 
-	void ResourceDiscoveryManager:discoveryResourceByCapability(char capability_value[], DocStream s) {
+  void ResourceDiscoveryManager:discoveryResourceByCapability(char capability_value[], DocStream stream) {
 
 		//curl -H "Content-Type: application/json" -X POST -d '{"capabilities":["environment_monitoring"]}' http://localhost:8000/collector/resources/data
 
@@ -85,10 +102,44 @@ component provides discovery.ResourceDiscoveryManager requires net.http.HTTPRequ
 		char url[] = "http://localhost:2019/catalog/capabilities/$(capability_value)"
 		Header headers[] = null
 		HTTPResponse response = request.get(url, null)//request.post(url, null, content)
-		ResponseToApplication responseToApplication = encoder.jsonToData(response.content, typeof(ResponseToApplication), null)
+		out.println("response000: $(response.content)")
 
-		out.println("ResponseToApplication.capability_resource1.id: $(responseToApplication.resourceCapabilitiesToSendToApplication[0].id)")
-		out.println("ResponseToApplication.capability_resource1.name: $(responseToApplication.resourceCapabilitiesToSendToApplication[0].name)")
+		//ResponseToApplication respToApp = encoder.jsonToData(response.content, typeof(ResponseToApplication), null)
+
+		//out.println("respToApp.resourceCapabilitiesToBeSendToApplication[0].name: $(respToApp.resourceCapabilitiesToBeSendToApplication[0].name)")
+
+
+		//stream.write(encoder.jsonFromData(respToApp, null))
+		stream.write(response.content)
+
+		//ResponseToApplication responseToApplication = encoder.jsonToData(response.content, typeof(ResponseToApplication), null)
+
+		//out.println("ResponseToApplication.capability_resource1.id: $(responseToApplication.resourceCapabilitiesToSendToApplication[0].id)")
+		//out.println("ResponseToApplication.capability_resource1.name: $(responseToApplication.resourceCapabilitiesToSendToApplication[0].name)")
+
+	}
+
+	/* void ResourceDiscoveryManager:discoveryResourceByCapability(char capability_value[], DocStream stream) {
+
+		//curl -H "Content-Type: application/json" -X POST -d '{"capabilities":["environment_monitoring"]}' http://localhost:8000/collector/resources/data
+
+		out.println("inside discoveryResourceByCapability()...\n analising capability value = $(capability_value)")
+
+		char url[] = "http://localhost:2019/catalog/capabilities/$(capability_value)"
+		Header headers[] = null
+		HTTPResponse response = request.get(url, null)//request.post(url, null, content)
+		out.println("response000: $(response.content)")
+
+		ResponseToApplication respToApp = encoder.jsonToData(response.content, typeof(ResponseToApplication), null)
+
+		//out.println("respToApp.resourceCapabilitiesToBeSendToApplication[0].name: $(respToApp.resourceCapabilitiesToBeSendToApplication[0].name)")
+
+//Map map[] = new Map[](new Map("data", "data_"))
+		stream.write(encoder.jsonFromData(respToApp, null))
+		//ResponseToApplication responseToApplication = encoder.jsonToData(response.content, typeof(ResponseToApplication), null)
+
+		//out.println("ResponseToApplication.capability_resource1.id: $(responseToApplication.resourceCapabilitiesToSendToApplication[0].id)")
+		//out.println("ResponseToApplication.capability_resource1.name: $(responseToApplication.resourceCapabilitiesToSendToApplication[0].name)")
 
 
 
@@ -135,10 +186,11 @@ component provides discovery.ResourceDiscoveryManager requires net.http.HTTPRequ
       "id": 10
     }
   ]
-} */
+}
 
 
-	}
+	} */
+
 
 
 	/* void RegisterResources:register(byte content[], char id[], char device[], DocStream s) {

@@ -43,7 +43,7 @@ component provides ws.Web requires io.Output out, data.StringUtil strUtil, catal
 		} else if (match(path, "/catalog/capabilities/*")) {
 			if (params != null) {
 				if ((params == null)) { failed(stream) }
-				resourceCatalogManager.getResourcesByCapability(content, capability, stream)
+				resourceCatalogManager.getResourcesByCapability(capability, stream)
 				}
 
 		} else { failed(stream) }
@@ -84,6 +84,7 @@ component provides ws.Web requires io.Output out, data.StringUtil strUtil, catal
 		exprs = new String[](exprs, new String("/catalog/resources"))
 		exprs = new String[](exprs, new String("/catalog/resources/{id}/data"))
 		exprs = new String[](exprs, new String("/catalog/capabilities/{name}"))
+		exprs = new String[](exprs, new String("/catalog/resources/search"))
 		return exprs
 	}
 }

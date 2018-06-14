@@ -1,7 +1,33 @@
 
+/* data ResourceCapabilitiesToBeSendToApplication {
+	char id[]
+	char name[]
+	char function[]
+	char description[]
+}
+
+data ResponseToApplication {
+	ResourceCapabilitiesToBeSendToApplication resourceCapabilitiesToBeSendToApplication[]
+} */
 
 
-component provides App requires net.http.HTTPRequest request, io.Output out, data.IntUtil iu, data.DecUtil du, data.json.JSONParser parser {
+
+data ResourceCapabilitiesToBeSendToApplication {
+	char id[]
+	char name[]
+	char function[]
+	char description[]
+}
+
+data FinalResponse {
+	ResourceCapabilitiesToBeSendToApplication resourceCapabilitiesToBeSendToApplication[]
+}
+
+data ResponseToApplication {
+	FinalResponse resp
+}
+
+component provides App requires net.http.HTTPRequest request, data.json.JSONEncoder encoder, io.Output out, data.IntUtil iu, data.DecUtil du, data.json.JSONParser parser {
 
 
 
@@ -21,11 +47,20 @@ component provides App requires net.http.HTTPRequest request, io.Output out, dat
 
 		out.println("Accessing the Resource Discovery...")
 		out.println("Searching for resources which have the ability to monitor the environment...")
-		char url[] = "http://localhost:2021/discovery/resources?capability=environment_monitoring123"
+		char url[] = "http://localhost:2021/discovery/resources?capability=environment_monitoring1234"
 		HTTPResponse response = request.get(url, null)
+
+		ResponseToApplication resp = encoder.jsonToData(response.content, typeof(ResponseToApplication), null)
+
 		//response = request.get("localhost:2018/resource/test2/list", null)
 		out.println("Discovered resources:")
 		out.println("response.content: $(response.content)")
+
+
+		//out.println("resp: $(resp.resourceCapabilitiesToBeSendToApplication[0].id)")
+
+
+		//out.println("response.content: $(response.content)")
 
 		/* out.println("Second request:")
 		response = request.get("localhost:2018/resource/test2/list", null)
