@@ -1,10 +1,11 @@
+uses data.String
 
 data ResponseToResource {
 	char response[]
 	char uuid[]
 	char device[]
 	char description[]
-	Capabilities capabilities[]
+	String capabilities[]
   char status[]
   dec lat
   dec lon
@@ -18,13 +19,22 @@ data ResponseToResource {
   int id
 }
 
-data Capabilities {
+/* data Capabilities {
 	char value[]
 }
 
 data ResourceMetaData {
 	char description[]
 	Capabilities capabilities[]
+	char status[]
+	dec lat
+	dec lon
+} */
+
+
+data ResourceMetaData {
+	char description[]
+	String capabilities[]
 	char status[]
 	dec lat
 	dec lon
@@ -70,10 +80,16 @@ component provides ResourceAdaptorManager requires net.http.HTTPRequest request,
 		r.device = resourceCatalogResponse.device
 		r.description = resourceCatalogResponse.description
 		r.uuid = resourceCatalogResponse.uuid
-		r.capabilities = new Capabilities[resourceCatalogResponse.capabilities.arrayLength]
+
+out.println("resourceCatalogResponse.capabilities.arrayLength::::: $(intUtil.intToString(resourceCatalogResponse.capabilities.arrayLength))")
+		r.capabilities = new String[resourceCatalogResponse.capabilities.arrayLength]
 		for (int i = 0; i < resourceCatalogResponse.capabilities.arrayLength; i++) {
 			r.capabilities[i] = resourceCatalogResponse.capabilities[i]
 		}
+		//r.capabilities = new Capabilities[resourceCatalogResponse.capabilities.arrayLength]
+		/* for (int i = 0; i < resourceCatalogResponse.capabilities.arrayLength; i++) {
+			r.capabilities[i] = resourceCatalogResponse.capabilities[i]
+		}  */
 		r.status = resourceCatalogResponse.status
 		r.lat = resourceCatalogResponse.lat
 		r.lon = resourceCatalogResponse.lon

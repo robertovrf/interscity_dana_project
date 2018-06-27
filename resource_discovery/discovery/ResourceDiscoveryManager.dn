@@ -1,3 +1,4 @@
+uses data.String
 
 data ResourceCapabilitiesToBeSendToApplication {
 	char id[]
@@ -24,7 +25,7 @@ data Response {
 }
 
 //======================================
-data Capabilities {
+/* data Capabilities {
 	char value[]
 }
 
@@ -34,6 +35,15 @@ data Capabilities {
 	char status[]
 	dec lat
 	dec lon
+
+} */
+
+data ResourceMetaData {
+ char description[]
+ String capabilities[]
+ char status[]
+ dec lat
+ dec lon
 
 }
 
@@ -93,16 +103,23 @@ component provides discovery.ResourceDiscoveryManager requires net.http.HTTPRequ
 	int global_id = 1
 
 
+
+
   void ResourceDiscoveryManager:discoveryResourceByCapability(char capability_value[], DocStream stream) {
 
 		//curl -H "Content-Type: application/json" -X POST -d '{"capabilities":["environment_monitoring"]}' http://localhost:8000/collector/resources/data
 
 		out.println("inside discoveryResourceByCapability()...\n analising capability value = $(capability_value)")
 
+
+
 		char url[] = "http://localhost:2019/catalog/capabilities/$(capability_value)"
 		Header headers[] = null
 		HTTPResponse response = request.get(url, null)//request.post(url, null, content)
-		out.println("response000: $(response.content)")
+		out.println("response000111: $(response.content)")
+
+
+
 
 		//ResponseToApplication respToApp = encoder.jsonToData(response.content, typeof(ResponseToApplication), null)
 
@@ -110,7 +127,21 @@ component provides discovery.ResourceDiscoveryManager requires net.http.HTTPRequ
 
 
 		//stream.write(encoder.jsonFromData(respToApp, null))
+
+
+		/* char jsonBus[] = new char[]("{",
+			"\"resp\": {",
+				"\"description\": \"A public bus!!!\",",
+				"\"resourceCapabilitiesToBeSendToApplication\": [\"temperature\", \"humidity\", \"illuminate\"],",
+				"\"status\": \"active\",",
+				"\"lat\": -23.559615,",
+				"\"lon\": -46.731385",
+				"}",
+			"}") */
+
+
 		stream.write(response.content)
+		//stream.write(jsonBus)
 
 		//ResponseToApplication responseToApplication = encoder.jsonToData(response.content, typeof(ResponseToApplication), null)
 

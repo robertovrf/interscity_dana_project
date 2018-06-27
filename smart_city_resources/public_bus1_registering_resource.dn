@@ -29,11 +29,11 @@ component provides App requires net.http.HTTPRequest request, io.Output out, dat
 
 		char jsonBus[] = new char[]("{",
 			"\"data\": {",
-				"\"description\": \"A public bus!!!\",",
-				"\"capabilities\": [\"temperature\", \"humidity\", \"illuminate\"],",
-				"\"status\": \"active\",",
-				"\"lat\": -23.559615,",
-				"\"lon\": -46.731385",
+				"\"description\": \"AAA public bus!!!\",",
+				"\"capabilities\": [\"temperature1\", \"humidity1\", \"illuminate1\"],",
+				"\"status\": \"active1\",",
+				"\"lat\": -99923.559615,",
+				"\"lon\": -99946.731385",
 				"}",
 			"}")
 

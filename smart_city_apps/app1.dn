@@ -27,7 +27,8 @@ data ResponseToApplication {
 	FinalResponse resp
 }
 
-component provides App requires net.http.HTTPRequest request, data.json.JSONEncoder encoder, io.Output out, data.IntUtil iu, data.DecUtil du, data.json.JSONParser parser {
+component provides App requires net.http.HTTPRequest request, data.json.JSONEncoder encoder, io.Output out,
+															data.IntUtil iu, data.DecUtil du, data.json.JSONParser parser {
 
 
 
@@ -47,13 +48,27 @@ component provides App requires net.http.HTTPRequest request, data.json.JSONEnco
 
 		out.println("Accessing the Resource Discovery...")
 		out.println("Searching for resources which have the ability to monitor the environment...")
-		char url[] = "http://localhost:2021/discovery/resources?capability=environment_monitoring1234"
+		char url[] = "http://localhost:2021/discovery/resources?capability=environment_monitoring"
 		HTTPResponse response = request.get(url, null)
 
-		ResponseToApplication resp = encoder.jsonToData(response.content, typeof(ResponseToApplication), null)
+		//ResponseToApplication resp = encoder.jsonToData(response.content, typeof(ResponseToApplication), null)
 
 		//response = request.get("localhost:2018/resource/test2/list", null)
 		out.println("Discovered resources:")
+		out.println("response.content: $(response.content)")
+
+
+
+		//Get data from Data Collector
+		out.println("Accessing the Data collector...")
+		out.println("Getting resource data...")
+		url = "http://localhost:2020//collector/datafromresource/1"
+		response = request.get(url, null)
+
+		//ResponseToApplication resp = encoder.jsonToData(response.content, typeof(ResponseToApplication), null)
+
+		//response = request.get("localhost:2018/resource/test2/list", null)
+		out.println("Data received:")
 		out.println("response.content: $(response.content)")
 
 

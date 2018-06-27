@@ -22,4 +22,28 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
 
 		out.println("Stored content: $(storeContent)")
 	}
+
+	void DataCollectorManager:receiveDataFromResource(char resource_id[], DocStream stream) {
+
+		char jsonBus_DataToBeSent[] = new char[]("{",
+	 	"\"data\": {",
+	 		"\"bus_monitoring\": [",
+	 			"{",
+	 				"\"location\": {",
+	 					"\"lat\": -10.00032,",
+	 					"\"lon\": -23.559615",
+	 					"},",
+	 				"\"speed\": 54,",
+	 				"\"bus_line\": \"875c-10-1\",",
+	 				"\"timestamp\": \"2017-06-14T17:52:25.428Z\"",
+	 			"}",
+	 		"]",
+	 	"}",
+	 "}")
+
+	 stream.write(jsonBus_DataToBeSent)
+
+
+
+	}
 }
