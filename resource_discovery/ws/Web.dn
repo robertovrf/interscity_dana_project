@@ -40,7 +40,7 @@ component provides ws.Web requires io.Output out, data.StringUtil strUtil, disco
 			if (params != null) {
 				String value = params.get("capability")
 				if (value != null) {
-					out.println("$(value.string)")
+					out.println("current capability: $(value.string)")
 					resourceDiscoveryManager.discoveryResourceByCapability(value.string, stream)
 				}
 			}

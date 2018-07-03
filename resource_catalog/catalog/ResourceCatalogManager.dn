@@ -159,79 +159,66 @@ component provides ResourceCatalogManager requires io.Output out, data.StringUti
 	}
 
 	void ResourceCatalogManager:getResourcesByCapability(char capability[], DocStream stream) {
-		out.println("Sending response to Resource Discovery...")
+		out.println("Sending response to Resource Discovery987...")
 
+		InterSCityData interSCityDataStored = getResourceMetaData(capability)
 
+		if (interSCityDataStored == null) {
+			//Composing response message to Resource Adaptor Microservice
+			ResponseToResource r = new ResponseToResource()
+			r.response = "resource not found"
+			r.uuid = ""
+			r.device = ""
+			r.description = ""
+			/* r.capabilities = new String[bus.data_.capabilities.arrayLength]
+			for (int i = 0; i < bus.data_.capabilities.arrayLength; i++) {
+				r.capabilities[i] = bus.data_.capabilities[i]
+			} */
 
-		/* HashTableItem hashTableItems[] = resourceMetaData_hashtable.getContents()
+			 r.status = ""
+			r.lat = 0
+			r.lon = 0
+			r.country = ""  											// getCountry()
+			r.state = ""												// getState()
+			r.city = ""											// getCity()
+			r.neighborhood = ""									// getNeighborhood()
+			r.postal_code = ""												// getPostalCode()
+			r.created_at = ""		// getCreatedAt()
+			r.updated_at = ""		// getUpdatedAt()
+			r.id = 0//interSCityDataStored.data_.uuid
 
-		InterSCityData storedResource
-		out.println("iterando nos itens do HashTable...")
-		for (int i = 0; i < resourceMetaData_hashtable.getLength(); i++) {
-			storedResource = hashTableItems[i]
-			out.println("key/uuid: $(i), valor(description): $(storedResource.data_.description)")
-		} */
+			out.println("Sending response to Resource Discovery1234...")
+			out.println("selected_resource_uuid1234: $(selected_resource_uuid)")
+			stream.write(encoder.jsonFromData(r, null))
+		} else {
+			//Composing response message to Resource Adaptor Microservice
+			ResponseToResource r = new ResponseToResource()
+			r.response = "success"
+			r.uuid = selected_resource_uuid//"123"//interSCityDataStored.data_.uuid
+			r.device = ""
+			r.description = interSCityDataStored.data_.description
+			/* r.capabilities = new String[bus.data_.capabilities.arrayLength]
+			for (int i = 0; i < bus.data_.capabilities.arrayLength; i++) {
+				r.capabilities[i] = bus.data_.capabilities[i]
+			} */
 
+			 r.status = interSCityDataStored.data_.status
+			r.lat = interSCityDataStored.data_.lat
+			r.lon = interSCityDataStored.data_.lon
+			r.country = "Brazil"  											// getCountry()
+			r.state = "São Paulo"												// getState()
+			r.city = "São Paulo"												// getCity()
+			r.neighborhood = "Butantã"									// getNeighborhood()
+			r.postal_code = null												// getPostalCode()
+			r.created_at = "2018-05-07T01:25:49.939Z"		// getCreatedAt()
+			r.updated_at = "2018-05-07T01:25:49.939Z"		// getUpdatedAt()
+			r.id = 1//interSCityDataStored.data_.uuid
 
-				/* char resourcesByCapabilityJSON[] = new char[]("{",
-					"\"resources\": [",
-						"{ \"uuid\": \"45b7d363-86fd-4f81-8681-663140b318d4\",",
-						  "\"description\": \"Measure the luminosity of the environment\",",
-							"\"capabilities\": [\"temperature\", \"environment_monitoring\", \"illuminate\"],",
-							"\"status\": \"active\",",
-							"\"lat\": -23.559615,",
-							"\"lon\": -46.731385",
-					  "},",
-						"{ \"uuid\": \"89v8d363-86fd-4f81-8681-663140b314t5\",",
-						  "\"description\": \"Measure the temperature of the environment\",",
-							"\"capabilities\": [\"temperature\", \"environment_monitoring\"],",
-							"\"status\": \"active\",",
-							"\"lat\": -23.559615,",
-							"\"lon\": -46.731385",
-					  "}",
-				  "]",
-			  "}") */
+			out.println("Sending response to Resource Discovery1234...")
+			out.println("selected_resource_uuid1234: $(selected_resource_uuid)")
+			stream.write(encoder.jsonFromData(r, null))
 
-
-
-				//HashTableItem hashTableItems[] = resourceMetaData_hashtable.getContents()
-
-				//InterSCityData storedResource = resourceMetaData_hashtable.get(created_id)
-				/* out.println("iterando nos itens do HashTable...")
-				for (int i = 0; i < resourceMetaData_hashtable.getLength(); i++) {
-
-					storedResource = hashTableItems[i].value//resourceMetaData_hashtable.get(i)
-					out.println("storedResource.data_.description nº: $(intUtil.intToString(i)), valor(description): $(storedResource.data_.description)")
-				} */
-
-
-				InterSCityData interSCityDataStored = getResourceMetaData(capability)
-
-				//Composing response message to Resource Adaptor Microservice
-				ResponseToResource r = new ResponseToResource()
-				r.response = "success"
-				r.uuid = selected_resource_uuid//"123"//interSCityDataStored.data_.uuid
-				r.device = ""
-				r.description = interSCityDataStored.data_.description
-				/* r.capabilities = new String[bus.data_.capabilities.arrayLength]
-				for (int i = 0; i < bus.data_.capabilities.arrayLength; i++) {
-					r.capabilities[i] = bus.data_.capabilities[i]
-				} */
-
-				 r.status = interSCityDataStored.data_.status
-				r.lat = interSCityDataStored.data_.lat
-				r.lon = interSCityDataStored.data_.lon
-				r.country = "Brazil"  											// getCountry()
-				r.state = "São Paulo"												// getState()
-				r.city = "São Paulo"												// getCity()
-				r.neighborhood = "Butantã"									// getNeighborhood()
-				r.postal_code = null												// getPostalCode()
-				r.created_at = "2018-05-07T01:25:49.939Z"		// getCreatedAt()
-				r.updated_at = "2018-05-07T01:25:49.939Z"		// getUpdatedAt()
-				r.id = 1//interSCityDataStored.data_.uuid
-
-				out.println("Sending response to Resource Discovery...")
-				stream.write(encoder.jsonFromData(r, null))
+		}
 
 
 /* ResponseToApplication resp = encoder.jsonToData(resourcesByCapabilityJSON, typeof(ResponseToApplication), null)
@@ -519,15 +506,24 @@ stream.write(encoder.jsonFromData(resp, null))
 		for (int i = 0; i < resourceMetaData_hashtable.getLength(); i++) {
 
 			storedResource = hashTableItems[i].value//resourceMetaData_hashtable.get(i)
-			out.println("storedResource.data_.description nº: $(intUtil.intToString(i)), valor(description): $(storedResource.data_.description)")
-			capabilities = storedResource.data_.capabilities
-			for (int j; j < capabilities.arrayLength; j++) {
-				if (capabilities[j].string == search_string)
-					out.println("resource found: $(capabilities[j].string)")
-					selected_resource_uuid = intUtil.intToString(i)
-					//storedResource.data_.uuid = intUtil.intToString(i)
-					return storedResource
+			out.println("123storedResource.data_.description nº: $(intUtil.intToString(i)), valor(description): $(storedResource.data_.description)")
+			if (strUtil.iequal(storedResource.data_.description, search_string)) {
+				//out.println("223344resource found: $(capabilities[i].string)")
+				selected_resource_uuid = intUtil.intToString(i)
+				//storedResource.data_.uuid = intUtil.intToString(i)
+				return storedResource
 			}
+			/* capabilities = storedResource.data_.capabilities
+			for (int j; j < capabilities.arrayLength; j++) {
+				if (strUtil.iequal(capabilities[j].string, search_string)) {
+					//if (capabilities[j].string == search_string)
+						out.println("resource found: $(capabilities[j].string)")
+						selected_resource_uuid = intUtil.intToString(i)
+						//storedResource.data_.uuid = intUtil.intToString(i)
+						return storedResource
+				}
+
+			} */
 		}
 
 		/* for (int i; i < resourceMetaData_hashtable.getLength(); i++) {

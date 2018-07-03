@@ -85,7 +85,10 @@ component provides App requires net.http.HTTPRequest request, data.json.JSONEnco
 		out.println("Searching for resources which have the ability to monitor the environment...")
 		//char url[] = "http://localhost:2021/discovery/resources?capability=environment_monitoring"
 		//char url[] = "http://localhost:2021/discovery/resources?capability=temperature"
-		char url[] = "http://localhost:2021/discovery/resources?capability=humidity"
+		//char url[] = "http://localhost:2021/discovery/resources?capability=humidity"
+		//char url[] = "http://localhost:2021/discovery/resources?capability=traffic_light"
+		char url[] = "http://localhost:2021/discovery/resources?capability=university_campus"
+
 		HTTPResponse response = request.get(url, null)
 
 
@@ -103,7 +106,7 @@ component provides App requires net.http.HTTPRequest request, data.json.JSONEnco
 		out.println("Received values from InterSCity Platform:")
 		out.println("UUID:.........$(formatedResponse.uuid)")
 		out.println("DESCRIPTION:..$(formatedResponse.description)")
-		
+
 
 		//ResponseToApplication resp = encoder.jsonToData(response.content, typeof(ResponseToApplication), null)
 
