@@ -1,4 +1,4 @@
-
+uses data.String
 /* data ResourceCapabilitiesToBeSendToApplication {
 	char id[]
 	char name[]
@@ -27,6 +27,41 @@ data ResponseToApplication {
 	FinalResponse resp
 }
 
+
+
+data ResourceMetaData {
+	char uuid[]
+	char description[]
+	String capabilities[]
+	char status[]
+	dec lat
+	dec lon
+}
+
+data InterSCityData {
+	ResourceMetaData data_
+}
+
+
+data ResponseToResource {
+	char response[]
+	char uuid[]
+	char device[]
+	char description[]
+	String capabilities[]
+  char status[]
+  dec lat
+  dec lon
+  char country[]
+  char state[]
+  char city[]
+  char neighborhood[]
+  char postal_code[]
+  char created_at[]
+  char updated_at[]
+  int id
+}
+
 component provides App requires net.http.HTTPRequest request, data.json.JSONEncoder encoder, io.Output out,
 															data.IntUtil iu, data.DecUtil du, data.json.JSONParser parser {
 
@@ -48,8 +83,27 @@ component provides App requires net.http.HTTPRequest request, data.json.JSONEnco
 
 		out.println("Accessing the Resource Discovery...")
 		out.println("Searching for resources which have the ability to monitor the environment...")
-		char url[] = "http://localhost:2021/discovery/resources?capability=environment_monitoring"
+		//char url[] = "http://localhost:2021/discovery/resources?capability=environment_monitoring"
+		//char url[] = "http://localhost:2021/discovery/resources?capability=temperature"
+		char url[] = "http://localhost:2021/discovery/resources?capability=humidity"
 		HTTPResponse response = request.get(url, null)
+
+
+		// Showing received values of InterSCity Platform
+		// Showing received values of InterSCity Platform
+		//Response formatedResponse = encoder.jsonToData(response.content, typeof(Response), null)
+		/* InterSCityData formatedResponse = encoder.jsonToData(response.content, typeof(InterSCityData), null)
+		out.println("Received values from InterSCity Platform:")
+		out.println("UUID:.........$(formatedResponse.data_.uuid)")
+		out.println("DESCRIPTION:..$(formatedResponse.data_.description)") */
+
+		//Composing response message to Resource Adaptor Microservice
+
+		ResponseToResource formatedResponse = encoder.jsonToData(response.content, typeof(ResponseToResource), null)
+		out.println("Received values from InterSCity Platform:")
+		out.println("UUID:.........$(formatedResponse.uuid)")
+		out.println("DESCRIPTION:..$(formatedResponse.description)")
+		
 
 		//ResponseToApplication resp = encoder.jsonToData(response.content, typeof(ResponseToApplication), null)
 
@@ -60,26 +114,17 @@ component provides App requires net.http.HTTPRequest request, data.json.JSONEnco
 
 
 		//Get data from Data Collector
-		out.println("Accessing the Data collector...")
+		/* out.println("Accessing the Data collector...")
 		out.println("Getting resource data...")
 		url = "http://localhost:2020//collector/datafromresource/1"
-		response = request.get(url, null)
+		response = request.get(url, null) */
 
 		//ResponseToApplication resp = encoder.jsonToData(response.content, typeof(ResponseToApplication), null)
 
 		//response = request.get("localhost:2018/resource/test2/list", null)
-		out.println("Data received:")
-		out.println("response.content: $(response.content)")
+		/* out.println("Data received:")
+		out.println("response.content: $(response.content)") */
 
-
-		//out.println("resp: $(resp.resourceCapabilitiesToBeSendToApplication[0].id)")
-
-
-		//out.println("response.content: $(response.content)")
-
-		/* out.println("Second request:")
-		response = request.get("localhost:2018/resource/test2/list", null)
-		out.println("$(response.content)") */
 
 
 		return 0

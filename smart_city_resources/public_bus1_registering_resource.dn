@@ -1,3 +1,4 @@
+uses data.String
 
 data Capabilities {
 	char value[]
@@ -8,7 +9,8 @@ data Response {
 	char uuid[]
 	char device[]
 	char description[]
-	Capabilities capabilities[]
+	//Capabilities capabilities[]
+	String capabilities[]
   char status[]
   dec lat
   dec lon
@@ -30,7 +32,7 @@ component provides App requires net.http.HTTPRequest request, io.Output out, dat
 		char jsonBus[] = new char[]("{",
 			"\"data\": {",
 				"\"description\": \"AAA public bus!!!\",",
-				"\"capabilities\": [\"temperature1\", \"humidity1\", \"illuminate1\"],",
+				"\"capabilities\": [\"temperature\", \"humidity\", \"illuminate\"],",
 				"\"status\": \"active1\",",
 				"\"lat\": -99923.559615,",
 				"\"lon\": -99946.731385",
@@ -47,8 +49,10 @@ component provides App requires net.http.HTTPRequest request, io.Output out, dat
 		out.println("UUID:.........$(formatedResponse.uuid)")
 		out.println("DESCRIPTION:..$(formatedResponse.description)")
 		out.println("CAPABILITIES: ")
+		//char capability_char[]
 		for (int i = 0; i < formatedResponse.capabilities.arrayLength; i++) {
-			out.println("   CAPABILITY $(iu.intToString(i)): $(formatedResponse.capabilities[i].value)")
+			//capability_char = formatedResponse.capabilities[i].string
+			out.println("   CAPABILITY $(iu.intToString(i)): $(formatedResponse.capabilities[i].string)")
 		}
 		out.println("STATUS:.......$(formatedResponse.status)")
 		out.println("LATITUDE:.....$(du.decToString(formatedResponse.lat))")
@@ -85,7 +89,7 @@ component provides App requires net.http.HTTPRequest request, io.Output out, dat
 		out.println("DESCRIPTION:..$(formatedResponse.description)")
 		out.println("CAPABILITIES: ")
 		for (int i = 0; i < formatedResponse.capabilities.arrayLength; i++) {
-			out.println("   CAPABILITY $(iu.intToString(i)): $(formatedResponse.capabilities[i].value)")
+			out.println("   CAPABILITY $(iu.intToString(i)): $(formatedResponse.capabilities[i].string)")
 		}
 		out.println("STATUS:.......$(formatedResponse.status)")
 		out.println("LATITUDE:.....$(du.decToString(formatedResponse.lat))")
