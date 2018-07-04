@@ -24,8 +24,11 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
 	}
 
 	void DataCollectorManager:receiveDataFromResource(char resource_id[], DocStream stream) {
+		out.println("uuid found on receiveDataFromResource() method : $(resource_id)")
 
-		char jsonBus_DataToBeSent[] = new char[]("{",
+		CityResourceData jsonBus_DataToBeSent = getLastDataSentFromResource(resource_id)
+
+		/* char jsonBus_DataToBeSent[] = new char[]("{",
 	 	"\"data\": {",
 	 		"\"bus_monitoring\": [",
 	 			"{",
@@ -39,11 +42,29 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
 	 			"}",
 	 		"]",
 	 	"}",
-	 "}")
+	 "}") */
 
-	 stream.write(jsonBus_DataToBeSent)
+	 stream.write(jsonBus_DataToBeSent.resourceData)
 
 
 
 	}
+
+	CityResourceData getLastDataSentFromResource(char resource_id[]) {
+		out.println("Getting data with id: $(resource_id)...")
+
+		/* CityResourceData data_ = new CityResourceData()
+		data_.resourceData = content
+		resourcesData_hashtable.put(id, data_) */
+
+		//recovering data from HashTable.
+		CityResourceData lastDataFromResource = new CityResourceData()
+		lastDataFromResource = resourcesData_hashtable.get(resource_id)
+		byte storeContent[] = lastDataFromResource.resourceData
+
+		out.println("lastDataFromResource content: $(storeContent)")
+
+		return lastDataFromResource
+	}
+
 }

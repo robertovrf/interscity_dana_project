@@ -87,7 +87,8 @@ component provides App requires net.http.HTTPRequest request, data.json.JSONEnco
 		//char url[] = "http://localhost:2021/discovery/resources?capability=temperature"
 		//char url[] = "http://localhost:2021/discovery/resources?capability=humidity"
 		//char url[] = "http://localhost:2021/discovery/resources?capability=traffic_light"
-		char url[] = "http://localhost:2021/discovery/resources?capability=university_campus"
+		//char url[] = "http://localhost:2021/discovery/resources?capability=university_campus"
+		char url[] = "http://localhost:2021/discovery/resources?capability=public_bus"
 
 		HTTPResponse response = request.get(url, null)
 
@@ -117,16 +118,16 @@ component provides App requires net.http.HTTPRequest request, data.json.JSONEnco
 
 
 		//Get data from Data Collector
-		/* out.println("Accessing the Data collector...")
+		out.println("Accessing the Data collector...")
 		out.println("Getting resource data...")
-		url = "http://localhost:2020//collector/datafromresource/1"
-		response = request.get(url, null) */
+		url = "http://localhost:2020//collector/datafromresource/$(formatedResponse.uuid)"
+		response = request.get(url, null)
 
 		//ResponseToApplication resp = encoder.jsonToData(response.content, typeof(ResponseToApplication), null)
 
 		//response = request.get("localhost:2018/resource/test2/list", null)
-		/* out.println("Data received:")
-		out.println("response.content: $(response.content)") */
+		out.println("Data received:")
+		out.println("response.content: $(response.content)") 
 
 
 
