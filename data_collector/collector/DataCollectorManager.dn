@@ -43,8 +43,12 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
 	 		"]",
 	 	"}",
 	 "}") */
+	 if (jsonBus_DataToBeSent == null) {
+		 stream.write("resource data not found")
+	 } else {
+		 stream.write(jsonBus_DataToBeSent.resourceData)
+	 }
 
-	 stream.write(jsonBus_DataToBeSent.resourceData)
 
 
 
@@ -60,6 +64,7 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
 		//recovering data from HashTable.
 		CityResourceData lastDataFromResource = new CityResourceData()
 		lastDataFromResource = resourcesData_hashtable.get(resource_id)
+		if (lastDataFromResource == null) {return null}
 		byte storeContent[] = lastDataFromResource.resourceData
 
 		out.println("lastDataFromResource content: $(storeContent)")
