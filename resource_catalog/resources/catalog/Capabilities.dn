@@ -1,5 +1,0 @@
-
-
-data Capabilities {
-		char value[]
-}
