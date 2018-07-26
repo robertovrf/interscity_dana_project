@@ -105,7 +105,7 @@ component provides ResourceCatalogManager requires io.Output out, data.StringUti
 	HashTable resourceMetaData_hashtable = new HashTable()
 
 	//char uuid[]   //Not used yet!!!
-	int global_id = 1
+	int global_id = 0
 
 	char selected_resource_uuid[] //this is a uuid of selected resource by getResourceMetaData Method!!!!
 
@@ -124,7 +124,7 @@ component provides ResourceCatalogManager requires io.Output out, data.StringUti
 
 		InterSCityData storedResource
 		out.println("iterando nos itens do HashTable...")
-		for (int i = 1; i < resourceMetaData_hashtable.getLength(); i++) {
+		for (int i = 0; i < resourceMetaData_hashtable.getLength(); i++) {
 
 			storedResource = hashTableItems[i].value//resourceMetaData_hashtable.get(i)
 			out.println("storedResource.data_.description nº: $(intUtil.intToString(i)), valor(description): $(storedResource.data_.description)")
@@ -161,7 +161,7 @@ component provides ResourceCatalogManager requires io.Output out, data.StringUti
 
 
 	void ResourceCatalogManager:getResourcesByCapability(char capability[], DocStream stream) {
-		out.println("Sending response to Resource Discovery987...")
+		out.println("Sending response to Resource Discovery987654...")
 
 		InterSCityData interSCityDataStored = getResourceMetaData(capability)
 
@@ -190,7 +190,7 @@ component provides ResourceCatalogManager requires io.Output out, data.StringUti
 			r.id = 0//interSCityDataStored.data_.uuid
 
 			out.println("Sending response to Resource Discovery1234...")
-			out.println("selected_resource_uuid1234: $(selected_resource_uuid)")
+			out.println("selected_resource_uuid12: $(selected_resource_uuid)")
 			stream.write(encoder.jsonFromData(r, null))
 		} else {
 			//Composing response message to Resource Adaptor Microservice
@@ -204,7 +204,7 @@ component provides ResourceCatalogManager requires io.Output out, data.StringUti
 				r.capabilities[i] = bus.data_.capabilities[i]
 			} */
 
-			 r.status = interSCityDataStored.data_.status
+			r.status = interSCityDataStored.data_.status
 			r.lat = interSCityDataStored.data_.lat
 			r.lon = interSCityDataStored.data_.lon
 			r.country = "Brazil"  											// getCountry()
@@ -252,9 +252,9 @@ component provides ResourceCatalogManager requires io.Output out, data.StringUti
 		for (int i = 1; i < resourceMetaData_hashtable.getLength(); i++) {
 
 			storedResource = hashTableItems[i].value//resourceMetaData_hashtable.get(i)
-			out.println("123storedResource.data_.description nº: $(intUtil.intToString(i)), valor(description): $(storedResource.data_.description)")
+			out.println("777777storedResource.data_.description nº: $(intUtil.intToString(i)), valor(description): $(storedResource.data_.description), search_string: $(search_string)")
 			if (strUtil.iequal(storedResource.data_.description, search_string)) {
-				//out.println("223344resource found: $(capabilities[i].string)")
+				out.println("223344resource found, its ID is: $(intUtil.intToString(i))")
 				selected_resource_uuid = intUtil.intToString(i)
 				//storedResource.data_.uuid = intUtil.intToString(i)
 				return storedResource

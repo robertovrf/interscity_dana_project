@@ -68,7 +68,7 @@ component provides App requires net.http.HTTPRequest request, io.Output out, dat
 
 
 		//=========================== registering second resource ====================
-		char jsonBus2[] = new char[]("{",
+		/* char jsonBus2[] = new char[]("{",
 			"\"data\": {",
 				"\"description\": \"university_campus\",",
 				"\"capabilities\": [\"traffic_light\",\"temperature\", \"illuminate\"],",
@@ -103,7 +103,7 @@ component provides App requires net.http.HTTPRequest request, io.Output out, dat
 		out.println("UPDATED AT:...$(formatedResponse.updated_at)")
 		out.println("ID:...........$(iu.intToString(formatedResponse.id))")
 
-
+ */
 
 
 

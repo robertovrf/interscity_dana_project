@@ -93,6 +93,11 @@ component provides App requires net.http.HTTPRequest request, data.json.JSONEnco
 
 		HTTPResponse response = request.get(url, null)
 
+		out.println("Headers:")
+		for (int i = 0; i < response.headers.arrayLength; i++) {
+			out.println("$(response.headers[i].key):$(response.headers[i].value)")
+		}
+
 
 		// Showing received values of InterSCity Platform
 		// Showing received values of InterSCity Platform
@@ -103,7 +108,6 @@ component provides App requires net.http.HTTPRequest request, data.json.JSONEnco
 		out.println("DESCRIPTION:..$(formatedResponse.data_.description)") */
 
 		//Composing response message to Resource Adaptor Microservice
-
 		ResponseToResource formatedResponse = encoder.jsonToData(response.content, typeof(ResponseToResource), null)
 		out.println("Received values from InterSCity Platform:")
 		out.println("UUID:.........$(formatedResponse.uuid)")

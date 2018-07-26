@@ -1,7 +1,5 @@
 
-data CityResourceData {
-	byte resourceData[]
-}
+
 
 component provides DataCollectorManager requires net.http.HTTPRequest request, io.Output out, data.StringUtil strUtil, data.IntUtil intUtil, data.json.JSONEncoder encoder, data.adt.HashTable {
 

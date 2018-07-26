@@ -1,5 +1,5 @@
 
-component provides App requires net.http.HTTPRequest request, io.Output out, data.IntUtil iu, data.DecUtil du, 
+component provides App requires net.http.HTTPRequest request, io.Output out, data.IntUtil iu, data.DecUtil du,
 	data.json.JSONParser parser {
 
 	int App:main(AppParam params[]) {
