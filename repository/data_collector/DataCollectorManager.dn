@@ -21,6 +21,20 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
 		//out.println("Stored content: $(storeContent)")
 	}
 
+	void DataCollectorManager:getAllDataFromResource(char resource_id[], DocStream stream) {
+		//out.println("uuid found on receiveDataFromResource() method : $(resource_id)")
+		/* CityResourceData json_DataToBeSent[] = getAllDataSentFromResource(resource_id)
+		if (json_DataToBeSent == null) {
+			stream.write("resource data not found")
+		} else {
+			stream.write(json_DataToBeSent[0].resourceData)
+		} */
+	}
+
+	/* void getAllDataFromResource(char resource_id[], DocStream stream) {
+
+  } */
+
 	void DataCollectorManager:receiveDataFromResource(char resource_id[], DocStream stream) {
 		//out.println("uuid found on receiveDataFromResource() method : $(resource_id)")
 		CityResourceData jsonBus_DataToBeSent = getLastDataSentFromResource(resource_id)

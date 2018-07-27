@@ -49,7 +49,7 @@ data ErrorResponseFromInterscityPlatformRegistry{
 }
 
 component provides App requires net.http.HTTPRequest request, io.Output out, time.Calendar calendar, data.IntUtil iu,
-														data.DecUtil du, data.json.JSONParser parser, data.json.JSONEncoder encoder {
+														data.DecUtil du, data.json.JSONParser parser, data.json.JSONEncoder encoder, time.Timer timer {
 
   int App:main(AppParam params[]) {
 
@@ -186,6 +186,9 @@ component provides App requires net.http.HTTPRequest request, io.Output out, tim
 			 url = "http://localhost:2018/adaptor/resources/$(formatedResponse.uuid)/data"
 			 response = request.post(url, null, jsonBus_DataToBeSent)
 			 if((response.headers[0].value) == "HTTP/1.1 200 OK") { out.println("Data sent successfully!") }
+
+			 timer.sleep(6000)
+
 		 }
 	 	 return 0
    }

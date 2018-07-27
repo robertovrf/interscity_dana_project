@@ -29,7 +29,13 @@ component provides ws.Web requires io.Output out, data.StringUtil strUtil, data_
 		if (match(path, "/collector/datafromresource/*")) {
 			out.println("Uuid found: $(id)")
 			dataCollectorManager.receiveDataFromResource(id, stream)
+		} else {
+			if (match(path, "/collector/resources/*/data")) {
+				out.println("Uuid found2: $(id)")
+				dataCollectorManager.receiveDataFromResource(id, stream)
+
 		} else { failed(stream) }
+	}
 		return true
 	}
 
@@ -53,6 +59,7 @@ component provides ws.Web requires io.Output out, data.StringUtil strUtil, data_
 		String exprs[] = new String[]()
 		exprs = new String[](exprs, new String("/collector/data/{id}"))
 		exprs = new String[](exprs, new String("/collector/datafromresource/{id}"))
+		exprs = new String[](exprs, new String("/collector/resources/{id}/data"))  //Get historical data of sensor capabilities of a specific city resource.
 		return exprs
 	}
 

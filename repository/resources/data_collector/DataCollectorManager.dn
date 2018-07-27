@@ -10,5 +10,5 @@ interface DataCollectorManager {
 	//void register(byte content[], char id[], char device[], DocStream stream)
 	void storeData(byte content[], char id[], DocStream stream)
 	void receiveDataFromResource(char resource_id[], DocStream stream)
-	//void receiveAllDataFromAll()
+	void getAllDataFromResource(char resource_id[], DocStream stream)
 }
