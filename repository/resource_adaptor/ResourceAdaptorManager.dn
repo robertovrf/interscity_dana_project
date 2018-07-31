@@ -100,7 +100,7 @@ component provides ResourceAdaptorManager requires net.http.HTTPRequest request,
 		r.postal_code = resourceCatalogResponse.postal_code
 		r.created_at = resourceCatalogResponse.created_at
 		r.updated_at = resourceCatalogResponse.updated_at
-		r.id = created_local_id
+		r.id = resourceCatalogResponse.id//created_local_id
 
 		out.println("UUID sent by Resource Catalog: $(resourceCatalogResponse.uuid)")
 		out.println("Sending response to Resource...")

@@ -24,11 +24,12 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
 
   void DataCollectorManager:getAllDataFromResource(char resource_id[], DocStream stream) {
     //out.println("uuid found on receiveDataFromResource() method : $(resource_id)")
-    CityResourceData json_DataToBeSent[] = getAllDataSentFromResource(resource_id)
+    out.println("entrando no getAllDataFromResource...")
+    CityResourceData json_DataToBeSent = getAllDataSentFromResource(resource_id)
     if (json_DataToBeSent == null) {
       stream.write("resource data not found")
     } else {
-      stream.write(json_DataToBeSent[0].resourceData)
+      stream.write(json_DataToBeSent.resourceData)
     }
   }
 
@@ -62,7 +63,7 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
 	}
 
   // This method doesn't use COMPRESSION
-  CityResourceData[] getAllDataSentFromResource(char resource_id[]) {
+  CityResourceData getAllDataSentFromResource(char resource_id[]) {
 		out.println("entrando no getAllDataSentFromResource...")
 		MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
 		//out.println("Getting data with id: $(resource_id)...")
@@ -71,31 +72,18 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
 		Row rows[] = mysql.fetchAll()
 		//recovering data from DB.
 
-    CityResourceData allCityResourceData[] = new CityResourceData[]()
+    //CityResourceData allCityResourceData = new CityResourceData()
+    byte storeContent[] = new byte[]
     CityResourceData newDataFromResource = new CityResourceData()
     for (int i = 0; i < rows.arrayLength; i++) {
   		newDataFromResource.resourceData = codifier.decode(rows[i].fields[1].value)
-  		byte storeContent[] = newDataFromResource.resourceData
+  		//byte storeContent[] = newDataFromResource.resourceData
+      //storeContent = storeContent + newDataFromResource.resourceData
     }
 
 		mysql.close()
 
-		/* File f = new File("result.data", File.FILE_ACCESS_WRITE)
-		f.write(storeContent)
-		f.close()
-
-		char newName[] = compression.compressResource("result.data")
-		f = new File(newName, File.FILE_ACCESS_READ) */
-
-
-		//out.println("lastDataFromResource content DB: $(storeContent)")
-		/* CityResourceData compressedData = new CityResourceData()
-		byte buf[] = null
-		while (f.eof()) { buf = new byte[](buf, f.read(1024)) }
-		compressedData.resourceData = buf
-		compressedData.encoding = compression.algorithmName() */
-
-		return allCityResourceData
+		return newDataFromResource
 	}
 
 }
