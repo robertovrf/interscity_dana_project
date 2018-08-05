@@ -29,7 +29,6 @@ component provides data_collector.DataCollectorManager, monitoring.BeingMonitore
 	}
 
 	implementation DataCollectorManager {
-		
 		void DataCollectorManager:storeData(byte content[], char id[], DocStream stream) {
 			if (monitor == null) {
 				monitor = new Container()
@@ -53,6 +52,21 @@ component provides data_collector.DataCollectorManager, monitoring.BeingMonitore
 			ResponseTime metric = new ResponseTime()
 			metric.start()
 			dataCollector.receiveDataFromResource(resource_id, stream)
+			metric.finish()
+			int result = metric.result()
+			monitor.addMetric("response_time", result, false)
+			// TODO: need to think of a better event
+			monitor.addEvent("frequency_receive", 1)
+		}
+
+		void DataCollectorManager:getAllDataFromResource(char resource_id[], DocStream stream) {
+		if (monitor == null) {
+				monitor = new Container()
+				monitor.turnMonitorOn()
+			}
+			ResponseTime metric = new ResponseTime()
+			metric.start()
+			dataCollector.getAllDataFromResource(resource_id, stream)
 			metric.finish()
 			int result = metric.result()
 			monitor.addMetric("response_time", result, false)
