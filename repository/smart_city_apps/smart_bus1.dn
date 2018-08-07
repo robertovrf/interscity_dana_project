@@ -106,8 +106,8 @@ component provides App requires net.http.HTTPRequest request, data.json.JSONEnco
 			response = request.get(url, null)
 
 			timer.sleep(100)
-			//out.println("Data received:")
-			//out.println("response.content: $(response.content)")
+			out.println("Data received:")
+			out.println("response.content: $(response.content)")
 		}
 
 
