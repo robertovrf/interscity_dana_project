@@ -2,7 +2,7 @@
 
 component provides DataCollectorManager requires net.http.HTTPRequest request, io.Output out,
  	data.StringUtil strUtil, data.IntUtil intUtil, data.json.JSONEncoder encoder, data.adt.HashTable,
-	encoding.Encoder:uri codifier, data.mysql.MySQL {
+	encoding.Encoder:uri codifier, data.mysql.MySQL, compression.Compression compression, io.File {
 
       bool cachedData = false
       CityResourceData lastDataFromResourceInCache
@@ -87,7 +87,64 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
 		return lastDataFromResource
 	}
 
-  // This method doesn't use COMPRESSION
+  // This method uses COMPRESSION
+  CityResourceData getAllDataSentFromResource(char resource_id[]) {
+    out.println("entrando no getLastDataSentFromResource...")
+    MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
+    //out.println("Getting data with id: $(resource_id)...")
+    char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data DESC;")
+    mysql.execute(query)
+    Row rows[] = mysql.fetchAll()
+
+
+    //recovering data from DB.
+    /* CityResourceData lastDataFromResource = new CityResourceData()
+    lastDataFromResource.resourceData = codifier.decode(rows[0].fields[1].value)
+    byte storeContent[] = lastDataFromResource.resourceData */
+
+    char storeContent[] = encoder.jsonFromArray(rows, null)
+    mysql.close()
+
+
+    /* out.println("entrando no getAllDataSentFromResource...")
+		MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
+		//out.println("Getting data with id: $(resource_id)...")
+		char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data DESC;")
+		mysql.execute(query)
+		Row rows[] = mysql.fetchAll()
+
+    //char jsonResp[] = codifier.decode(rows[0].fields[1].value)
+    char jsonResp[] = encoder.jsonFromArray(rows, null)
+
+    out.println("jsonResp..: $(jsonResp)")
+
+
+		mysql.close()
+
+		return jsonResp */
+
+
+
+
+    File f = new File("result_temp.data", File.FILE_ACCESS_WRITE)
+    f.write(storeContent)
+    f.close()
+
+    char newName[] = compression.compressResource("result_temp.data")
+    f = new File(newName, File.FILE_ACCESS_READ)
+
+
+    //out.println("lastDataFromResource content DB: $(storeContent)")
+    CityResourceData compressedData = new CityResourceData()
+    byte buf[] = null
+    while (f.eof()) { buf = new byte[](buf, f.read(1024)) }
+    compressedData.resourceData = buf
+    compressedData.encoding = compression.algorithmName()
+
+    return compressedData
+  }
+
+  /* // This method doesn't use COMPRESSION
   CityResourceData getAllDataSentFromResource(char resource_id[]) {
 		out.println("entrando no getAllDataSentFromResource...")
 		MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
@@ -109,6 +166,6 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
 		mysql.close()
 
 		return newDataFromResource
-	}
+	} */
 
 }

@@ -89,7 +89,7 @@ component provides App requires net.http.HTTPRequest request, io.Output out, tim
 		out.println("UPDATED AT:...$(formatedResponse.updated_at)")
 		out.println("ID:...........$(iu.intToString(formatedResponse.id))")
 
-		for(int i = 0; i < 1000; i++) {
+		for(int i = 0; i < 100; i++) {
 		//while (true) {
 		  char jsonSpeedControlSystem_DataToBeSent[] = new char[]("{",
 			"\"data\": {",
