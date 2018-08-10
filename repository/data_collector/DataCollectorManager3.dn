@@ -27,7 +27,7 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
 
   void DataCollectorManager:getAllDataFromResource(char resource_id[], DocStream stream) {
     //out.println("uuid found on receiveDataFromResource() method : $(resource_id)")
-    out.println("entrando no getAllDataFromResource...")
+    //out.println("entrando no getAllDataFromResource...")
     //CityResourceData json_DataToBeSent = getAllDataSentFromResource(resource_id)
     char json_DataToBeSent[] = getAllDataSentFromResource(resource_id)
     if (json_DataToBeSent == null) {
@@ -91,7 +91,7 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
   // This method doesn't use COMPRESSION
   //CityResourceData getAllDataSentFromResource(char resource_id[]) {
   char[] getAllDataSentFromResource(char resource_id[]) {
-		out.println("entrando no getAllDataSentFromResource...")
+		//out.println("entrando no getAllDataSentFromResource...")
 		MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
 		//out.println("Getting data with id: $(resource_id)...")
 		char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data DESC;")
@@ -101,7 +101,7 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
     //char jsonResp[] = codifier.decode(rows[0].fields[1].value)
     char jsonResp[] = encoder.jsonFromArray(rows, null)
 
-    out.println("jsonResp..: $(jsonResp)")
+    //out.println("jsonResp..: $(jsonResp)")
 		//recovering data from DB.
 
     //CityResourceData allCityResourceData = new CityResourceData()

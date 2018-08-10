@@ -27,7 +27,7 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
 
   void DataCollectorManager:getAllDataFromResource(char resource_id[], DocStream stream) {
     //out.println("uuid found on receiveDataFromResource() method : $(resource_id)")
-    out.println("entrando no getAllDataFromResource...")
+    //out.println("entrando no getAllDataFromResource...")
     CityResourceData json_DataToBeSent = getAllDataSentFromResource(resource_id)
     if (json_DataToBeSent == null) {
       stream.write("resource data not found")
@@ -89,7 +89,7 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
 
   // This method uses COMPRESSION
   CityResourceData getAllDataSentFromResource(char resource_id[]) {
-    out.println("entrando no getLastDataSentFromResource...")
+    //out.println("entrando no getLastDataSentFromResource...")
     MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
     //out.println("Getting data with id: $(resource_id)...")
     char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data DESC;")

@@ -107,18 +107,11 @@ component provides App requires net.http.HTTPRequest request, data.json.JSONEnco
 
 			timer.sleep(30)   //100 = 100 miliseconds
 			out.println("Data received:")
-			out.println("response.content: $(response.content)")
+			out.println("response.content..: $(response.content)")
 		}
 
 
 		return 0
-
-
-
-
-
-
-
 
 
 	}
