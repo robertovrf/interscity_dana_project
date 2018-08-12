@@ -89,7 +89,7 @@ component provides App requires net.http.HTTPRequest request, io.Output out, tim
 		out.println("UPDATED AT:...$(formatedResponse.updated_at)")
 		out.println("ID:...........$(iu.intToString(formatedResponse.id))")
 
-		for(int i = 0; i < 15; i++) {
+		for(int i = 0; i < 100; i++) {
 		//while (true) {
 		  char jsonSpeedControlSystem_DataToBeSent[] = new char[]("{",
 			"\"data\": {",
@@ -114,7 +114,7 @@ component provides App requires net.http.HTTPRequest request, io.Output out, tim
 			 response = request.post(url, null, jsonSpeedControlSystem_DataToBeSent)
 			 if((response.headers[0].value) == "HTTP/1.1 200 OK") { out.println("Data sent successfully!") }
 
-			 timer.sleep(1000)
+			 //timer.sleep(1000)
 		 }
 
 
