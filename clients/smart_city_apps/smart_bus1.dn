@@ -88,23 +88,18 @@ component provides App requires net.http.HTTPRequest request, data.json.JSONEnco
 
 
 		//ResponseToApplication resp = encoder.jsonToData(response.content, typeof(ResponseToApplication), null)
-
 		//response = request.get("localhost:2018/resource/test2/list", null)
 		out.println("Discovered resources:")
 		out.println("response.content: $(response.content)")
-
-
 
 		//Get data from Data Collector
 		out.println("Accessing the Data collector...")
 		out.println("Getting resource data...")
 
-
 		//
 		for(int i = 0; i < 100; i++) {
 			url = "http://localhost:2020//collector/datafromresource/$(formatedResponse.uuid)"
 			response = request.get(url, null)
-
 			timer.sleep(30)   //100 = 100 miliseconds
 			out.println("Data received:")
 			out.println("response.content..: $(response.content)")
@@ -112,8 +107,6 @@ component provides App requires net.http.HTTPRequest request, data.json.JSONEnco
 
 
 		return 0
-
-
 	}
 
 }
