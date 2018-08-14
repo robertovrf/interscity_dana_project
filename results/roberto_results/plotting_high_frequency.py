@@ -29,8 +29,9 @@ for line2 in file2:
 
 #plotting graph
 fig, ax = plt.subplots()
-ax.plot(xValues, yValues)
-ax.plot(xValues2, yValues2)
+ax.plot(xValues, yValues, label='No cache')
+ax.plot(xValues2, yValues2, label='Cache')
+ax.legend()
 ax.set(xlabel='Time (s)', ylabel='Response time (ms)', title='High-Frequency Workload')
 ax.grid()
 fig.savefig("high_frequency.png")

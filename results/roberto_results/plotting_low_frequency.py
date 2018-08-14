@@ -29,8 +29,9 @@ for line2 in file2:
 
 #plotting graph
 fig, ax = plt.subplots()
-ax.plot(xValues, yValues)
-ax.plot(xValues2, yValues2)
+ax.plot(xValues, yValues, label='No compression')
+ax.plot(xValues2, yValues2, label='Compression')
+ax.legend()
 ax.set(xlabel='Time (s)', ylabel='Response time (ms)', title='Low-Frequency Workload')
 ax.grid()
 fig.savefig("high_frequency.png")
