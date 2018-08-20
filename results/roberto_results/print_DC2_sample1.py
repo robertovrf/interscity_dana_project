@@ -13,4 +13,5 @@ for line in file:
 	list.append(newRow)
 
 print(tabulate(list, headers=['Source', 'Value', 'Count', 'Avg (ms)']))
+
  
