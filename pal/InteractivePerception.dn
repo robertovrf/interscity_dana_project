@@ -1,5 +1,5 @@
 // InteractivePerception.dn
-// A component that provides interactive access to perception module 
+// A component that provides interactive access to perception module
 //
 // Author: Roberto Rodrigues Filho
 // February @ 2017
@@ -22,7 +22,7 @@ const char TEST_MODE[]				= "test_mode"
 
 const char EXIT[] 			 		= "exit"
 
-component provides App requires io.Output out, data.IntUtil iu, io.Input in, data.StringUtil strUtil, 
+component provides App requires io.Output out, data.IntUtil iu, io.Input in, data.StringUtil strUtil,
 	monitoring.Perception, util.RandomInt ran, time.Timer t, time.Calendar cal, time.DateUtil dateUtil,
 	data.DecUtil du, data.json.JSONParser parser, io.TextFile, net.TCPSocket {
 
@@ -62,8 +62,8 @@ component provides App requires io.Output out, data.IntUtil iu, io.Input in, dat
 			} else if (cmd == CHANGE_TEST) {
 				counter = 0
 				perception.getPerceptionData()
-				TextFile resultTestFile = new TextFile("results.data", File.FILE_ACCESS_WRITE)
-				while (counter < 10) {
+				TextFile resultTestFile = new TextFile("NewResults.data", File.FILE_ACCESS_WRITE)
+				while (counter < 100) {
 					t.sleep(5000)
 					resultTestFile.writeLine(perception.getPerceptionData())
 					//resultTestFile.writeLine(interpretPerceptionData(perception.getPerceptionData()))

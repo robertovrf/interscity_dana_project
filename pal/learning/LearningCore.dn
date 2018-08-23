@@ -2,7 +2,7 @@
 //
 // This component implements the core of the Learning modules. This involves the following:
 // 1. classification algorithm
-// 2. algorithm responsible to select the  
+// 2. algorithm responsible to select the
 //
 // Author: Roberto Rodrigues Filho
 // March @ 2017
@@ -50,7 +50,7 @@ const char debugMSG[] = "[@LearningCore]"
 // this could use a database --- but I've decided not to...
 component provides learning.LearningCore requires io.Output out, data.IntUtil iu, learning.Exploration,
 	time.DateUtil dateUtil, data.StringUtil strUtil, data.json.JSONParser parser, data.DecUtil du, io.File {
-	
+
 	EnvClass latestKnowledgeInfo 	= null
 	EnvClass knowledge[] 			= null // all classes that was identified -- knowledge base?
 	ExplCycle cycle[] 				= null // values (metrics and events) that belong to a specific cycle
@@ -72,7 +72,7 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 	// the knowledge should only be updated after the last cycle.
 	// MY SOLUTION TO THIS PROBLEM IS STORE THE CONFIG AND RANGES IN A GLOBAL VARIABLE
 	// THIS GLOBAL VARIABLE WILL HOLD ONLY THE LATEST CONFIG AND RANGE AFTER CALLING EXPLOIT FUNCTION
-	// THEREFORE, WHENEVER ADDWINNINGARCH IS CALLED, IT WILL TAKE THE LATEST CONFIG AND RANGES AND 
+	// THEREFORE, WHENEVER ADDWINNINGARCH IS CALLED, IT WILL TAKE THE LATEST CONFIG AND RANGES AND
 	// STORE THEM INTO THE KNOWLEDGE FUNCTION -- THIS SHOULD FIX THE ISSUE (:
 	void LearningCore:pushWinningArchToKNowledge() {
 		knowledge = new EnvClass[](knowledge, new EnvClass())
@@ -85,7 +85,7 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 		if (cycle != null) {
 			//knowledge = new EnvClass[](knowledge, new EnvClass())
 			latestKnowledgeInfo = new EnvClass()
-			// first range is 
+			// first range is
 			Range ranges[] = new Range[](new Range(0,9999999, new char[]("metrics")))
 			int bestArchPointer = 0
 			for (int pointer = 0; pointer < cycle.arrayLength; pointer++) {
@@ -96,7 +96,7 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 					//knowledge[knowledge.arrayLength-1].config = cycle[pointer].config
 					latestKnowledgeInfo.config = cycle[pointer].config
 				}
-				if (ranges[0].highestValue < cycleRealMetricValue) { 
+				if (ranges[0].highestValue < cycleRealMetricValue) {
 					ranges[0].highestValue = cycleRealMetricValue
 				}
 				// events
@@ -178,7 +178,7 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 							break
 						}
 						/*if ((eCPointer < INT_MAX) &&
-							(explCycle.events[eCPointer].value >= knowledge[pointer].ranges[rangePointer].lowestValue) && 
+							(explCycle.events[eCPointer].value >= knowledge[pointer].ranges[rangePointer].lowestValue) &&
 							(explCycle.events[eCPointer].value <= knowledge[pointer].ranges[rangePointer].highestValue)) {*/
 						/* in case the metric value is lower (which can happen) the highest value might be higher ... */
 						/* a good fix for this: eventCycleValue >= knowledge[pointer].ranges[rangePointer].averageValue */
@@ -207,7 +207,7 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 				return LearningCore.CONTINUE_EXPLOITATION
 			}
 		}
-		return LearningCore.TRIGGER_EXPLORATION	
+		return LearningCore.TRIGGER_EXPLORATION
 	}
 
 	char[] LearningCore:explorationRestart() {
@@ -243,7 +243,7 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 	ExplCycle parsePerceptionData(char perceptionData[]) {
 		ExplCycle internalCycle = new ExplCycle()
 		JSONElement document = parser.parseDocument(perceptionData)
-		// metrics... TODO: a leading variable that determines whether or not a metric 
+		// metrics... TODO: a leading variable that determines whether or not a metric
 		// is leading should be added in the JSON structure
 		JSONElement metricsJSON = parser.getValue(document, "metrics")
 		if (metricsJSON != null) {
@@ -291,13 +291,13 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 		return internalCycle
 	}
 
-	/*void writeToFile(char someText[]) {
-		File fd = new File("result1.data", File.FILE_ACCESS_WRITE)
+	void writeToFile(char someText[]) {
+		File fd = new File("result123.data", File.FILE_ACCESS_WRITE)
         fd.setPos(fd.getSize())
         fd.write(someText)
         fd.write("\n")
         fd.close()
-	}*/
+	}
 
 	// I could use the pattern as const char[] stating exactly the pattern then have a set of ifs
 	// to determine which const char the pattern fits into and then process string accordingly...
