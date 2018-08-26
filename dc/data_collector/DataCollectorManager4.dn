@@ -137,7 +137,7 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
     //out.println("lastDataFromResource content DB: $(storeContent)")
     CityResourceData compressedData = new CityResourceData()
     byte buf[] = null
-    while (f.eof()) { buf = new byte[](buf, f.read(1024)) }
+    while (!f.eof()) { buf = new byte[](buf, f.read(1024)) }
     compressedData.resourceData = buf
     compressedData.encoding = compression.algorithmName()
 
