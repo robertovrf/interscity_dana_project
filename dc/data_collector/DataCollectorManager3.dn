@@ -7,6 +7,9 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
       bool cachedData = false
       CityResourceData lastDataFromResourceInCache
 
+      bool cachedHistoricalData = false
+      char HistoricalDataFromResourceInCache[]
+
 	void DataCollectorManager:storeData(byte content[], char id[], DocStream s) {
 		MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
 		/* storing data */
@@ -48,50 +51,58 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
 	}
 
 
+  // This method doesn't use COMPRESSION and uses CACHE
 	CityResourceData getLastDataSentFromResourceUsingCache(char resource_id[]) {
 
-  if (cachedData) {
-    return lastDataFromResourceInCache
-  } else {
-    MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
-		//out.println("Getting data with id: $(resource_id)...")
-		char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data DESC;")
-		mysql.execute(query)
-		MySQLRow rows[] = mysql.fetchAll()
-		//recovering data from DB.
-		//CityResourceData lastDataFromResource = new CityResourceData()
-    lastDataFromResourceInCache = new CityResourceData()
-		lastDataFromResourceInCache.resourceData = codifier.decode(rows[0].fields[1].value)
-		byte storeContent[] = lastDataFromResourceInCache.resourceData
+    if (cachedData) {
+      return lastDataFromResourceInCache
+    } else {
+      MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
+  		//out.println("Getting data with id: $(resource_id)...")
+  		char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data DESC;")
+  		mysql.execute(query)
+  		MySQLRow rows[] = mysql.fetchAll()
+  		//recovering data from DB.
+  		//CityResourceData lastDataFromResource = new CityResourceData()
+      lastDataFromResourceInCache = new CityResourceData()
+  		lastDataFromResourceInCache.resourceData = codifier.decode(rows[0].fields[1].value)
+  		byte storeContent[] = lastDataFromResourceInCache.resourceData
 
-    cachedData = true
-		//out.println("lastDataFromResource content DB: $(storeContent)")
+      cachedData = true
+  		//out.println("lastDataFromResource content DB: $(storeContent)")
 
-		mysql.close()
-		return lastDataFromResourceInCache
-  }
-
-    MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
-		//out.println("Getting data with id: $(resource_id)...")
-		char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data DESC;")
-		mysql.execute(query)
-		MySQLRow rows[] = mysql.fetchAll()
-		//recovering data from DB.
-		CityResourceData lastDataFromResource = new CityResourceData()
-		lastDataFromResource.resourceData = codifier.decode(rows[0].fields[1].value)
-		byte storeContent[] = lastDataFromResource.resourceData
-
-
-		//out.println("lastDataFromResource content DB: $(storeContent)")
-
-		mysql.close()
-		return lastDataFromResource
+  		mysql.close()
+  		return lastDataFromResourceInCache
+    }
 	}
 
-  // This method doesn't use COMPRESSION
+  // This method doesn't use COMPRESSION and uses CACHE
   //CityResourceData getAllDataSentFromResource(char resource_id[]) {
   char[] getAllDataSentFromResource(char resource_id[]) {
-		//out.println("entrando no getAllDataSentFromResource...")
+
+    if (cachedHistoricalData) {
+      return HistoricalDataFromResourceInCache
+    } else {
+      //out.println("entrando no getLastDataSentFromResource...")
+      MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
+      //out.println("Getting data with id: $(resource_id)...")
+      char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data DESC;")
+      mysql.execute(query)
+      MySQLRow rows[] = mysql.fetchAll()
+
+      char storeContent[] = encoder.jsonFromArray(rows, null)
+      mysql.close()
+
+      cachedHistoricalData = true
+
+      HistoricalDataFromResourceInCache = storeContent
+
+      return storeContent
+      //return lastHistoricalDataFromResourceInCache
+    }
+
+
+    /* //out.println("entrando no getAllDataSentFromResource...")
 		MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
 		//out.println("Getting data with id: $(resource_id)...")
 		char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data DESC;")
@@ -113,9 +124,9 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
       //storeContent = storeContent + newDataFromResource.resourceData
     //}
 
-		mysql.close()
+		/*mysql.close()
 
-		return jsonResp
+		return jsonResp */
 	}
 
 }

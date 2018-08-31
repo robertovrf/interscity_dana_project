@@ -55,7 +55,7 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
 		}
 	}
 
-
+  // This method doesn't use COMPRESSION and doesn't use CACHE
 	CityResourceData getLastDataSentFromResource(char resource_id[]) {
 		MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
 		//out.println("Getting data with id: $(resource_id)...")
@@ -74,7 +74,7 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
 		return lastDataFromResource
 	}
 
-  // This method doesn't use COMPRESSION
+  // This method doesn't use COMPRESSION and doesn't use CACHE
   //CityResourceData getAllDataSentFromResource(char resource_id[]) {
   char[] getAllDataSentFromResource(char resource_id[]) {
 		//out.println("entrando no getAllDataSentFromResource...")
