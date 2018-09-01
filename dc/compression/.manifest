@@ -1,5 +1,5 @@
 {
 defaultLinks:	[
-				{interface: "Compression", component: "ZLIB"}
+				{interface: "Compression", component: "GZ"}
 				]
 }
