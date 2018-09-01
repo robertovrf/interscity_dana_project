@@ -63,7 +63,7 @@ component provides App requires io.Output out, data.IntUtil iu, io.Input in, dat
 				counter = 0
 				perception.getPerceptionData()
 				TextFile resultTestFile = new TextFile("NewResults.data", File.FILE_ACCESS_WRITE)
-				while (counter < 10) {
+				while (counter < 100) {
 					t.sleep(5000)
 					resultTestFile.writeLine(perception.getPerceptionData())
 					//resultTestFile.writeLine(interpretPerceptionData(perception.getPerceptionData()))

@@ -135,35 +135,8 @@ component provides DataCollectorManager requires net.http.HTTPRequest request, i
     mysql.execute(query)
     MySQLRow rows[] = mysql.fetchAll()
 
-
-    //recovering data from DB.
-    /* CityResourceData lastDataFromResource = new CityResourceData()
-    lastDataFromResource.resourceData = codifier.decode(rows[0].fields[1].value)
-    byte storeContent[] = lastDataFromResource.resourceData */
-
     char storeContent[] = encoder.jsonFromArray(rows, null)
     mysql.close()
-
-
-    /* out.println("entrando no getAllDataSentFromResource...")
-		MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
-		//out.println("Getting data with id: $(resource_id)...")
-		char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data DESC;")
-		mysql.execute(query)
-		MySQLRow rows[] = mysql.fetchAll()
-
-    //char jsonResp[] = codifier.decode(rows[0].fields[1].value)
-    char jsonResp[] = encoder.jsonFromArray(rows, null)
-
-    out.println("jsonResp..: $(jsonResp)")
-
-
-		mysql.close()
-
-		return jsonResp */
-
-
-
 
     File f = new File("result_temp.data", File.FILE_ACCESS_WRITE)
     f.write(storeContent)
