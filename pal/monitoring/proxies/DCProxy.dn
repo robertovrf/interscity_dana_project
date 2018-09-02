@@ -1,7 +1,7 @@
 const char debugMSG[] = "[@DCProxy]"
 
-component provides data_collector.DataCollectorManager, monitoring.BeingMonitored requires io.Output out, 
-	data_collector.DataCollectorManager dataCollector, monitoring.Container, monitoring.ResponseTime,
+component provides ws.Web, monitoring.BeingMonitored requires io.Output out, 
+	ws.Web web, monitoring.Container, monitoring.ResponseTime,
 	data.StringUtil stringUtil, time.Timer, data.IntUtil iu {
 
 	static Container monitor
@@ -28,50 +28,42 @@ component provides data_collector.DataCollectorManager, monitoring.BeingMonitore
 		}
 	}
 
-	implementation DataCollectorManager {
-		void DataCollectorManager:storeData(byte content[], char id[], DocStream stream) {
+	implementation Web {
+		bool Web:get(char path[], DocStream stream, HashTable params) {
+			bool returnValue = false
 			if (monitor == null) {
 				monitor = new Container()
 				monitor.turnMonitorOn()
 			}
 			ResponseTime metric = new ResponseTime()
 			metric.start()
-			dataCollector.storeData(content, id, stream)
+			returnValue = web.get(path,stream,params)
 			metric.finish()
 			int result = metric.result()
 			monitor.addMetric("response_time", result, false)
-			// TODO: need to think of an event
-			monitor.addEvent("frequency_store", 1)
+			monitor.addEvent(new char[]("get:", path), 1)
+			return returnValue
 		}
 		
-		void DataCollectorManager:receiveDataFromResource(char resource_id[], DocStream stream) {
+		bool Web:post(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
+			bool returnValue = false
 			if (monitor == null) {
 				monitor = new Container()
 				monitor.turnMonitorOn()
 			}
 			ResponseTime metric = new ResponseTime()
 			metric.start()
-			dataCollector.receiveDataFromResource(resource_id, stream)
+			returnValue = web.post(path,contentType, content, stream, params)
 			metric.finish()
 			int result = metric.result()
 			monitor.addMetric("response_time", result, false)
-			// TODO: need to think of a better event
-			monitor.addEvent("frequency_receive", 1)
+			monitor.addEvent(new char[]("post:", path), 1)
+			return returnValue
+		}
+		
+		String[] Web:urls() { 
+			return web.urls()
 		}
 
-		void DataCollectorManager:getAllDataFromResource(char resource_id[], DocStream stream) {
-		if (monitor == null) {
-				monitor = new Container()
-				monitor.turnMonitorOn()
-			}
-			ResponseTime metric = new ResponseTime()
-			metric.start()
-			dataCollector.getAllDataFromResource(resource_id, stream)
-			metric.finish()
-			int result = metric.result()
-			monitor.addMetric("response_time", result, false)
-			// TODO: need to think of a better event
-			monitor.addEvent("frequency_receive", 1)
-		}
 	}
 }
