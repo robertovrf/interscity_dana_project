@@ -1,6 +1,8 @@
 const char debugMSG[] = "[@GZIP]"
 
-component provides compression.Compression requires io.Output out, data.IntUtil iu, os.Run run, time.DateUtil dateUtil, io.FileSystem fileSystem {
+component provides compression.Compression requires io.Output out, data.IntUtil iu, os.Run run, 
+	time.DateUtil dateUtil, io.FileSystem fileSystem {
+
 	char[] Compression:compressResource(char resource[]) {
 		// verify if zipped exists
 		// if it does and if it was created after the original

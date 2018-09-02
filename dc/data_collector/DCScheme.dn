@@ -26,33 +26,33 @@ component provides App requires io.Output out, data.mysql.MySQL, encoding.Encode
 		mysql.execute(createDataTableQuery)
 
 		/* data insertion - execution */
-    /*char egData[] = new char[]("{",
-     "\"data\": {",
-       "\"public_bus\": [",
-         "{",
-           "\"location\": {",
-             "\"lat\": -10.00032,",
-             "\"lon\": -23.559615",
-             "},",
-           "\"speed\": 54,",
-           "\"uuid\": 2,",
-           "\"bus_line\": \"875c-10-1\",",
-           "\"timestamp\": \"2017-06-14T17:52:25.428Z\"",
-         "}",
-       "]",
-     "}",
-   "}")
-		mysql.execute(new char[]("INSERT INTO data (value, uuid) VALUES (\"", encoder.encode(egData) ,"\" ,\"2\");"))
-    mysql.execute(new char[]("INSERT INTO data (value, uuid) VALUES (\"", encoder.encode(egData) ,"\" ,\"2\");"))*/
+		/*char egData[] = new char[]("{",
+		 "\"data\": {",
+		   "\"public_bus\": [",
+		     "{",
+		       "\"location\": {",
+		         "\"lat\": -10.00032,",
+		         "\"lon\": -23.559615",
+		         "},",
+		       "\"speed\": 54,",
+		       "\"uuid\": 2,",
+		       "\"bus_line\": \"875c-10-1\",",
+		       "\"timestamp\": \"2017-06-14T17:52:25.428Z\"",
+		     "}",
+		   "]",
+		 "}",
+		"}")
+			mysql.execute(new char[]("INSERT INTO data (value, uuid) VALUES (\"", encoder.encode(egData) ,"\" ,\"2\");"))
+		mysql.execute(new char[]("INSERT INTO data (value, uuid) VALUES (\"", encoder.encode(egData) ,"\" ,\"2\");"))*/
 
-    /* quering */
-  /*  char egQuery[] = new char[]("SELECT * FROM data;")
-    mysql.execute(egQuery)
-    Row rows[] = mysql.fetchAll()
-    out.println("$(egData)")
-    out.println("$(encoder.decode(rows[0].fields[1].value))")*/
+		/* quering */
+		/*  char egQuery[] = new char[]("SELECT * FROM data;")
+		mysql.execute(egQuery)
+		Row rows[] = mysql.fetchAll()
+		out.println("$(egData)")
+		out.println("$(encoder.decode(rows[0].fields[1].value))")*/
 
-    /* closing... */
+	    /* closing... */
 		out.println("$(debugMSG) Database created!\nBye!")
 		mysql.close()
 

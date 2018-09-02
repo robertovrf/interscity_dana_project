@@ -1,0 +1,63 @@
+/* DataCollectorManager.dn
+ *
+ * This component is responsible to implement the business logic of the DataCollector microservice.
+ * 
+ * This version includes:
+ *  - implementation of the storeData, getAllDataFromResource and functions;
+ *  - implementation of the concept of NFR-proxy (to compress and/or cache the functions' returned data).
+ *
+ * Author: Marcio P Sa - May @ 2018
+ * Changes: Roberto Rodrigues Filho - Sept @ 2018
+ */
+const char debugMSG[] = "[@DataCollectorManager]"
+
+component provides data_collector.DataCollectorManager requires io.Output out,
+	data.json.JSONEncoder encoder, encoding.Encoder:uri codifier, data.mysql.MySQL {
+
+	void DataCollectorManager:storeData(byte content[], char id[], DocStream s) {
+		MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
+		mysql.execute(new char[]("INSERT INTO data (value, uuid) VALUES (\"", codifier.encode(content)
+			,"\", \"", id ,"\");"))
+		mysql.close()
+	}
+
+	void DataCollectorManager:getAllDataFromResource(char resource_id[], DocStream stream) {
+		char json_DataToBeSent[] = getAllDataSentFromResource(resource_id)
+		if (json_DataToBeSent == null) {
+			stream.write("resource data not found")
+		} else {
+			stream.write(json_DataToBeSent)
+		}
+	}
+
+	void DataCollectorManager:receiveDataFromResource(char resource_id[], DocStream stream) {
+		CityResourceData jsonBus_DataToBeSent = getLastDataSentFromResource(resource_id)
+		if (jsonBus_DataToBeSent == null) {
+			stream.write("resource data not found")
+		} else {
+			stream.write(jsonBus_DataToBeSent.resourceData)
+		}
+	}
+
+	CityResourceData getLastDataSentFromResource(char resource_id[]) {
+		MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
+		char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data DESC;")
+		mysql.execute(query)
+		MySQLRow rows[] = mysql.fetchAll()
+		CityResourceData lastDataFromResource = new CityResourceData()
+		lastDataFromResource.resourceData = codifier.decode(rows[0].fields[1].value)
+		byte storeContent[] = lastDataFromResource.resourceData
+		mysql.close()
+		return lastDataFromResource
+	}
+
+	char[] getAllDataSentFromResource(char resource_id[]) {
+		MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
+		char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data DESC;")
+		mysql.execute(query)
+		MySQLRow rows[] = mysql.fetchAll()
+		    char jsonResp[] = encoder.jsonFromArray(rows, null)
+		mysql.close()
+		return jsonResp
+	}
+}
