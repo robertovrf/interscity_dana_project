@@ -7,12 +7,10 @@ component provides ws.Web, Service requires io.Output out, ws.Web:nfrp web, inte
 
 	implementation Service {
 		void Service:start() {
-			out.println("started @ CACHECOMPRESSION")
 			cache.clear()
 		}
 
 		void Service:stop() {
-			out.println("stopped @ CACHECOMPRESSION")
 			cache.clear()
 		}
 	}
