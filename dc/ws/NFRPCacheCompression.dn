@@ -35,6 +35,7 @@ component provides ws.Web, Service requires io.Output out, ws.Web:nfrp web, inte
 				f = new File(newName, File.FILE_ACCESS_READ)
 				byte buf[] = null
 				while (!f.eof()) { buf = new byte[](buf, f.read(1024)) }
+				f.close()
 				stream.write(buf)
 				CachedData newCD = new CachedData()
 				newCD.key = path
