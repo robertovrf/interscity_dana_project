@@ -19,6 +19,7 @@ component provides ws.Web requires io.Output out, ws.Web:nfrp web, interceptor.D
 			f = new File(newName, File.FILE_ACCESS_READ)
 			byte buf[] = null
 			while (!f.eof()) { buf = new byte[](buf, f.read(1024)) }
+			f.close()
 			stream.write(buf)
 		}
 		return result
