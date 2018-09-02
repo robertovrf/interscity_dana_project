@@ -1,1 +1,1 @@
-add_proxy |../pal/monitoring/proxies/DCProxy.o|*(*:DataCollectorManager[0]:*)|
+add_proxy |../pal/monitoring/proxies/DCProxy.o|*(*:Web[0]:*)|
