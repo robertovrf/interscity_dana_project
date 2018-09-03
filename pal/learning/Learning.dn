@@ -104,7 +104,7 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 
 	// should return only the exp!
 	char[] getProxyExp() {
-		return new char[]("add_proxy |../pal/monitoring/proxies/DCProxy.o|*(*:Web[0]:*)|")
+		return new char[]("|../pal/monitoring/proxies/DCProxy.o|*(*:Web[0]:*)|")
 	}
 
 	// WARNING: if this is on the exploration phase and you keep calling this function it will cycle forever...
@@ -170,6 +170,7 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 	}
 
 	void writeToFile(char someText[]) {
+		//out.println("$(someText)")
 		File fd = new File("result1.data", File.FILE_ACCESS_WRITE)
         fd.setPos(fd.getSize())
         fd.write(someText)
