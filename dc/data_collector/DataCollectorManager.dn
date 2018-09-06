@@ -1,7 +1,7 @@
 /* DataCollectorManager.dn
  *
  * This component is responsible to implement the business logic of the DataCollector microservice.
- * 
+ *
  * This version includes:
  *  - implementation of the storeData, getAllDataFromResource and functions;
  *  - implementation of the concept of NFR-proxy (to compress and/or cache the functions' returned data).
@@ -42,6 +42,7 @@ component provides data_collector.DataCollectorManager requires io.Output out,
 	CityResourceData getLastDataSentFromResource(char resource_id[]) {
 		MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
 		char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data DESC;")
+		//char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data ASC;")
 		mysql.execute(query)
 		MySQLRow rows[] = mysql.fetchAll()
 		CityResourceData lastDataFromResource = new CityResourceData()
