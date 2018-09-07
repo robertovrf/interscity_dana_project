@@ -121,7 +121,7 @@ component provides App requires net.http.HTTPRequest request, data.json.JSONEnco
 			/* out.println("Data received:")
 			out.println("response.content: $(response.content)") */
 
-			//timer.sleep(100)
+			timer.sleep(500)
 			out.println("Data received:")
 			out.println("response.content: $(response.content)")
 
