@@ -9,7 +9,6 @@ component provides ws.Web, Service requires io.Output out, ws.Web:nfrp web, inte
 		void Service:start() {
 			cache.clear()
 		}
-
 		void Service:stop() {
 			cache.clear()
 		}
@@ -38,8 +37,7 @@ component provides ws.Web, Service requires io.Output out, ws.Web:nfrp web, inte
 		}
 
 		bool Web:post(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
-			CachedData cD = cache.get(path)
-			if (cD != null) { cache.delete(path) }
+			cache.clear()
 			return web.post(path, contentType, content, stream, params)
 		}
 
