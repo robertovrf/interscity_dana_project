@@ -12,8 +12,8 @@ uses data.String
 const char debugMSG[] = "[@LFU_LV]"
 
 // tunning constants
-const int NUM_REQUEST_CLIENTS = 1
-const int INTERVAL = 0
+const int NUM_SQ_REQUEST = 10
+const int SLEEP_INTERVAL = 100
 const char SERVER_ADDRESS[] = "scc-mc1.lancs.ac.uk"
 
 data InterscityMsg {
@@ -59,23 +59,21 @@ component provides App requires io.Output out, data.IntUtil iu, time.Timer timer
 	}
 
 	void start(char payload[], char uuid[]) {
-		TextFile file[] = new TextFile[NUM_REQUEST_CLIENTS]
+		TextFile file[] = new TextFile[1]
 		char requestURL[] = new char[]("http://", SERVER_ADDRESS, ":2020//collector/datafromresource/", uuid)
 		char updateURL[] = new char[]("http://", SERVER_ADDRESS, ":2018/adaptor/resources/", uuid, "/data")
 
-		for (int i = 0; i < NUM_REQUEST_CLIENTS; i++) {
+		for (int i = 0; i < 1; i++) {
 			file[i] = new TextFile(new char[]("LFU_LV_RESULTS/request-file-burst-", iu.intToString(i+1), ".data"), 
 				File.FILE_ACCESS_WRITE)
 		}
 		while (flag) {
-			for (int i = 0; i < NUM_REQUEST_CLIENTS; i++) {
-				asynch::triggerRequests(file[i], requestURL)
+			for (int i = 0; i < NUM_SQ_REQUEST; i++) {
+				triggerRequests(file[i], requestURL)
 			}
-			timer.sleep(INTERVAL)
-			// low frequency of update
-			//request.post(updateURL, null, payload)
+			timer.sleep(SLEEP_INTERVAL)
 		}
-		for (int i = 0; i < NUM_REQUEST_CLIENTS; i++) {
+		for (int i = 0; i < 1; i++) {
 			file[i].close()
 		}	
 	}
