@@ -41,8 +41,7 @@ component provides data_collector.DataCollectorManager requires io.Output out,
 
 	CityResourceData getLastDataSentFromResource(char resource_id[]) {
 		MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
-		char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data DESC;")
-		//char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data ASC;")
+		char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data DESC LIMIT 1;")
 		mysql.execute(query)
 		MySQLRow rows[] = mysql.fetchAll()
 		CityResourceData lastDataFromResource = new CityResourceData()
@@ -54,7 +53,7 @@ component provides data_collector.DataCollectorManager requires io.Output out,
 
 	char[] getAllDataSentFromResource(char resource_id[]) {
 		MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
-		char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data DESC;")
+		char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data DESC LIMIT 200;")
 		mysql.execute(query)
 		MySQLRow rows[] = mysql.fetchAll()
 		    char jsonResp[] = encoder.jsonFromArray(rows, null)

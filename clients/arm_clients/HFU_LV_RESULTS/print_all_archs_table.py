@@ -2,7 +2,7 @@ from tabulate import tabulate
 import json
 
 list = []
-file = open("results.data", "r") 
+file = open("NewResults.data", "r") 
 for line in file:
 	if line != "\n":
 		j = json.loads(line)
