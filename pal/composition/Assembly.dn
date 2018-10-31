@@ -5,6 +5,7 @@
 // 2. handles cycles in the target software architectural graph by loading components once;
 // 3. allows insertion and removal of components at runtime;
 // 4. supports proxy;
+// 5. supports relocation and replication of specific interfaces;
 // 
 // Author: Roberto Rodrigues Filho
 // February @ 2017
@@ -23,6 +24,11 @@ data IntfName {
 	char semantic[]
 }
 
+data NativeIntfs {
+	char package[]
+	char alias[]
+}
+
 data Component {
 	char name[]
 	bool connected // verify if component's dependencies are connected at the Dana VM level
@@ -32,6 +38,7 @@ data Component {
 	Binding requiresMe[] // pointer to component that I connect to
 	Binding iRequire[] // pointer to components connected to me
 	IDC class // verify if component is loaded or not (when unloading component remember to set it to null)
+	NativeIntfs natIntfs[] // array with the name of the native interfaces
 }
 
 data Binding {
@@ -50,19 +57,34 @@ data Config {
 const char debugMSG[] = "[@Assembly]"
 
 // TODO: implement mechanisms to handle concurrency and avoid race conditions 
-// (it's important now that we're adding and removing components)
+// (it's important now that we're adding and removing components).
 // TODO: if target app is in the CST you'll have to use the absolute path to avoid config replication (implement the code
-// that'll make this warning true :)
-// TODO: revise all variable names to make sure they make sense (tip: relationList or listRelations? confusing!)
+// that'll make this warning true. :)
+// TODO: revise all variable names to make sure they make sense (tip: relationList or listRelations? confusing!).
+// TODO: make it possible to pass parameters to app.
+// TODO: make it possible to load components even if the main component does not provide interface App.
+// TODO: create a way to test the functions of the Assembly module. So we can add it to the CST.
+// How can I make sure this version works??
+// TODO: this version has a toy implementation of the relocation and replication -- make this new feature better!
+// TODO: create a version without the RecursiveLoader -- the assembly should be able 
+// to do what the recursive loader does.
+// TODO: setConfig only works if architectural description matches char by char... This is bad... if we decompose 
+// the architectural description into a tree, it'll make the assembly module slower.
 component provides composition.Assembly requires io.Output out, data.IntUtil iu, System system, 
 	composition.Search search, composition.ObjectWriter, data.json.JSONParser parser, Loader loader, 
-	data.StringUtil strUtil, composition.Adapter adapter {
+	data.StringUtil strUtil, composition.Adapter adapter, NativeLoader nLoader, injector.Injector {
 
-	App app
-	Config configs[] //all possible configurations
-	Interface intfs[] //all interfaces in the world -- to prevent loading interfaces twice
-	Component compnts[] //all components in the world -- to prevent loading components twice
-	int currentConfig //this is used to point to current executing config
+	App app = null
+	Config configs[] = null //all possible configurations
+	Interface intfs[] = null //all interfaces in the world -- to prevent loading interfaces twice
+	Component compnts[] = null //all components in the world -- to prevent loading components twice
+	int currentConfig = 0 //this is used to point to current executing config
+	Injector injector = null
+	
+
+	void Assembly:addInjector(Injector i) {
+		injector = i
+	}
 
 	char[] Assembly:getConfig() {
 		return configs[currentConfig].description
@@ -77,12 +99,32 @@ component provides composition.Assembly requires io.Output out, data.IntUtil iu,
 	}
 
 	//TODO: what if one interface does not have at least one component?
+	//TODO: how to pass an argument to Perception, Assembly?
 	void Assembly:setMain(char mainComp[], AppParam params[]) {
 		loadConfigs(loadMainIntf(mainComp))
 		recursiveBinding(configs[0].components[0], 0)
 		asynch::startApp(configs[0].components[0].class, params)
 		out.println("$(debugMSG) App started successfully!")
 	}
+
+	/*void loadMappings() {
+		Reference refs[] = mapping.getRefs()
+		RefIDC mapRefs[] = new RefIDC[refs.arrayLength]
+		out.println("$(debugMSG) Loading distributor proxies IDCs...")
+		for (int i = 0; i < refs.arrayLength; i++) {
+			mapRefs[i] = new RefIDC()
+			out.println("$(debugMSG) $(refs[i].proxyClient)")
+			mapRefs[i].proxyCl = recLoader.load(refs[i].proxyClient).mainComponent
+			//TODO: "distributor_proxies/HTTPGETSP.o" is blacklisted
+			// change the blacklist process... add to the blacklist every component that
+			// are not part of the CST...
+			if (refs[i].proxyServer != "distributor_proxies/HTTPGETSP.o") {
+				out.println("$(debugMSG) $(refs[i].proxyServer)")
+				mapRefs[i].proxySer = recLoader.load(refs[i].proxyServer).mainComponent	
+			}
+		}
+		mapping.setRefsIDC(mapRefs, portManager)
+	}*/
 
 	// this won't work if arch description does not match exactly, char by char
 	// I'm considering that each set of configs are particular to each assembly -- if it doesn't match the learner
@@ -413,9 +455,13 @@ component provides composition.Assembly requires io.Output out, data.IntUtil iu,
 		return INT_MAX
 	}
 
-	// startApp(IDC main, AppParam params[])
-	void startApp(IDC main, AppParam params[]) {
+	void startApp(IDC main,  AppParam params[]) {
 		app = new App() from main :< App
+		// in case the object app has a secondary interface Service
+		if (main :< Service == null) {
+			Service service = dana.getObjectInterface(main, app, Service)
+			if (service != null) { service.start() }
+		}
 		app.main(params)
 		// TODO: the Assembly module should pass parameters when starting an app
 		// this parameter passing thingy might change the RESTful API (?) for generality
@@ -432,6 +478,11 @@ component provides composition.Assembly requires io.Output out, data.IntUtil iu,
 			// that will prevent it to satisfy its connections more than once (or get caught in a cycle)
 			comp.connected = true
 			if (comp.class == null) { comp.class = loader.load(comp.name) }
+			for (int nativePointer = 0; nativePointer < comp.natIntfs.arrayLength; nativePointer++) {
+				IDC ncom = nLoader.load(comp.natIntfs[nativePointer].alias)
+				dana.rewire(comp.class :> comp.natIntfs[nativePointer].alias,
+				 ncom :< comp.natIntfs[nativePointer].alias)
+			}
 			for (int compPointer = 0; compPointer < comp.iRequire.arrayLength; compPointer++) {
 				Component comp2 = configs[configPointer].components[comp.iRequire[compPointer].compPointer]
 				if (comp2.class == null) { comp2.class = loader.load(comp2.name) }
@@ -443,6 +494,14 @@ component provides composition.Assembly requires io.Output out, data.IntUtil iu,
 				dana.rewire(comp.class :> alias, comp2.class :< alias)
 				recursiveBinding(comp2, configPointer)
 			}
+			if (injector != null) {
+				injector.inject(comp.name, comp.class)
+			}/*
+			if (comp.class :< Oracle != null) {
+				out.println("$(debugMSG) Setting Mapping to Oracle in the architecture!")
+				oracle = new Oracle() from comp.class :< Oracle
+				oracle.setMapping(mapping)
+			}*/
 			if (comp.class :< Service != null) {
 				out.println("$(debugMSG) Starting service on '$(comp.name)'")
 				Service svc = new Service() from comp.class :< Service
@@ -523,8 +582,8 @@ component provides composition.Assembly requires io.Output out, data.IntUtil iu,
 			// components in the previous config.
 			// also, in order to load all components' dependencies before loading the recent added dependency
 			// beware that the search is supposed to be in depth (if you imagine the tree-structure)
-			// i.e. take one component loads its first dependency connect to it, take the first dependency's dependecy
-			// and connect to the component dependency, and do that before going back to the component and loading
+			// i.e. take one component load its first dependency connect to it, take the first dependency's dependecy
+			// and connect to the component's dependency, and do that before going back to the component and loading
 			// its next dependency
 			if (loadDep) { loadingDependencies(comp, configPointer)	}
 		} else {
@@ -650,11 +709,16 @@ component provides composition.Assembly requires io.Output out, data.IntUtil iu,
 				JSONElement ri = requiredInterfaces.children[i]
 				char package[] = parser.getValue(ri, "package").value
 				char alias[] = parser.getValue(ri, "alias").value
-				char semantic[] = null
-				JSONElement semanticEl = parser.getValue(ri, "semantic")
-				if (semanticEl != null) { semantic = semanticEl.value }
-				if (!isAutoBindings(package)) {
-					comp.dependencies = new IntfName[](comp.dependencies, new IntfName(package, alias, semantic))
+				if ((parser.getValue(ri, "native") != null) &&
+					(parser.getValue(ri, "native").value == "true")) {
+					comp.natIntfs = new NativeIntfs[](comp.natIntfs, new NativeIntfs(package, alias))
+				} else {
+					char semantic[] = null
+					JSONElement semanticEl = parser.getValue(ri, "semantic")
+					if (semanticEl != null) { semantic = semanticEl.value }
+					if (!isAutoBindings(package)) {
+						comp.dependencies = new IntfName[](comp.dependencies, new IntfName(package, alias, semantic))
+					}	
 				}
 			}
 		}
@@ -699,6 +763,10 @@ component provides composition.Assembly requires io.Output out, data.IntUtil iu,
 		Component c = new Component()
 		c.name = new char[](comp.name)
 		c.proxy = comp.proxy
+		//copying native libraries
+		for (int natPointer = 0; natPointer < comp.natIntfs.arrayLength; natPointer++) {
+			c.natIntfs = new NativeIntfs[](c.natIntfs, comp.natIntfs[natPointer])
+		}
 		// copying dependencies -- not sure if this needs to be copied like this for performance reasons!
 		for (int depPointer = 0; depPointer < comp.dependencies.arrayLength; depPointer++) {
 			c.dependencies = new IntfName[](c.dependencies, 
@@ -716,18 +784,18 @@ component provides composition.Assembly requires io.Output out, data.IntUtil iu,
 							new Binding[](configs[configPointer].components[counter].iRequire,
 							new Binding(configs[configPointer].components.arrayLength, 
 								new char[](intfAlias), new char[](intfSemantic)))
-						c.requiresMe = new Binding[](c.requiresMe, new Binding(counter, new char[](intfAlias), 
-							new char[](intfSemantic)))
+						c.requiresMe = new Binding[](c.requiresMe, 
+							new Binding(counter, new char[](intfAlias), 
+								new char[](intfSemantic)))
 					} else {
 						configs[configPointer].components[counter].iRequire = 
 							new Binding[](configs[configPointer].components[counter].iRequire,
 							new Binding(configs[configPointer].components.arrayLength, 
 								new char[](intfAlias), null))
-						c.requiresMe = new Binding[](c.requiresMe, new Binding(counter, new char[](intfAlias), 
-							null))
+						c.requiresMe = new Binding[](c.requiresMe,
+							new Binding(counter,
+								new char[](intfAlias), null))
 					}
-					//TODO: remove the char bug line once Barry releases a new dana version with this bug fixed.
-					char bug
 					break
 				}
 			}
@@ -761,8 +829,9 @@ component provides composition.Assembly requires io.Output out, data.IntUtil iu,
 		return false
 	}
 
-	// copy the config from configPointer and add each comps (starting from second position -- 1, not 0)
-	// to the new config -- position 0 goes into the original config, not in the replicas we're creating here
+	// copy the config from configPointer and add each comp (starting from second position -- 1, not 0)
+	// to the new config -- position 0 goes into the original config, not in the replicas we're creating here 
+	// (Future Roberto: but why? what does this comment even mean?)
 	void replicateConfigWithVariants(String compVariants[], char requirerCompName[], char intfAlias[], char intfSemantic[], int configPointer) {
 		for (int variant = 1; variant < compVariants.arrayLength; variant++) {
 			Config newConfig = new Config()
@@ -779,6 +848,12 @@ component provides composition.Assembly requires io.Output out, data.IntUtil iu,
 				Component newC = new Component()
 				newC.name = new char[](configs[configPointer].components[counter].name)
 				newC.proxy = configs[configPointer].components[counter].proxy
+				for (int natPointer = 0;
+					natPointer < configs[configPointer].components[counter].natIntfs.arrayLength; 
+					natPointer++) {
+					newC.natIntfs = new NativeIntfs[](newC.natIntfs, 
+						configs[configPointer].components[counter].natIntfs[natPointer])
+				}
 				for (int counter2 = 0; counter2 < configs[configPointer].components[counter].dependencies.arrayLength; counter2++) {
 					if (configs[configPointer].components[counter].dependencies[counter2].semantic != null) {
 						newC.dependencies = new IntfName[](newC.dependencies, 

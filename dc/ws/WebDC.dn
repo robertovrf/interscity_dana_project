@@ -50,6 +50,14 @@ component provides ws.Web:nfrp requires io.Output out, data.StringUtil strUtil,
 		} else { failed(stream) }
 		return true
 	}
+	
+	bool Web:put(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
+		return false
+	}
+
+	bool Web:delete(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
+		return false
+	}
 
 	String[] Web:urls() {
 		String exprs[] = new String[]()

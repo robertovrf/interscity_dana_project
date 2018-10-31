@@ -60,10 +60,17 @@ component provides ws.Web, monitoring.BeingMonitored requires io.Output out,
 			monitor.addEvent(new char[]("post:", path), 1)
 			return returnValue
 		}
+
+		bool Web:put(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
+			return false
+		}
+	
+		bool Web:delete(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
+			return false
+		}
 		
 		String[] Web:urls() { 
 			return web.urls()
 		}
-
 	}
 }

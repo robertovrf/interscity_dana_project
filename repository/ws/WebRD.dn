@@ -1,6 +1,5 @@
 // Dispatcher...
 component provides ws.Web requires io.Output out, data.StringUtil strUtil, resource_discovery.ResourceDiscoveryManager resourceDiscoveryManager {
-
 	/* bool match(char path[], char expr[]) {
 		String dirs[] = strUtil.explode(path, "/")
 		String exprDirs[] = strUtil.explode(expr, "/")
@@ -49,9 +48,15 @@ component provides ws.Web requires io.Output out, data.StringUtil strUtil, resou
 	}
 
 	bool Web:post(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
-
-
 		return true
+	}
+
+	bool Web:put(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
+		return false
+	}
+
+	bool Web:delete(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
+		return false
 	}
 
 	String[] Web:urls() {
@@ -60,8 +65,4 @@ component provides ws.Web requires io.Output out, data.StringUtil strUtil, resou
 		//exprs = new String[](exprs, new String("/adaptor/resources/{id}/data"))
 		return exprs
 	}
-
-
-
-
 }

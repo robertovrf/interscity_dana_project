@@ -1,4 +1,6 @@
 uses data.String
+uses distributor_proxies.Proxy
+uses injector.Injector
 
 data IDCReference {
 	char path[]
@@ -9,10 +11,12 @@ data IDCReference {
 interface Assembly {
 	String[] getAllConfigs()
 	char[] getConfig()
-	void setMain(char path[], AppParam params[])
+	void setMain(char mainComp[], AppParam params[])
 	bool setConfig(char config[])
 	void removeComp(String compPaths[])
 	void addComp(String compPaths[])
 	IDCReference[] getComponents(String paths[])
 	IDCReference[] getCompsByProvidedInterface(char providedIntf[])
+	void addInjector(Injector i)
+
 }

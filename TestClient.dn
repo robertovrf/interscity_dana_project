@@ -1,0 +1,55 @@
+const int RECV_BUF_SIZE = 1000
+const char SERVER_ADDRESS[] = "scc-mc1.lancs.ac.uk"
+const int SERVER_PORT = 2012
+
+component provides App requires io.Output out, data.IntUtil iu, net.TCPSocket, 
+	time.Calendar ic, time.DateUtil dateUtil, io.File {
+	
+	int 3mb = 0
+	int 1kb = 0
+
+	void makeRequest(char req[], char fileType[]) {
+		DateTime dt1
+		DateTime dt2
+		int result
+
+		dt1 = ic.getTime()
+		TCPSocket s = new TCPSocket()
+		if (!s.connect(SERVER_ADDRESS, SERVER_PORT)) { 
+			out.println("Error while trying to connect to server $(SERVER_ADDRESS) - $(iu.intToString(SERVER_PORT))")
+		} 
+		s.send(req)
+		byte resp[] = null
+		if (fileType == "3mb") {
+			resp = s.recv(3mb)	
+		} else if (fileType == "1kb") {
+			resp = s.recv(1kb)
+		} else {
+			while ((resp = s.recv(RECV_BUF_SIZE)).arrayLength > 0) { }	
+		}
+		s.disconnect()
+		dt2 = ic.getTime()
+		result =  dateUtil.toMilliseconds(dateUtil.diff(dt1, dt2))
+		out.println("Response time: $(iu.intToString(result))")
+		if (resp.arrayLength == 3mb) { out.println("Worked!") }
+		else if (resp.arrayLength == 1kb) { out.println("Worked!") }
+		else {
+			out.println("DIDNT WORK")
+		}
+	}
+	
+	int App:main(AppParam params[]) {
+		if (params.arrayLength == 0) {
+			out.println("Enter a file to request, like /index.html")
+			return 1
+		}
+		out.println("Requesting file $(params[0].string)")
+		File f = new File("3mb_image.jpg", File.FILE_ACCESS_READ)
+		3mb = f.getSize()
+		f = new File("text-1kb.html", File.FILE_ACCESS_READ)
+		1kb = f.getSize()
+		char request[] = new char[](params[0].string, "\r\n\r\n")
+		makeRequest(request, params[0].string)
+		return 0
+	}
+}

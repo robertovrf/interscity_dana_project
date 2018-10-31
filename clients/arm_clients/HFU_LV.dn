@@ -69,7 +69,7 @@ component provides App requires io.Output out, data.IntUtil iu, time.Timer timer
 		}
 		while (flag) {
 			for (int i = 0; i < NUM_SQ_REQUEST; i++) {
-				triggerRequests(file[i], requestURL)
+				triggerRequests(file[0], requestURL)
 			}
 			request.post(updateURL, null, payload)
 			timer.sleep(SLEEP_INTERVAL)

@@ -12,6 +12,14 @@ component provides ws.Web requires io.Output out, ws.Web:nfrp web {
 		return web.post(path, contentType, content, stream, params)
 	}
 
+	bool Web:put(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
+		return false
+	}
+
+	bool Web:delete(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
+		return false
+	}
+
 	String[] Web:urls() {
 		return web.urls()
 	}

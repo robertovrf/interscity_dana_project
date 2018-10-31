@@ -1,0 +1,4 @@
+interface Injector {
+	void toInject(Object object)
+	void inject(char compName[], IDC comp)
+}

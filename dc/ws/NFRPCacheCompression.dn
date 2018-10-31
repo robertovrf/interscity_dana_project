@@ -45,6 +45,14 @@ component provides ws.Web, Service requires io.Output out, ws.Web:nfrp web, inte
 			return result
 		}
 
+		bool Web:put(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
+			return false
+		}
+
+		bool Web:delete(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
+			return false
+		}
+
 		bool Web:post(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
 			cache.clear()
 			return web.post(path, contentType, content, stream, params)
