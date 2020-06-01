@@ -4,6 +4,7 @@ uses ws.DocStream
 data CityResourceData {
 	byte resourceData[]
 	char encoding[]
+	char response_test[]
 }
 
 interface DataCollectorManager {

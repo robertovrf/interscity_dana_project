@@ -1,9 +1,9 @@
 /* WebDC.dn
- * 
+ *
  * This works as a dispatcher to send data to microservices.
  *
  */
-component provides ws.Web:nfrp requires io.Output out, data.StringUtil strUtil, 
+component provides ws.Web:nfrp requires io.Output out, data.StringUtil strUtil,
 	data_collector.DataCollectorManager dataCollectorManager {
 
 	bool match(char path[], char expr[]) {
@@ -31,6 +31,7 @@ component provides ws.Web:nfrp requires io.Output out, data.StringUtil strUtil,
 		// handling request
 		if (match(path, "/collector/datafromresource/*")) {
 			//get the last data sent by resource defined by its ID.
+			out.println("\nResponse Time4: ms")
 			dataCollectorManager.receiveDataFromResource(id, stream)
 		} else if (match(path, "/collector/resources/*/data")) {
 			//get historical data sent by resource defined by its ID.
@@ -64,7 +65,7 @@ component provides ws.Web:nfrp requires io.Output out, data.StringUtil strUtil,
 		exprs = new String[](exprs, new String("/collector/data/{id}"))
 		exprs = new String[](exprs, new String("/collector/datafromresource/{id}"))
 		// get historical data of a specific city resource.
-		exprs = new String[](exprs, new String("/collector/resources/{id}/data"))  
+		exprs = new String[](exprs, new String("/collector/resources/{id}/data"))
 		return exprs
 	}
 }

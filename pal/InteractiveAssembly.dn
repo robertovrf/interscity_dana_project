@@ -1,5 +1,5 @@
 // InteractiveAssembly.dn
-// A component that provides interactive access to assembly module 
+// A component that provides interactive access to assembly module
 //
 // Author: Roberto Rodrigues Filho
 // February @ 2017
@@ -40,8 +40,8 @@ data Machines {
 	String configList[]
 }
 
-component provides App requires io.Output out, data.IntUtil iu, io.Input in, data.StringUtil strUtil, 
-	composition.Assembly assembly, util.RandomInt ran, time.Timer t, time.Calendar cal, 
+component provides App requires io.Output out, data.IntUtil iu, io.Input in, data.StringUtil strUtil,
+	composition.Assembly assembly, util.RandomInt ran, time.Timer t, time.Calendar cal,
 	time.DateUtil dateUtil, external_references.ERGen eRGen {
 
 	String configs[] = null
@@ -180,7 +180,7 @@ component provides App requires io.Output out, data.IntUtil iu, io.Input in, dat
 			} else if (cmd == GROUP_DEF) {
 				String filtCheckConfigs[] = filterCheckConfigs(assembly.getAllConfigs())
 				ConfigGroup configsProvideGroup[] = separateConfigs(filtCheckConfigs)
-				//String providedIntfs[] = new String[](new String("HTTP"), new String("Memcached"), 
+				//String providedIntfs[] = new String[](new String("HTTP"), new String("Memcached"),
 				//	new String("write:SQL"), new String("read:SQL"))
 				String providedIntfs[] = new String[](new String("HTTP"))
 				for (int providedIntfPointer = 0; providedIntfPointer < providedIntfs.arrayLength; providedIntfPointer++) {
@@ -200,12 +200,12 @@ component provides App requires io.Output out, data.IntUtil iu, io.Input in, dat
 							String helper[] = strUtil.explode(requiredGlobal[j].string, "/")
 							if (!isStrInArray(helper[0].string, intf)) {
 								intf = new String[](intf, new String(helper[0].string))
-							}						
+							}
 							ips = new String[](ips, new String(helper[1].string))
 						}
 						int groupPointer = INT_MAX
 						for (int k = 0; k < group.arrayLength; k++) {
-							if ((isSame(group[k].globalInterfaces, intf)) && 
+							if ((isSame(group[k].globalInterfaces, intf)) &&
 								(group[k].providesGlobalIntf == providedIntf)) {
 								groupPointer = k
 								break
@@ -234,13 +234,13 @@ component provides App requires io.Output out, data.IntUtil iu, io.Input in, dat
 								newMachine.configList = new String[](newMachine.configList, onlyHTTPProvidedComps[i])
 								group[groupPointer].machines = new Machines[](group[groupPointer].machines, newMachine)
 							} else {
-								group[groupPointer].machines[ipPointer].configList = 
+								group[groupPointer].machines[ipPointer].configList =
 									new String[](group[groupPointer].machines[ipPointer].configList, onlyHTTPProvidedComps[i])
 							}
 						}
 					}
 				}
-				
+
 			} else if (cmd == LIST_GROUP) {
 				for (int i = 0; i < group.arrayLength; i++) {
 					out.println("$(debugMSG) GROUP PROVIDES: $(group[i].providesGlobalIntf)")
@@ -248,7 +248,7 @@ component provides App requires io.Output out, data.IntUtil iu, io.Input in, dat
 					if (group[i].globalInterfaces.arrayLength == 0) {
 						out.print("NO EXTERNAL REFERENCE")
 					} else {
-						printInterfaces(group[i].globalInterfaces)	
+						printInterfaces(group[i].globalInterfaces)
 					}
 					out.println("")
 					if (group[i].machines.arrayLength > 0) {
@@ -361,9 +361,9 @@ component provides App requires io.Output out, data.IntUtil iu, io.Input in, dat
 		assembly.setMain(params[0].string, params2)
 		char cmd[] = "start"
 		while (cmd != "exit") {
-			if (cmd != "start") { commandInterpret(cmd)	}
-			out.print("assembly> ")
-			cmd = in.readln()
+			//if (cmd != "start") { commandInterpret(cmd)	}
+			//out.print("assembly> ")
+			//cmd = in.readln()
 		}
 		return 0
 	}

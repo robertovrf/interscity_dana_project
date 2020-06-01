@@ -14,7 +14,7 @@ const char debugMSG[] = "[@HFU_LV]"
 // tunning constants
 const int NUM_SQ_REQUEST = 10
 const int SLEEP_INTERVAL = 100
-const char SERVER_ADDRESS[] = "scc-mc1.lancs.ac.uk"
+const char SERVER_ADDRESS[] = "localhost"//"scc-mc1.lancs.ac.uk"
 
 data InterscityMsg {
 	char response[]
@@ -64,7 +64,7 @@ component provides App requires io.Output out, data.IntUtil iu, time.Timer timer
 		char updateURL[] = new char[]("http://", SERVER_ADDRESS, ":2018/adaptor/resources/", uuid, "/data")
 
 		for (int i = 0; i < 1; i++) {
-			file[i] = new TextFile(new char[]("HFU_LV_RESULTS/request-file-burst-", iu.intToString(i+1), ".data"), 
+			file[i] = new TextFile(new char[]("HFU_LV_RESULTS/request-file-burst-", iu.intToString(i+1), ".data"),
 				File.FILE_ACCESS_WRITE)
 		}
 		while (flag) {
@@ -76,7 +76,8 @@ component provides App requires io.Output out, data.IntUtil iu, time.Timer timer
 		}
 		for (int i = 0; i < 1; i++) {
 			file[i].close()
-		}	
+
+		}
 	}
 
 	int App:main(AppParam params[]) {
@@ -122,7 +123,7 @@ component provides App requires io.Output out, data.IntUtil iu, time.Timer timer
 
 		out.println("Press enter to start triggering requests...")
 		in.readln()
-		
+
 		/* --------------TRIGGERING REQUESTS-------------- */
 		out.println(new char[]("$(debugMSG) Starting requests... "))
 		Thread startThread = asynch::start(jsonBus_DataToBeSent, formatedResponse.uuid)

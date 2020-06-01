@@ -14,7 +14,7 @@ const char debugMSG[] = "[@HFU_HV]"
 // tunning constants
 const int NUM_SQ_REQUEST = 1
 const int SLEEP_INTERVAL = 100
-const char SERVER_ADDRESS[] = "scc-mc1.lancs.ac.uk"
+const char SERVER_ADDRESS[] = "localhost"//"scc-mc1.lancs.ac.uk"
 
 data InterscityMsg {
 	char response[]
@@ -60,28 +60,27 @@ component provides App requires io.Output out, data.IntUtil iu, time.Timer timer
 
 	void start(char payload[], char uuid[]) {
 		TextFile file[] = new TextFile[1]
-		
-		char requestURL[] = new char[]("http://", SERVER_ADDRESS, 
+		char requestURL[] = new char[]("http://", SERVER_ADDRESS,
 			":2020//collector/resources/", uuid, "/data")
-		char updateURL[] = new char[]("http://", SERVER_ADDRESS, 
+		char updateURL[] = new char[]("http://", SERVER_ADDRESS,
 			":2018/adaptor/resources/", uuid, "/data")
 
 		for (int i = 0; i < 1; i++) {
-			file[i] = new TextFile(new char[]("HFU_HV_RESULTS/request-file-burst-", iu.intToString(i+1), ".data"), 
+			file[i] = new TextFile(new char[]("HFU_HV_RESULTS/request-file-burst-", iu.intToString(i+1), ".data"),
 				File.FILE_ACCESS_WRITE)
 		}
 		while (flag) {
 			for (int i = 0; i < NUM_SQ_REQUEST; i++) {
-				triggerRequests(file[i], requestURL)
+				triggerRequests(file[0], requestURL)
 			}
 			request.post(updateURL, null, payload)
 			timer.sleep(SLEEP_INTERVAL)
 		}
 		for (int i = 0; i < 1; i++) {
 			file[i].close()
-		}	
+		}
 	}
-	
+
 	int App:main(AppParam params[]) {
 		/* --------------REGISTERING RESOURCE-------------- */
 		out.println("$(debugMSG) Client started...")
