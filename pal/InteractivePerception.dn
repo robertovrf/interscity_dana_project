@@ -61,36 +61,17 @@ component provides App requires io.Output out, data.IntUtil iu, io.Input in, dat
 					out.println("$(debugMSG) $(configsStr[i].string)")
 				}
 			} else if (cmd == CHANGE_TEST) {
-				perception.addProxy("|../pal/monitoring/proxies/DCProxy.o|*(*:Web[0]:*)|")
+				perception.addProxy("|../pal/monitoring/proxies/DCProxy.o|*(*:ws.Web[0]:*)|")
 				out.println("Press enter to start test...")
 				in.readln()
 				counter = 0
 				perception.getPerceptionData()
-<<<<<<< HEAD
-				TextFile resultTestFile = new TextFile("NewResults.data", File.FILE_ACCESS_WRITE)
-				String myConfs[] = perception.getAllConfigs()
-				for (int i = 0; i < myConfs.arrayLength; i++) {
-					perception.setConfig(myConfs[i].string)
-					while (counter < 15) {
-						t.sleep(5000)
-						resultTestFile.writeLine(perception.getPerceptionData())
-						out.println("Collected $(iu.intToString(counter+1))")
-						counter++
-					}
-					resultTestFile.writeLine("\n")
-					counter = 0
-				}
-				resultTestFile.close()
-=======
 				TextFile resultTestFile
 				//file[i] = new TextFile(new char[]("HFU_HV_RESULTS/request-file-burst-", iu.intToString(collect_number), ".data"),
 				//File.FILE_ACCESS_WRITE)
-
 				String myConfs[] = perception.getAllConfigs()
-
 				for (int j = 0; j < 30; j++) {
 					resultTestFile = new TextFile(new char[]("results/NewResults", iu.intToString(collect_number), ".data"), File.FILE_ACCESS_WRITE)
-
 					for (int i = 0; i < myConfs.arrayLength; i++) {
 						perception.setConfig(myConfs[i].string)
 						while (counter < 15) {
@@ -105,11 +86,6 @@ component provides App requires io.Output out, data.IntUtil iu, io.Input in, dat
 					resultTestFile.close()
 					collect_number++
 				}
-
-
-
-
->>>>>>> upstream/master
 			} else if (cmd == START_TEST) {
 				out.println("$(debugMSG) Starting test")
 				configsStr = perception.getAllConfigs()

@@ -1,4 +1,3 @@
-uses reflect.Type
 uses distributor_proxies.Proxy
 
 data Map {

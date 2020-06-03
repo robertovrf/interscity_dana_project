@@ -456,18 +456,12 @@ component provides composition.Assembly requires io.Output out, data.IntUtil iu,
 	}
 
 	void startApp(IDC main,  AppParam params[]) {
-		app = new App() from main :< App
+		app = new App() from main
 		// in case the object app has a secondary interface Service
-		if (main :< Service == null) {
-			Service service = dana.getObjectInterface(main, app, Service)
-			if (service != null) { service.start() }
+		if (main.hasProvides("Service")) {
+			main.callInterface(app, "Service", typeof(Service), Service.[start()], null)
 		}
 		app.main(params)
-		// TODO: the Assembly module should pass parameters when starting an app
-		// this parameter passing thingy might change the RESTful API (?) for generality
-		// Once the application finshes it should return something
-		// exitCode = app.main(params)
-		// appFinished = true
 	}
 
 	void recursiveBinding(Component comp, int configPointer) {
@@ -480,8 +474,8 @@ component provides composition.Assembly requires io.Output out, data.IntUtil iu,
 			if (comp.class == null) { comp.class = loader.load(comp.name) }
 			for (int nativePointer = 0; nativePointer < comp.natIntfs.arrayLength; nativePointer++) {
 				IDC ncom = nLoader.load(comp.natIntfs[nativePointer].alias)
-				dana.rewire(comp.class :> comp.natIntfs[nativePointer].alias,
-				 ncom :< comp.natIntfs[nativePointer].alias)
+				comp.class.wire(comp.natIntfs[nativePointer].alias,
+					ncom, comp.natIntfs[nativePointer].alias)
 			}
 			for (int compPointer = 0; compPointer < comp.iRequire.arrayLength; compPointer++) {
 				Component comp2 = configs[configPointer].components[comp.iRequire[compPointer].compPointer]
@@ -491,20 +485,13 @@ component provides composition.Assembly requires io.Output out, data.IntUtil iu,
 					alias = new char[](comp.iRequire[compPointer].intfAlias, ":", 
 						comp.iRequire[compPointer].intfSemantic)
 				} else { alias = comp.iRequire[compPointer].intfAlias }
-				dana.rewire(comp.class :> alias, comp2.class :< alias)
+				comp.class.wire(alias, comp2.class, alias)
 				recursiveBinding(comp2, configPointer)
 			}
-			if (injector != null) {
-				injector.inject(comp.name, comp.class)
-			}/*
-			if (comp.class :< Oracle != null) {
-				out.println("$(debugMSG) Setting Mapping to Oracle in the architecture!")
-				oracle = new Oracle() from comp.class :< Oracle
-				oracle.setMapping(mapping)
-			}*/
-			if (comp.class :< Service != null) {
+			if (injector != null) { injector.inject(comp.class) }
+			if (comp.class.hasProvides("Service")) {
 				out.println("$(debugMSG) Starting service on '$(comp.name)'")
-				Service svc = new Service() from comp.class :< Service
+				Service svc = new Service() from comp.class
 				svc.start()
 			}
 		}

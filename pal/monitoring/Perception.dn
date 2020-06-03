@@ -202,15 +202,15 @@ component provides monitoring.Perception requires io.Output out, data.IntUtil iu
 			char preferHigh[] = ""
 			/* turn proxy off */
 			for (int compPointer = 0; compPointer < components.arrayLength; compPointer++) {
-				if (components[compPointer].class :< BeingMonitored != null) {
-					BeingMonitored metricMonitor = new BeingMonitored() from components[compPointer].class :< BeingMonitored
+				if (components[compPointer].class.hasProvides("monitoring.BeingMonitored")) {
+					BeingMonitored metricMonitor = new BeingMonitored() from components[compPointer].class
 					metricMonitor.turnMonitorOff()
 				}
 			}
 			/* collect data ... */
 			for (int compPointer = 0; compPointer < components.arrayLength; compPointer++) {
-				if (components[compPointer].class :< BeingMonitored != null) {
-					BeingMonitored beingMonitored = new BeingMonitored() from components[compPointer].class :< BeingMonitored
+				if (components[compPointer].class.hasProvides("monitoring.BeingMonitored") != null) {
+					BeingMonitored beingMonitored = new BeingMonitored() from components[compPointer].class
 					char componentName[] 	= components[compPointer].path
 					// this is important! in case you store a list of perception data, you won't know
 					// in the future from what arch the data is
@@ -303,8 +303,8 @@ component provides monitoring.Perception requires io.Output out, data.IntUtil iu
 			}
 			/* turn proxy back on */
 			for (int compPointer = 0; compPointer < components.arrayLength; compPointer++) {
-				if (components[compPointer].class :< BeingMonitored != null) {
-					BeingMonitored metricMonitor = new BeingMonitored() from components[compPointer].class :< BeingMonitored
+				if (components[compPointer].class.hasProvides("monitoring.BeingMonitored")) {
+					BeingMonitored metricMonitor = new BeingMonitored() from components[compPointer].class
 					metricMonitor.turnMonitorOn()
 				}
 			}
@@ -630,23 +630,23 @@ component provides monitoring.Perception requires io.Output out, data.IntUtil iu
 		IDCReference components[] = assembly.getComponents(availableProxies)
 		/* turn proxy off */
 		for (int compPointer = 0; compPointer < components.arrayLength; compPointer++) {
-			if (components[compPointer].class :< BeingMonitored != null) {
-				BeingMonitored metricMonitor = new BeingMonitored() from components[compPointer].class :< BeingMonitored
+			if (components[compPointer].class.hasProvides("monitoring.BeingMonitored")) {
+				BeingMonitored metricMonitor = new BeingMonitored() from components[compPointer].class
 				metricMonitor.turnMonitorOff()
 			}
 		}
 		/* clean data */
 		for (int compPointer = 0; compPointer < components.arrayLength; compPointer++) {
-			if (components[compPointer].class :< BeingMonitored != null) {
-				BeingMonitored beingMonitored = new BeingMonitored() from components[compPointer].class :< BeingMonitored
+			if (components[compPointer].class.hasProvides("monitoring.BeingMonitored")) {
+				BeingMonitored beingMonitored = new BeingMonitored() from components[compPointer].class
 				beingMonitored.getMetrics()
 				beingMonitored.getEvents()
 			}
 		}
 		/* turn proxy back on */
 		for (int compPointer = 0; compPointer < components.arrayLength; compPointer++) {
-			if (components[compPointer].class :< BeingMonitored != null) {
-				BeingMonitored metricMonitor = new BeingMonitored() from components[compPointer].class :< BeingMonitored
+			if (components[compPointer].class.hasProvides("monitoring.BeingMonitored")) {
+				BeingMonitored metricMonitor = new BeingMonitored() from components[compPointer].class
 				metricMonitor.turnMonitorOn()
 			}
 		}
