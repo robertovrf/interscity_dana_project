@@ -2,6 +2,7 @@
  *
  * This works as a dispatcher to send data to microservices.
  *
+ * Author: Roberto Rodrigues Filho - Sept @ 2018
  */
 component provides ws.Web:nfrp requires io.Output out, data.StringUtil strUtil,
 	data_collector.DataCollectorManager dataCollectorManager {
@@ -31,7 +32,6 @@ component provides ws.Web:nfrp requires io.Output out, data.StringUtil strUtil,
 		// handling request
 		if (match(path, "/collector/datafromresource/*")) {
 			//get the last data sent by resource defined by its ID.
-			out.println("\nResponse Time4: ms")
 			dataCollectorManager.receiveDataFromResource(id, stream)
 		} else if (match(path, "/collector/resources/*/data")) {
 			//get historical data sent by resource defined by its ID.
