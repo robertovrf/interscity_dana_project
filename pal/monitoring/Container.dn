@@ -7,7 +7,7 @@
 
 const char debugMSG[] = "[@ResponseTime]"
 
-component provides Container requires io.Output out, data.IntUtil iu, data.adt.HashTable, time.Calendar ic {
+component provides monitoring.Container requires io.Output out, data.IntUtil iu, data.adt.HashTable, time.Calendar ic {
 	bool collect
 	HashTable metrics
 	HashTable events

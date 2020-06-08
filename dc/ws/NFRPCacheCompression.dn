@@ -3,23 +3,23 @@
  * Author: Roberto Rodrigues Filho - Sept @ 2018
  */
 component provides ws.Web, Service requires io.Output out, ws.Web:nfrp web, interceptor.DSInterceptor, 
-	cache.CacheHandler cache, compression.Compression compression, io.File {
+	cache.Cache cache, compression.Compression compression, io.File {
 
 	implementation Service {
 		void Service:start() {
-			cache.clear()
+			cache.deleteAll()
 		}
 
 		void Service:stop() {
-			cache.clear()
+			cache.deleteAll()
 		}
 	}
 
 	implementation Web {
 		bool Web:get(char path[], DocStream stream, HashTable params) {
-			CachedData cD = cache.get(path)
-			if (cD != null) {
-				stream.write(cD.response)
+			byte response[] = cache.get(path)
+			if (response != null) {
+				stream.write(response)
 				return true
 			}
 			bool result
@@ -37,10 +37,7 @@ component provides ws.Web, Service requires io.Output out, ws.Web:nfrp web, inte
 				while (!f.eof()) { buf = new byte[](buf, f.read(1024)) }
 				f.close()
 				stream.write(buf)
-				CachedData newCD = new CachedData()
-				newCD.key = path
-				newCD.response = buf
-				cache.update(newCD)
+				cache.insert(path, buf)
 			}
 			return result
 		}
@@ -54,7 +51,7 @@ component provides ws.Web, Service requires io.Output out, ws.Web:nfrp web, inte
 		}
 
 		bool Web:post(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
-			cache.clear()
+			cache.deleteAll()
 			return web.post(path, contentType, content, stream, params)
 		}
 
