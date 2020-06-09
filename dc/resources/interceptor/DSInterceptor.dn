@@ -1,5 +1,5 @@
 interface DSInterceptor extends ws.DocStream {
-	DSInterceptor(TCPSocket s, Header headers[], bool autoCloseSocket)
+	DSInterceptor(store TCPSocket s, store Header headers[], bool autoCloseSocket)
 	void set(store DocStream original)
 	char[] get()
 }
