@@ -21,7 +21,7 @@ component provides cache.Cache requires cache.Hash hashFunc, io.Output out {
 	CacheItem mru = null // tail
 	CacheItem lru = null // head
 
-	void addToQueue(CacheItem item) {
+	void addToQueue(store CacheItem item) {
 		item.evictionNext = null
 		item.evictionPrior = null
 		if ((mru == null) && (lru == null)) {
@@ -39,7 +39,7 @@ component provides cache.Cache requires cache.Hash hashFunc, io.Output out {
 	}
 
 	// item is already part of the queue
-	void updateTailOfQueue(CacheItem item) {
+	void updateTailOfQueue(store CacheItem item) {
 		if ((mru != null) && (lru != null)) {
 			if (item.key != mru.key) {
 				if (item.key == lru.key) {

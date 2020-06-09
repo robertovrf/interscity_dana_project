@@ -745,7 +745,7 @@ component provides composition.Assembly requires io.Output out, data.IntUtil iu,
 	// when inserting component in config, create a new Component object and copy the info from comp to the 
 	// component that will be inserted into the config. also, remember that we need to insert the component 
 	// name and how it relates to other components in the string
-	void insertComponentInConfig(Component comp, char requirerCompName[], char intfAlias[], char intfSemantic[], int configPointer) {
+	void insertComponentInConfig(store Component comp, char requirerCompName[], char intfAlias[], char intfSemantic[], int configPointer) {
 		// inserting object
 		Component c = new Component()
 		c.name = new char[](comp.name)
