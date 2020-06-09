@@ -60,7 +60,7 @@ component provides ws.Web:nfrp requires io.Output out, data.StringUtil strUtil,
 		return false
 	}
 
-	String[] Web:urls() {
+	String[] Web:getURLPatterns() {
 		String exprs[] = new String[]()
 		exprs = new String[](exprs, new String("/collector/data/{id}"))
 		exprs = new String[](exprs, new String("/collector/datafromresource/{id}"))

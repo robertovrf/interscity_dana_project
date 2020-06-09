@@ -69,8 +69,8 @@ component provides ws.Web, monitoring.BeingMonitored requires io.Output out,
 			return false
 		}
 		
-		String[] Web:urls() { 
-			return web.urls()
+		String[] Web:getURLPatterns() { 
+			return web.getURLPatterns()
 		}
 	}
 }

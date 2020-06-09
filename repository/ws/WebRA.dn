@@ -55,7 +55,7 @@ component provides ws.Web requires io.Output out, data.StringUtil strUtil, resou
 		return false
 	}
 
-	String[] Web:urls() {
+	String[] Web:getURLPatterns() {
 		String exprs[] = new String[]()
 		exprs = new String[](exprs, new String("/adaptor/resources"))
 		exprs = new String[](exprs, new String("/adaptor/resources/{id}/data"))

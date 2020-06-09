@@ -46,8 +46,8 @@ component provides ws.Web, Service requires io.Output out, ws.Web:nfrp web, inte
 			return false
 		}
 
-		String[] Web:urls() {
-			return web.urls()
+		String[] Web:getURLPatterns() {
+			return web.getURLPatterns()
 		}	
 	}
 }
