@@ -46,11 +46,11 @@ component provides App requires io.Output out, data.mysql.MySQL, encoding.Encode
 		mysql.execute(new char[]("INSERT INTO data (value, uuid) VALUES (\"", encoder.encode(egData) ,"\" ,\"2\");"))
 
 		/* quering */
-		char egQuery[] = new char[]("SELECT * FROM data;")
+		/*char egQuery[] = new char[]("SELECT * FROM data;")
 		mysql.execute(egQuery)
 		Row rows[] = mysql.fetchAll()
 		out.println("$(egData)")
-		out.println("$(encoder.decode(rows[0].fields[1].value))")
+		out.println("$(encoder.decode(rows[0].fields[1].value))")*/
 
 	    /* closing... */
 		out.println("$(debugMSG) Database created!\nBye!")
