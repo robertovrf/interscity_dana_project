@@ -12,10 +12,24 @@
 const char debugMSG[] = "[@DataCollectorManager]"
 
 component provides data_collector.DataCollectorManager requires io.Output out,
-	data.json.JSONEncoder encoder, encoding.Encoder:uri codifier, data.mysql.MySQL {
+	data.json.JSONEncoder encoder, encoding.Encoder:uri codifier, data.mysql.MySQL, util.ConfigFile {
+
+	static ConfigFile configFile = null
+
+	MySQL getMySQL() {
+		MySQL mysql = null
+		if (configFile == null) {
+			configFile = new ConfigFile("../configs/dc/database/database.config")	
+		}
+		char host[] = configFile.getValue("database")
+		char user[] = configFile.getValue("db_user")
+		char pass[] = configFile.getValue("db_pass")
+		mysql = new MySQL(host, 0, user, pass, "data_collector")
+		return mysql
+	}
 
 	void DataCollectorManager:storeData(byte content[], char id[], DocStream s) {
-		MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
+		MySQL mysql = getMySQL()
 		mysql.execute(new char[]("INSERT INTO data (value, uuid) VALUES (\"", codifier.encode(content)
 			,"\", \"", id ,"\");"))
 		mysql.close()
@@ -40,7 +54,7 @@ component provides data_collector.DataCollectorManager requires io.Output out,
 	}
 
 	CityResourceData getLastDataSentFromResource(char resource_id[]) {
-		MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
+		MySQL mysql = getMySQL()
 		char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data DESC LIMIT 1;")
 		mysql.execute(query)
 		MySQLRow rows[] = mysql.fetchAll()
@@ -52,7 +66,7 @@ component provides data_collector.DataCollectorManager requires io.Output out,
 	}
 
 	char[] getAllDataSentFromResource(char resource_id[]) {
-		MySQL mysql = new MySQL("localhost", 0, "root", "root", "data_collector")
+		MySQL mysql = getMySQL()
 		char query[] = new char[]("SELECT * FROM data WHERE uuid = \"", resource_id, "\" ORDER BY id_data DESC LIMIT 200;")
 		mysql.execute(query)
 		MySQLRow rows[] = mysql.fetchAll()

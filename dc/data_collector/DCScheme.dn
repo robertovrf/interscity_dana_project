@@ -1,10 +1,15 @@
 const char debugMSG[] = "[@DanaPediaDBCreator]"
 
-component provides App requires io.Output out, data.mysql.MySQL, encoding.Encoder:uri encoder {
+component provides App requires io.Output out, data.mysql.MySQL, encoding.Encoder:uri encoder, util.ConfigFile {
 
 	int App:main(AppParam params[]) {
+		ConfigFile configFile = new ConfigFile("../../configs/dc/database/database.config")
+		char host[] = configFile.getValue("database")
+		char user[] = configFile.getValue("db_user")
+		char pass[] = configFile.getValue("db_pass")
+
 		/* mysql object */
-		MySQL mysql = new MySQL("localhost", 0, "root", "root", "")
+		MySQL mysql = new MySQL(host, 0, user, pass, "")
 
 		/* queries */
 		char dropDBQuery[] = new char[]("DROP DATABASE IF EXISTS data_collector;")
