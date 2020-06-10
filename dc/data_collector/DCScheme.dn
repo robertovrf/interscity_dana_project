@@ -31,7 +31,7 @@ component provides App requires io.Output out, data.mysql.MySQL, encoding.Encode
 		mysql.execute(createDataTableQuery)
 
 		/* data insertion - execution */
-		/*char egData[] = new char[]("{",
+		char egData[] = new char[]("{",
 		 "\"data\": {",
 		   "\"public_bus\": [",
 		     "{",
@@ -48,7 +48,7 @@ component provides App requires io.Output out, data.mysql.MySQL, encoding.Encode
 		 "}",
 		"}")
 		mysql.execute(new char[]("INSERT INTO data (value, uuid) VALUES (\"", encoder.encode(egData) ,"\" ,\"2\");"))
-		mysql.execute(new char[]("INSERT INTO data (value, uuid) VALUES (\"", encoder.encode(egData) ,"\" ,\"2\");"))*/
+		mysql.execute(new char[]("INSERT INTO data (value, uuid) VALUES (\"", encoder.encode(egData) ,"\" ,\"2\");"))
 
 		/* quering */
 		/*char egQuery[] = new char[]("SELECT * FROM data;")
