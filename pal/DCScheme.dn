@@ -3,7 +3,7 @@ const char debugMSG[] = "[@DanaPediaDBCreator]"
 component provides App requires io.Output out, data.mysql.MySQL, encoding.Encoder:uri encoder, util.ConfigFile {
 
 	int App:main(AppParam params[]) {
-		ConfigFile configFile = new ConfigFile("../../configs/dc/database/database.config")
+		ConfigFile configFile = new ConfigFile("../configs/dc/database/database.config")
 		char host[] = configFile.getValue("database")
 		char user[] = configFile.getValue("db_user")
 		char pass[] = configFile.getValue("db_pass")
