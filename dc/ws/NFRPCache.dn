@@ -1,5 +1,9 @@
 /* NFRPCache.dn 
  *
+ * Please note:
+ * - This component uses a cache component that is not thread safe
+ * - Because cache is not thread safe, this component adds a global lock to cache
+ *
  * Author: Roberto Rodrigues Filho - Sept @ 2018
  */
 component provides ws.Web, Service requires io.Output out, ws.Web:nfrp web, interceptor.DSInterceptor, 
@@ -15,26 +19,30 @@ component provides ws.Web, Service requires io.Output out, ws.Web:nfrp web, inte
 	}
 
 	implementation Web {
+		Mutex cacheLock = new Mutex()
+
 		bool Web:get(char path[], DocStream stream, HashTable params) {
-			byte response[] = cache.get(path)
-			if (response != null) {
-				stream.write(response)
-				return true
+			mutex (cacheLock) {
+				byte response[] = cache.get(path)
+				if (response != null) {
+					stream.write(response)
+					return true
+				}
+				bool result
+				DSInterceptor interceptor = new DSInterceptor(null, null, false)
+				interceptor.set(stream)
+				result = web.get(path, interceptor, params)
+				//cache only if result is true
+				if ((result) && (interceptor.get() != null)) {
+					stream.write(interceptor.get())
+					cache.insert(path, interceptor.get())
+				}
+				return result
 			}
-			bool result
-			DSInterceptor interceptor = new DSInterceptor(null, null, false)
-			interceptor.set(stream)
-			result = web.get(path, interceptor, params)
-			//cache only if result is true
-			if ((result) && (interceptor.get() != null)) {
-				stream.write(interceptor.get())
-				cache.insert(path, interceptor.get())
-			}
-			return result
 		}
 
 		bool Web:post(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
-			cache.deleteAll()
+			mutex (cacheLock) { cache.deleteAll() }
 			return web.post(path, contentType, content, stream, params)
 		}
 

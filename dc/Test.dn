@@ -1,0 +1,11 @@
+component provides App requires compression.Compression comp, io.File {
+	int App:main(AppParam params[]) {
+		File inf = new File("test.txt", File.READ)
+		File ouf = new File("test.gz", File.WRITE)
+		byte comContent[] = comp.compress(inf.read(inf.getSize()))
+		ouf.write(comContent)
+		inf.close()
+		ouf.close()
+		return 0
+	}
+}
