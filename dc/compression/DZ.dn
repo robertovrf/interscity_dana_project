@@ -24,6 +24,11 @@ component provides compression.Compression requires io.Output out, data.IntUtil 
 	
 	byte[] append(byte copyBuf[], byte fileName[], byte trailing[], 
 		byte comContent[], byte crc[], byte size[]) {
+		out.println("copyBuf: $(copyBuf)")
+		out.println("trailing: $(trailing)")
+		//out.println("comContent: $(comContent)")
+		out.println("crc: $(crc)")
+		out.println("size: $(size)")
 		return new byte[](copyBuf, fileName, trailing, comContent, crc, size)
 	}
 

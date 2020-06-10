@@ -1,4 +1,4 @@
-component provides App requires compression.Compression comp, io.File {
+component provides App requires io.Output out, data.IntUtil iu, compression.Compression comp, compress.Compressor:gzip comp2, io.File {
 	int App:main(AppParam params[]) {
 		File inf = new File("test.txt", File.READ)
 		File ouf = new File("test.gz", File.WRITE)
@@ -6,6 +6,13 @@ component provides App requires compression.Compression comp, io.File {
 		ouf.write(comContent)
 		inf.close()
 		ouf.close()
+
+		inf = new File("test.txt", File.READ)
+		ouf = new File("test2.gz", File.WRITE)
+		comp2.compress(inf, ouf)
+		inf.close()
+		ouf.close()
+
 		return 0
 	}
 }
