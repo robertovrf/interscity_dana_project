@@ -1,6 +1,7 @@
 const char debugMSG[] = "[@DZIP]"
 
-component provides compression.Compression requires compress.algorithm.StreamCompression:deflate alg {//compress.Compressor:gzip zip, io.File:mem {
+component provides compression.Compression requires compress.algorithm.StreamCompression:deflate alg {
+//component provides compression.Compression requires compress.Compressor:gzip zip, io.File:mem {
 
 	byte[] Compression:compress(byte content[]) {
 		/*File inf = new File:mem("", File.WRITE)
