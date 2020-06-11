@@ -1,6 +1,7 @@
 const char debugMSG[] = "[@DanaPediaDBCreator]"
 
-component provides App requires io.Output out, data.mysql.MySQL, encoding.Encoder:uri encoder, util.ConfigFile {
+component provides App requires io.Output out, data.mysql.MySQL, 
+	encoding.Encoder:uri encoder, util.ConfigFile, data.IntUtil iu {
 
 	int App:main(AppParam params[]) {
 		ConfigFile configFile = new ConfigFile("../configs/dc/database/database.config")
@@ -31,24 +32,38 @@ component provides App requires io.Output out, data.mysql.MySQL, encoding.Encode
 		mysql.execute(createDataTableQuery)
 
 		/* data insertion - execution */
-		char egData[] = new char[]("{",
-		 "\"data\": {",
-		   "\"public_bus\": [",
-		     "{",
-		       "\"location\": {",
-		         "\"lat\": -10.00032,",
-		         "\"lon\": -23.559615",
-		         "},",
-		       "\"speed\": 54,",
-		       "\"uuid\": 2,",
-		       "\"bus_line\": \"875c-10-1\",",
-		       "\"timestamp\": \"2017-06-14T17:52:25.428Z\"",
-		     "}",
-		   "]",
-		 "}",
-		"}")
-		mysql.execute(new char[]("INSERT INTO data (value, uuid) VALUES (\"", encoder.encode(egData) ,"\" ,\"2\");"))
-		mysql.execute(new char[]("INSERT INTO data (value, uuid) VALUES (\"", encoder.encode(egData) ,"\" ,\"2\");"))
+		char egData[] = null
+		int id = 0
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 100; j++) {
+				id = (j+1) + (i*100)
+				egData = new char[]("{",
+					 "\"data\": {",
+					   "\"public_bus\": [",
+					     "{",
+					       "\"location\": {",
+					         "\"lat\": -10.00032,",
+					         "\"lon\": -23.559615",
+					         "},",
+					       "\"speed\": 54,",
+					       "\"uuid\": ", iu.intToString(id), ",",
+					       "\"bus_line\": \"875c-10-1\",",
+					       "\"timestamp\": \"2017-06-14T17:52:25.428Z\"",
+					     "}",
+					   "]",
+					 "}",
+					"}")
+				mysql.execute(new char[]("INSERT INTO data (value, uuid) VALUES (\"", 
+					encoder.encode(egData) 
+					,"\" ,\"", iu.intToString(id),"\");"))
+				if (id > 99) {
+					out.print("\r$(debugMSG) $(iu.intToString(i)).$(iu.intToString(j))%")
+				} else {
+					out.print("\r$(debugMSG) 0.$(iu.intToString(j))%")
+				}
+			}
+		}
+		out.print("\r$(debugMSG) 100%     \n")
 
 		/* quering */
 		/*char egQuery[] = new char[]("SELECT * FROM data;")
