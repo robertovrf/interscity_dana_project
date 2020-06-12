@@ -3,6 +3,7 @@
  * This works as a dispatcher to send data to microservices.
  *
  * Author: Roberto Rodrigues Filho - Sept @ 2018
+ * Changed: Roberto Rodrigues Filho - Jun @ 2020
  */
 component provides ws.Web:nfrp requires io.Output out, data.StringUtil strUtil,
 	data_collector.DataCollectorManager dataCollectorManager {
@@ -30,12 +31,14 @@ component provides ws.Web:nfrp requires io.Output out, data.StringUtil strUtil,
 		String idStr = params.get("id")
 		char id[] = idStr.string
 		// handling request
-		if (match(path, "/collector/datafromresource/*")) {
-			//get the last data sent by resource defined by its ID.
-			dataCollectorManager.receiveDataFromResource(id, stream)
+		if (match(path, "/collector/resources/data")) {
+			dataCollectorManager.getHistoricalData(stream)
 		} else if (match(path, "/collector/resources/*/data")) {
-			//get historical data sent by resource defined by its ID.
-			dataCollectorManager.getAllDataFromResource(id, stream)
+			dataCollectorManager.getHistoricalDataResource(id, stream)
+		} else if (match(path, "/collector/resources/data/last")) {
+			dataCollectorManager.getMostRecentData(stream)
+		} else if (match(path, "/collector/resources/*/data/last")) {
+			dataCollectorManager.getMostRecentDataResource(id, stream)
 		} else { failed(stream) }
 		return true
 	}
@@ -46,7 +49,7 @@ component provides ws.Web:nfrp requires io.Output out, data.StringUtil strUtil,
 		String idStr = params.get("id")
 		char id[] = idStr.string
 		// handling requests
-		if (match(path, "/collector/data/*")) {
+		if (match(path, "/collector/store/*")) {
 			dataCollectorManager.storeData(content, id, stream)
 		} else { failed(stream) }
 		return true
@@ -62,10 +65,9 @@ component provides ws.Web:nfrp requires io.Output out, data.StringUtil strUtil,
 
 	String[] Web:getURLPatterns() {
 		String exprs[] = new String[]()
-		exprs = new String[](exprs, new String("/collector/data/{id}"))
-		exprs = new String[](exprs, new String("/collector/datafromresource/{id}"))
-		// get historical data of a specific city resource.
+		exprs = new String[](exprs, new String("/collector/store/{id}"))
 		exprs = new String[](exprs, new String("/collector/resources/{id}/data"))
+		exprs = new String[](exprs, new String("/collector/resources/{id}/data/last"))
 		return exprs
 	}
 }

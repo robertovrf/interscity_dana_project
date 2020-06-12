@@ -1,10 +1,12 @@
+uses data_collector.DataCollectorManager
+
 const char debugMSG[] = "[@DanaPediaDBCreator]"
 
 component provides App requires io.Output out, data.mysql.MySQL, 
-	encoding.Encoder:uri encoder, util.ConfigFile, data.IntUtil iu {
+	encoding.Encoder:uri encoder, util.ConfigFile, data.IntUtil iu, data.json.JSONEncoder jencoder {
 
 	int App:main(AppParam params[]) {
-		ConfigFile configFile = new ConfigFile("../configs/dc/database/database.config")
+		ConfigFile configFile = new ConfigFile("../../configs/dc/database/database.config")
 		char host[] = configFile.getValue("database")
 		char user[] = configFile.getValue("db_user")
 		char pass[] = configFile.getValue("db_pass")
@@ -32,45 +34,29 @@ component provides App requires io.Output out, data.mysql.MySQL,
 		mysql.execute(createDataTableQuery)
 
 		/* data insertion - execution */
+		out.println("$(debugMSG) Adding 5000 registers...")
 		char egData[] = null
-		int id = 0
-		for (int i = 0; i < 10; i++) {
+		int count = 1
+		for (int i = 0; i < 50; i++) {
 			for (int j = 0; j < 100; j++) {
-				id = (j+1) + (i*100)
-				egData = new char[]("{",
-					 "\"data\": {",
-					   "\"public_bus\": [",
-					     "{",
-					       "\"location\": {",
-					         "\"lat\": -10.00032,",
-					         "\"lon\": -23.559615",
-					         "},",
-					       "\"speed\": 54,",
-					       "\"uuid\": ", iu.intToString(id), ",",
-					       "\"bus_line\": \"875c-10-1\",",
-					       "\"timestamp\": \"2017-06-14T17:52:25.428Z\"",
-					     "}",
-					   "]",
-					 "}",
-					"}")
+				count = (j+1) + (i*100)
+				PublicBusData bus = new PublicBusData()
+				bus.location = new Location()
+				bus.location.lat = "-10.00032"
+				bus.location.lon = "-23.559615"
+				bus.speed = 54
+				bus.uuid = iu.intToString(i+1)
+				bus.busline = "875c-10-1"
+				bus.timestamp = "2017-06-14T17:52:25.428Z"
+				PublicBusData myData[] = new PublicBusData[](bus)
+				egData = jencoder.jsonFromArray(myData, null)
 				mysql.execute(new char[]("INSERT INTO data (value, uuid) VALUES (\"", 
 					encoder.encode(egData) 
-					,"\" ,\"", iu.intToString(id),"\");"))
-				if (id > 99) {
-					out.print("\r$(debugMSG) $(iu.intToString(i)).$(iu.intToString(j))%")
-				} else {
-					out.print("\r$(debugMSG) 0.$(iu.intToString(j))%")
-				}
+					,"\" ,\"", iu.intToString(i+1),"\");"))
+				out.print("\r$(debugMSG) $(iu.intToString(count))...      ")
 			}
 		}
-		out.print("\r$(debugMSG) 100%     \n")
-
-		/* quering */
-		/*char egQuery[] = new char[]("SELECT * FROM data;")
-		mysql.execute(egQuery)
-		Row rows[] = mysql.fetchAll()
-		out.println("$(egData)")
-		out.println("$(encoder.decode(rows[0].fields[1].value))")*/
+		out.print("\r$(debugMSG) 5000 registers\n")
 
 	    /* closing... */
 		out.println("$(debugMSG) Database created!\nBye!")
