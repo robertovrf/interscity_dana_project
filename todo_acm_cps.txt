@@ -1,19 +1,14 @@
-TODO list:
+TODO:
+- create docker images
+- push docker images to hub.docker.com/robertovrf/emergent-microservice
+- write and test InteractiveEmergentSys.dn
+- create DB scripts to support different workload scenarios
+- Run experiments: 
+	- 1: for each existing composition
+		run two scenarios with 1 5 10 25 50 simultaneous clients for one instance of the server
+	- 2: run one instance of PAL subjected to the experiment #1
+	- 3: run HPA with the experiment #1
+	- 4: run PAL+HPA with the experiment #1
 
-	- environment classificaton - PAL;
-	- ground truth again;
-	- test PAL;
-	- create different workloads with different entropy ratios and different data sizes;
-	- find real-life applications that we can based our workloads on, and use to contextualise our experiments;
-
-	TODO:
-	- understand kubectl commands
-	- understand the different concepts: resources, deployments, pods, etc.
-	- learning to properly use kubectl apply and run
-	- create a docker image
-	- push docker image to hub.docker.com
-	- execute always with EmergentSys.o and InteractiveEmergentSys.o
-	- execute DCScheme and other database script enabling IP being passed on as parameter in the command line.
-	- Run experiments: 
-		- 1: for each composition -- run one scenario with 
+	Each experiment should run for 4 min 20 times.
 
