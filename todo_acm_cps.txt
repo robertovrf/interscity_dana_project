@@ -1,7 +1,6 @@
 TODO:
 - create docker images
 - push docker images to hub.docker.com/robertovrf/emergent-microservice
-- write and test InteractiveEmergentSys.dn
 - create DB scripts to support different workload scenarios
 - Run experiments: 
 	- 1: for each existing composition

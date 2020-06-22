@@ -96,7 +96,7 @@ component provides App requires io.Output out, data.IntUtil iu, rest.RESys, io.I
 				for (int confCount = 0; confCount < configsStr.arrayLength; confCount++) {
 					sys.setConfig(configsStr[confCount].string)
 					out.println("$(debugMSG) Config: $(configsStr[confCount].string)")
-					outF.writeLine(new char[]("Config: ", configsStr[confCount].string))
+					outF.writeLine(new char[]("config, ", configsStr[confCount].string))
 					sys.getPerceptionData()
 					for (int i = 0; i < numberOfCycles; i++) {
 						t.sleep(observationWindow)
