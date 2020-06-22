@@ -1,6 +1,4 @@
 TODO:
-- create docker images
-- push docker images to hub.docker.com/robertovrf/emergent-microservice
 - create DB scripts to support different workload scenarios
 - Run experiments: 
 	- 1: for each existing composition
