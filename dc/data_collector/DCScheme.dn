@@ -78,7 +78,7 @@ component provides App requires io.Output out, data.mysql.MySQL,
 
 	int App:main(AppParam params[]) {
 		if (processParams(params) == 0) { return 1 }
-		ConfigFile configFile = new ConfigFile("../../configs/dc/database/database.config")
+		ConfigFile configFile = new ConfigFile("../../configs/build/dc/database/database.config")
 		host = configFile.getValue("database")
 		char user[] = configFile.getValue("db_user")
 		char pass[] = configFile.getValue("db_pass")

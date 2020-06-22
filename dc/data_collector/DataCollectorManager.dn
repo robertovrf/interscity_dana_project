@@ -21,7 +21,7 @@ component provides data_collector.DataCollectorManager requires io.Output out,
 	MySQL getMySQL() {
 		MySQL mysql = null
 		if (configFile == null) {
-			configFile = new ConfigFile("../configs/dc/database/database.config")	
+			configFile = new ConfigFile("../configs/build/dc/database/database.config")	
 		}
 		char host[] = configFile.getValue("database")
 		char user[] = configFile.getValue("db_user")

@@ -20,11 +20,6 @@ const char ADD_COMP[]			= "add_comp"
 const char REMOVE_PROXY[]		= "remove_proxy"
 const char REMOVE_COMP[]		= "remove_comp"
 
-/* registry commands */
-const char REGISTER[] 			= "register"
-const char GET_ALL_SERVERS[]	= "get_all_servers"
-const char END_OF_STR[] 		= "\r\n\r\n"
-
 /* HTTP responses */
 const char OK_STATUS[] 			= "200 OK"
 const char BADREQUEST_STATUS[] 	= "400 Bad Request"
@@ -33,33 +28,11 @@ const char NOTFOUND_STATUS[] 	= "404 Not Found"
 /* emergent sys port */
 const int PORT = 2011
 
-/* registry server info */
-const char REGISTRY_IP[] = "scc-mc1.lancs.ac.uk"
-const int REGISTRY_PORT = 2018
-
 component provides App requires io.Output out, data.IntUtil iu, monitoring.Perception, net.TCPSocket,
  net.TCPServerSocket, data.StringUtil strUtil, http.util.HTTPUtil httpUtil, data.json.JSONParser parser {
 
-	Perception perception
-
-	HTTPMessage makeRequest(char method[], char url[], char payload[]) {
-		char req[] 	= ""
-		if (method == "GET") { req = new char[]("GET /registry/", url, " HTTP/1.0", END_OF_STR) }
-		else if (method == "POST") {
-			req = new char[]("POST /registry/", url, " HTTP/1.0\r\n", "Content-Length: ",
-				iu.intToString(payload.arrayLength), END_OF_STR, payload)
-		}
-		return request(req)
-	}
-
-	HTTPMessage request(char req[]) {
-		TCPSocket s = new TCPSocket()
-		s.connect(REGISTRY_IP, REGISTRY_PORT)
-		s.send(req)		
-		HTTPMessage msg = httpUtil.readHTTPRequest(s)
-		s.disconnect()
-		return msg
-	}
+	Perception perception = null
+	bool started = false
 
 	HTTPMessage readRequest(TCPSocket client) {
 		HTTPMessage msg = clone httpUtil.readHTTPRequest(client)
@@ -127,8 +100,10 @@ component provides App requires io.Output out, data.IntUtil iu, monitoring.Perce
 		if (cmdList.arrayLength == 1) {
 			if (cmdList[0].string == HELP) { return new String[](new String(NOTFOUND_STATUS)) /* TODO */ }
 			else if (cmdList[0].string == GET_CONFIG) {
-				return new String[](new String(OK_STATUS), 
-					new String(parseStringJSON(perception.getConfig(), "config")))
+				if (started) {
+					return new String[](new String(OK_STATUS), 
+						new String(parseStringJSON(perception.getConfig(), "config")))
+				}
 			} else if (cmdList[0].string == GET_ALL_CONFIGS) {	
 				return new String[](new String(OK_STATUS),
 					new String(parseListJSON(perception.getAllConfigs(), "configs")))
@@ -157,14 +132,15 @@ component provides App requires io.Output out, data.IntUtil iu, monitoring.Perce
 				perception.addProxy(cmdList[1].string)
 				return new String[](new String(OK_STATUS))
 			} else if (cmdList[0].string == SET_MAIN) {
-				//generateER()
 				/* hardcoded */
+				//TODO make this a bit 
 				AppParam params[] = new AppParam[2]
 				params[0] = new AppParam()
 				params[0].string = "-p"
 				params[1] = new AppParam()
 				params[1].string = "2020"
 				perception.setMain(cmdList[1].string, params)
+				started = true
 				return new String[](new String(OK_STATUS))
 			} else { out.println("$(debugMSG) Invalid command.") }
 		} else { out.println("$(debugMSG) Invalid command.") }
@@ -220,34 +196,9 @@ component provides App requires io.Output out, data.IntUtil iu, monitoring.Perce
 		}
 	}
 
-	void generateER() {
-	/*	char factoryObject[] =  new char[] ("{",
-			"\"interface\" : {\"name\" : \"ER\",\"path\" : \"resource/external_references/ER.dn\"},",
-			"\"skeleton\" : {\"path\" : \"../metacom/factory/skeletons/ER.sk\"},",
-			"\"target_folder\" : \"../metacom/external_references/\",",
-			"\"functions\" : [{\"signature\" : \"ServerInfo[] getServers()\",",
-			"\"name\" : \"getServers()\",\"return_data_type\" : \"ServerInfo[]\",\"order_matters\" : false,",
-			"\"data\" :")
-		HTTPMessage msg = makeRequest("GET", GET_ALL_SERVERS, "")
-		if (msg.status == 200) { factoryObject = new char[](factoryObject, msg.postData) }
-		factoryObject = new char[](factoryObject, "}]}")
-		factory.generateVariants(factoryObject)*/
-	}
-
-	// TODO: maybe read the info from a file...
-	void register() {
-		/*char serverInfo[] = new char[]("{")
-		serverInfo = new char[](serverInfo, "\"name\": \"lb\",")
-		serverInfo = new char[](serverInfo, "\"ip\": \"localhost\",")
-		serverInfo = new char[](serverInfo, "\"port\": 2012")
-		serverInfo = new char[](serverInfo, "}")
-		HTTPMessage msg = makeRequest("POST", REGISTER, serverInfo)
-		if (msg.status == 200) { out.println("$(debugMSG) registered successfully.") }*/
-	}
-
 	int App:main(AppParam params[]) {
 		perception = new Perception(false)
-		register()
+		started = false
 		out.println("$(debugMSG) EmergentSys started!")
 		out.println("$(debugMSG) Waiting for requests...")
 		serverStart()
