@@ -76,5 +76,6 @@ component provides data_collector.DataCollectorManager requires io.Output out,
 			}
 			stream.write("] }")
 		}
+		mysql.close()
 	}
 }
