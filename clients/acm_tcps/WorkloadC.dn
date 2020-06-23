@@ -1,7 +1,7 @@
 // This implements low entropy high volume of data -- CACHE COMPRESSION should win
 component provides App requires io.Output out, net.http.HTTPRequest request,
 	time.Calendar ic, time.DateUtil dateUtil, data.IntUtil iu {
-	char url[] = "scc-mc1.lancs.ac.uk:2020/collector/resources/22/data"
+	char url[] = "34.67.91.151:2020/collector/resources/22/data"
 	
 	int App:main(AppParam params[]) {
 		while(true) {
