@@ -9,16 +9,18 @@ component provides App requires io.Output out, net.TCPSocket,
 		File f = new File("big_file.txt", File.READ)
 		//File f = new File("small_file.txt", File.READ)
 		TCPSocket cs = new TCPSocket()
-		if (cs.accept(s)) {
-			byte content[] = f.read(f.getSize())
-			ResponseTime metric = new ResponseTime()
-			out.println("before send...")
-			metric.start()
-			cs.send(content)
-			cs.disconnect()
-			metric.finish()
-			int result = metric.result()
-			out.println("$(iu.intToString(result) ms)")
+		while(true) {
+			if (cs.accept(s)) {
+				byte content[] = f.read(f.getSize())
+				ResponseTime metric = new ResponseTime()
+				out.println("before send...")
+				metric.start()
+				cs.send(content)
+				cs.disconnect()
+				metric.finish()
+				int result = metric.result()
+				out.println("$(iu.intToString(result) ms)")
+			}
 		}
 		return 0
 	}
