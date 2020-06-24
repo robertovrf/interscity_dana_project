@@ -12,6 +12,7 @@ component provides App requires io.Output out, net.TCPSocket,
 		if (cs.accept(s)) {
 			byte content[] = f.read(f.getSize())
 			ResponseTime metric = new ResponseTime()
+			out.println("before send...")
 			metric.start()
 			cs.send(content)
 			cs.disconnect()
