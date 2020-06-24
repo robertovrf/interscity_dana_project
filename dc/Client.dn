@@ -1,7 +1,7 @@
 component provides App requires io.Output out, net.TCPSocket, data.IntUtil iu {
 	int App:main(AppParam params[]) {
-		int BIG_FILE_SIZE = 1048575
-		//int SMALL_FILE_SIZE = 57
+		//int BIG_FILE_SIZE = 1048575
+		int SMALL_FILE_SIZE = 57
 		TCPSocket s = new TCPSocket()
 		if (!s.connect("scc-mc1.lancs.ac.uk", 8080)) { 
 			out.println("Error while trying to connect to server")

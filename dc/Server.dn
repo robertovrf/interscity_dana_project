@@ -6,9 +6,9 @@ component provides App requires io.Output out, net.TCPSocket,
 		if (!s.bind(TCPServerSocket.ANY_ADDRESS, 8080)) {
 			throw new Exception("Failed to bind master socket")
 		}
-		File f = new File("big_file.txt", File.READ)
+		//File f = new File("big_file.txt", File.READ)
+		File f = new File("small_file.txt", File.READ)
 		byte content[] = f.read(f.getSize())
-		//File f = new File("small_file.txt", File.READ)
 		TCPSocket cs = new TCPSocket()
 		while(true) {
 			if (cs.accept(s)) {
