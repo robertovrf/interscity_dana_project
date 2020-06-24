@@ -11,7 +11,6 @@ component provides monitoring.ResponseTime requires io.Output out, data.IntUtil 
 	
 	DateTime dt1
 	DateTime dt2
-	DateTime result
 
 	void ResponseTime:start() {	dt1 = ic.getTime() }
 
