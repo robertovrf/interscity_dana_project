@@ -144,12 +144,13 @@ component provides App requires io.Output out, data.IntUtil iu, rest.RESys, io.I
 		char currentConfig[] = sys.getConfig()
 		if (currentConfig == null) {
 			//TODO: add the -p 2020 as part of the request -- for now this is hard coded over at EmergentSys.dn
-			char wsCore[] = new char[](info.getVariable("DANA_HOME"), "/components/ws/core.o")
+			//char wsCore[] = new char[](info.getVariable("DANA_HOME"), "/components/ws/core.o")
+			char tcpNetwork[] = new char[]("../repository/TCPNetwork.o")
 			out.println("$(debugMSG) Starting up the system...")
-			sys.setMain(wsCore)
+			sys.setMain(tcpNetwork)
 			out.println("$(debugMSG) System running.")
 			out.println("$(debugMSG) Adding proxy...")
-			sys.addProxy("|../pal/monitoring/proxies/DCProxy.o|*(*:ws.Web[0]:*)|")
+			sys.addProxy("|../pal/monitoring/proxies/DCProxy.o|*(*:hh.HTTPHandler[0]:*)|")
 			out.println("$(debugMSG) Proxy added!")
 		}
 		char cmd[] = "start"

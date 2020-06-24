@@ -1,8 +1,7 @@
 const char debugMSG[] = "[@DCProxy]"
 
-component provides ws.Web, monitoring.BeingMonitored requires io.Output out, 
-	ws.Web web, monitoring.Container, monitoring.ResponseTime,
-	data.StringUtil stringUtil, time.Timer, data.IntUtil iu {
+component provides hh.HTTPHandler, monitoring.BeingMonitored requires monitoring.Container, 
+	monitoring.ResponseTime, hh.HTTPHandler hh, io.Output out {
 
 	static Container monitor
 
@@ -28,49 +27,19 @@ component provides ws.Web, monitoring.BeingMonitored requires io.Output out,
 		}
 	}
 
-	implementation Web {
-		bool Web:get(char path[], DocStream stream, HashTable params) {
-			bool returnValue = false
+	implementation HTTPHandler {
+		void HTTPHandler:process(Command cmd, TCPSocket s) {
 			if (monitor == null) {
 				monitor = new Container()
 				monitor.turnMonitorOn()
 			}
 			ResponseTime metric = new ResponseTime()
 			metric.start()
-			returnValue = web.get(path,stream,params)
+			hh.process(cmd, s)
 			metric.finish()
 			int result = metric.result()
 			monitor.addMetric("response_time", result, false)
-			monitor.addEvent(new char[]("get:", path), 1)
-			return returnValue
-		}
-		
-		bool Web:post(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
-			bool returnValue = false
-			if (monitor == null) {
-				monitor = new Container()
-				monitor.turnMonitorOn()
-			}
-			ResponseTime metric = new ResponseTime()
-			metric.start()
-			returnValue = web.post(path,contentType, content, stream, params)
-			metric.finish()
-			int result = metric.result()
-			monitor.addMetric("response_time", result, false)
-			monitor.addEvent(new char[]("post:", path), 1)
-			return returnValue
-		}
-
-		bool Web:put(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
-			return false
-		}
-	
-		bool Web:delete(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {
-			return false
-		}
-		
-		String[] Web:getURLPatterns() { 
-			return web.getURLPatterns()
+			monitor.addEvent(cmd.resource, 1)
 		}
 	}
 }

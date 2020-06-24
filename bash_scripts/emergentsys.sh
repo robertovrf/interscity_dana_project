@@ -1,2 +1,2 @@
 #!/bin/bash
-dana -sp ../dc EmergentSys.o
+dana -sp "../dc;../repository" EmergentSys.o > em.log
