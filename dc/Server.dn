@@ -13,8 +13,8 @@ component provides App requires io.Output out, net.TCPSocket,
 			byte content[] = f.read(f.getSize())
 			ResponseTime metric = new ResponseTime()
 			metric.start()
-			s.send(content)
-			s.disconnect()
+			cs.send(content)
+			cs.disconnect()
 			int result = metric.result()
 			out.println("$(iu.intToString(result) ms)")
 		}
