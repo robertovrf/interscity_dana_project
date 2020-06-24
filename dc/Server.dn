@@ -1,0 +1,23 @@
+component provides App requires io.Output out, net.TCPSocket, 
+	net.TCPServerSocket, io.File, monitoring.ResponseTime, data.IntUtil iu {
+
+	int App:main(AppParam params[]) {
+		TCPServerSocket s = new TCPServerSocket()
+		if (!s.bind(TCPServerSocket.ANY_ADDRESS, 8080)) {
+			throw new Exception("Failed to bind master socket")
+		}
+		File f = new File("big_file.txt", File.READ)
+		//File f = new File("small_file.txt", File.READ)
+		TCPSocket cs = new TCPSocket()
+		if (cs.accept(s)) {
+			byte content[] = f.read(f.getSize())
+			ResponseTime metric = new ResponseTime()
+			metric.start()
+			s.send(content)
+			s.disconnect()
+			int result = metric.result()
+			out.println("$(iu.intToString(result) ms)")
+		}
+		return 0
+	}
+}
