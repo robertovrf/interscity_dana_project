@@ -7,11 +7,11 @@ component provides App requires io.Output out, net.TCPSocket,
 			throw new Exception("Failed to bind master socket")
 		}
 		File f = new File("big_file.txt", File.READ)
+		byte content[] = f.read(f.getSize())
 		//File f = new File("small_file.txt", File.READ)
 		TCPSocket cs = new TCPSocket()
 		while(true) {
 			if (cs.accept(s)) {
-				byte content[] = f.read(f.getSize())
 				ResponseTime metric = new ResponseTime()
 				out.println("before send...")
 				metric.start()
