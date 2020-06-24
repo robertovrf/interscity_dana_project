@@ -1,8 +1,7 @@
 const char debugMSG[] = "[@DZIP]"
 
 component provides compression.Compression requires 
-	compress.algorithm.StreamCompression:deflate alg, 
-	 time.Calendar ic, time.DateUtil dateUtil, data.IntUtil iu, io.Output out {
+	compress.algorithm.StreamCompression:deflate alg {
 //component provides compression.Compression requires compress.Compressor:gzip zip, io.File:mem {
 
 	byte[] Compression:compress(byte content[]) {
@@ -13,15 +12,9 @@ component provides compression.Compression requires
 		zip.compress(inf, ouf)
 		ouf.setPos(0)
 		byte result[] = ouf.read(ouf.getSize())*/
-		DateTime dt1
-		DateTime dt2
-		dt1 = ic.getTime()
 		alg.compressInit()
 		byte result[] = alg.compress(content, content.arrayLength)
 		alg.compressEnd()
-		dt2 = ic.getTime()
-		int tresult = dateUtil.toMilliseconds(dateUtil.diff(dt1, dt2))
-		out.println("$(debugMSG) $(iu.intToString(tresult))")
 		return result
 	}
 
