@@ -1,1 +1,0 @@
-Robertos-MacBook-Pro:dc roberto$ dnc Server.dn -sp ../pal

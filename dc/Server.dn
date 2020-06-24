@@ -6,19 +6,28 @@ component provides App requires io.Output out, net.TCPSocket,
 		if (!s.bind(TCPServerSocket.ANY_ADDRESS, 8080)) {
 			throw new Exception("Failed to bind master socket")
 		}
-		//File f = new File("big_file.txt", File.READ)
-		File f = new File("small_file.txt", File.READ)
-		byte content[] = f.read(f.getSize())
+		File big = new File("data.txt", File.READ)
+		File small = new File("data.zip", File.READ)
+		byte bcontent[] = big.read(big.getSize())
+		byte scontent[] = small.read(small.getSize())
 		TCPSocket cs = new TCPSocket()
 		while(true) {
 			if (cs.accept(s)) {
 				ResponseTime metric = new ResponseTime()
 				out.println("before send...")
 				metric.start()
-				cs.send(content)
+				cs.send(bcontent)
 				cs.disconnect()
 				metric.finish()
 				int result = metric.result()
+				out.println("$(iu.intToString(result) ms)")
+				metric = new ResponseTime()
+				out.println("before send...")
+				metric.start()
+				cs.send(scontent)
+				cs.disconnect()
+				metric.finish()
+				result = metric.result()
 				out.println("$(iu.intToString(result) ms)")
 			}
 		}
