@@ -6,7 +6,8 @@ component provides App requires io.Output out, net.TCPSocket, data.IntUtil iu {
 		if (!s.connect("scc-mc1.lancs.ac.uk", 8080)) { 
 			out.println("Error while trying to connect to server")
 		} 
-		byte content[] = s.recv(BIG_FILE_SIZE)
+		//byte content[] = s.recv(BIG_FILE_SIZE)
+		byte content[] = s.recv(SMALL_FILE_SIZE)
 		s.disconnect()
 		out.println("$(iu.intToString(content.arrayLength)) size")
 		return 0
