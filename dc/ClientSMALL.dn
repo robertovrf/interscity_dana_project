@@ -1,0 +1,13 @@
+component provides App requires io.Output out, net.TCPSocket, data.IntUtil iu {
+	int App:main(AppParam params[]) {
+		int SMALL_FILE_SIZE = 208
+		TCPSocket s = new TCPSocket()
+		if (!s.connect("scc-mc1.lancs.ac.uk", 8081)) { 
+			out.println("Error while trying to connect to server")
+		} 
+		byte content[] = s.recv(SMALL_FILE_SIZE)
+		out.println("$(iu.intToString(content.arrayLength)) size")
+		s.disconnect()
+		return 0
+	}
+}
