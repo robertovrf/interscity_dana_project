@@ -16,6 +16,7 @@ component provides App requires io.Output out, net.TCPSocket,
 			metric.start()
 			cs.send(content)
 			cs.disconnect()
+			metric.finish()
 			int result = metric.result()
 			out.println("$(iu.intToString(result) ms)")
 		}
