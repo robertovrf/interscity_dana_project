@@ -14,7 +14,7 @@ component provides App requires io.Output out, net.http.HTTPRequest request,
 			if ((dt1 != null) && (dt2 != null)) {
 				result = dateUtil.toMilliseconds(dateUtil.diff(dt1, dt2))
 			}
-			out.println("$(iu.intToString(result)) ms")
+			out.println("$(iu.intToString(result))")
 		}
 		return 0
 	}

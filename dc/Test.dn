@@ -1,0 +1,14 @@
+component provides App requires io.Output out, data.IntUtil iu, data.StringUtil strUtil {
+	int App:main(AppParam params[]) {
+		char config[] = new char[]("|../repository/TCPNetwork.o,/home/roberto/dana/components/net/TCP.o,../repository/rh/RequestHandler.o,/home/roberto/dana/components/data/StringUtil.o,/home/roberto/dana/components/data/adt/List.o,../repository/hh/HTTPHandler.o,/home/roberto/dana/components/io/File.o,/home/roberto/dana/components/ws/DocStream.o,/home/roberto/dana/components/encoding/Encoder.uri.o,../dc/ws/NFRProxy.o,../dc/ws/WebDC.o,../dc/data_collector/DataCollectorManager.o,/home/roberto/dana/components/data/json/JSONEncoder.o,/home/roberto/dana/components/util/TypeUtil.o,/home/roberto/dana/components/data/json/JSONParser.o,/home/roberto/dana/components/data/mysql/MySQL.o,/home/roberto/dana/components/util/ConfigFile.o,/home/roberto/dana/components/io/TextFile.o,/home/roberto/dana/components/data/adt/HashTable.o,./monitoring/ResponseTime.o,/home/roberto/dana/components/time/Calendar.o,/home/roberto/dana/components/time/DateUtil.o,/home/roberto/dana/components/net/http/HTTPRequest.o,/home/roberto/dana/components/net/dns/DNS.o,../dc/interceptor/DSInterceptor.o|0:net.TCPSocket:1,0:net.TCPServerSocket:1,0:rh.RequestHandler:2,2:net.TCPSocket:1,2:data.StringUtil:3,3:data.adt.List:4,2:hh.HTTPHandler:5,5:io.FileSystem:6,5:io.File:6,5:ws.DocStream:7,7:data.StringUtil:3,7:encoding.Encoder-uri:8,5:ws.Web:9,9:ws.Web-nfrp:10,10:data.StringUtil:3,10:data_collector.DataCollectorManager:11,11:data.json.JSONEncoder:12,12:util.TypeUtil:13,12:data.json.JSONParser:14,14:data.adt.List:4,14:data.StringUtil:3,11:encoding.Encoder-uri:8,11:data.mysql.MySQL:15,11:util.ConfigFile:16,16:io.TextFile:17,17:io.File:6,16:data.StringUtil:3,16:data.adt.HashTable:18,9:monitoring.ResponseTime:19,19:time.Calendar:20,19:time.DateUtil:21,9:net.http.HTTPRequest:22,22:net.TCPSocket:1,22:net.dns.DNS:23,22:data.StringUtil:3,9:interceptor.DSInterceptor:24,24:ws.DocStream:7,5:data.adt.HashTable:18,5:encoding.Encoder-uri:8,5:data.StringUtil:3|")
+		String helper[] = strUtil.explode(config, "|")
+		helper = strUtil.explode(helper[0].string, ",")
+		for (int i = 0; i < helper.arrayLength; i++) {
+			if (strUtil.find(helper[i].string, "../dc/ws/NFRP") != StringUtil.NOT_FOUND) {
+				out.println("$(helper[i].string)")
+				break
+			}
+		}
+		return 0
+	}
+}

@@ -95,8 +95,8 @@ component provides App requires io.Output out, data.IntUtil iu, rest.RESys, io.I
 				TextFile outF = new TextFile(resultFileName, File.WRITE)
 				for (int confCount = 0; confCount < configsStr.arrayLength; confCount++) {
 					sys.setConfig(configsStr[confCount].string)
-					out.println("$(debugMSG) Config: $(configsStr[confCount].string)")
-					outF.writeLine(new char[]("config, ", configsStr[confCount].string))
+					out.println("$(debugMSG) Config: $(getVariant(configsStr[confCount].string))")
+					outF.writeLine(new char[]("config, ", getVariant(configsStr[confCount].string)))
 					sys.getPerceptionData()
 					for (int i = 0; i < numberOfCycles; i++) {
 						t.sleep(observationWindow)
@@ -123,6 +123,17 @@ component provides App requires io.Output out, data.IntUtil iu, rest.RESys, io.I
 		} else { out.println("$(debugMSG) Invalid command.") }
 	}
 
+	char[] getVariant(char config[]) {
+		String helper[] = strUtil.explode(config, "|")
+		helper = strUtil.explode(helper[0].string, ",")
+		for (int i = 0; i < helper.arrayLength; i++) {
+			if (strUtil.find(helper[i].string, "../dc/ws/NFRP") != StringUtil.NOT_FOUND) {
+				return helper[i].string
+			}
+		}
+		return config
+	}
+
 	void handlePerception(char perceptionData[], TextFile file) {
 		JSONElement document = parser.parseDocument(perceptionData)
 		JSONElement metricsJSON = parser.getValue(document, "metrics")
@@ -133,8 +144,8 @@ component provides App requires io.Output out, data.IntUtil iu, rest.RESys, io.I
 				dec value = du.decFromString(parser.getValue(childrenMetrics, "value").value)
 				int count = iu.intFromString(parser.getValue(childrenMetrics, "count").value)
 				dec metricValue = value/count
-				 out.println("$(du.decToString(metricValue)) ms")
-				if (file != null) { file.writeLine("$(name), $(du.decToString(metricValue))") }
+				 out.println("$(du.decToString(metricValue))")
+				if (file != null) { file.writeLine("$(du.decToString(metricValue))") }
 			}
 		}
 	}
