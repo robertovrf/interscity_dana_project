@@ -6,4 +6,4 @@ ENV DANA_HOME=/home/roberto/dana/
 ENV PATH="${PATH}:/home/roberto/dana/"
 WORKDIR /home/roberto/interscity_dana_project/pal/
 
-ENTRYPOINT ["/bin/bash", "./../bash_scripts/emergentsys.sh"]
+ENTRYPOINT ["/bin/bash", "./../scripts/bash/emergentsys.sh"]

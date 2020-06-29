@@ -21,24 +21,45 @@ component provides ws.Web, Service requires io.Output out, ws.Web:nfrp web, inte
 	implementation Web {
 		Mutex cacheLock = new Mutex()
 
-		bool Web:get(char path[], DocStream stream, HashTable params) {
-			mutex (cacheLock) {
-				byte response[] = cache.get(path)
-				if (response != null) {
-					stream.write(response)
-					return true
+		bool isCachable(Header header[]) {
+			for (int i = 0; i < header.arrayLength; i++) {
+				if (header[i].key == "Cache-Control") {
+					if (header[i].value == "no-cache") {
+						return false
+					}
 				}
-				bool result
+			}
+			return true
+		}
+
+		bool Web:get(char path[], DocStream stream, HashTable params) {
+			bool result = false
+			if (!isCachable(stream.getRequestHeaders())) {
+				// works as NFRProxy
 				DSInterceptor interceptor = new DSInterceptor(null, null, false)
 				interceptor.set(stream)
 				result = web.get(path, interceptor, params)
-				//cache only if result is true
 				if ((result) && (interceptor.get() != null)) {
 					stream.write(interceptor.get())
-					cache.insert(path, interceptor.get())
 				}
-				return result
+			} else {
+				mutex (cacheLock) {
+					byte response[] = cache.get(path)
+					if (response != null) {
+						stream.write(response)
+						return true
+					}
+					DSInterceptor interceptor = new DSInterceptor(null, null, false)
+					interceptor.set(stream)
+					result = web.get(path, interceptor, params)
+					//cache only if result is true
+					if ((result) && (interceptor.get() != null)) {
+						stream.write(interceptor.get())
+						cache.insert(path, interceptor.get())
+					}
+				}
 			}
+			return result
 		}
 
 		bool Web:post(char path[], char contentType[], byte content[], DocStream stream, HashTable params) {

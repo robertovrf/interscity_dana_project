@@ -13,7 +13,8 @@
 // Author: Roberto Rodrigues Filho
 // Date: December, 2019
 
-component provides cache.Cache requires cache.Hash hashFunc, io.Output out {
+component provides cache.Cache requires cache.Hash hashFunc, io.Output out, 
+	time.DateUtil dateUtil, time.Calendar calendar {
 	
 	CacheItem table[] = new CacheItem[Cache.TABLE_SIZE]
 	int cacheSize = 0
@@ -59,20 +60,36 @@ component provides cache.Cache requires cache.Hash hashFunc, io.Output out {
 	// ----- managing eviction queue
 
 	// ----- managing cache items
+	bool isStale(CacheItem item) {
+		int diff = dateUtil.toMilliseconds(dateUtil.diff(item.timeStamp, calendar.getTime()))
+		if (diff >= Cache.MAX_AGE) {
+			return true
+		}
+		return false
+	}
+
 	byte[] Cache:get(char key[]) {
 		int index = hashFunc.hash(key)
 		if (table[index] == null) {
 			return null
 		} else {
 			if (table[index].key == key) {
-				updateTailOfQueue(table[index])
-				return table[index].content
+				if (isStale(table[index])) {
+					delete(key)
+				} else {
+					updateTailOfQueue(table[index])
+					return table[index].content
+				}
 			}
 			CacheItem helper = table[index]
 			while ((helper = helper.chainNext) != null) {
 				if (helper.key == key) {
-					updateTailOfQueue(helper)
-					return helper.content
+					if (isStale(helper)) {
+						delete(key)
+					} else {
+						updateTailOfQueue(helper)
+						return helper.content
+					}
 				}
 			}
 		}
@@ -86,6 +103,7 @@ component provides cache.Cache requires cache.Hash hashFunc, io.Output out {
 			removeFromQueue()
 		}
 		mru.content = content
+		mru.timeStamp = calendar.getTime()
 		cacheSize = (cacheSize - oldContentSize) + content.arrayLength
 	} 
 	
@@ -101,6 +119,7 @@ component provides cache.Cache requires cache.Hash hashFunc, io.Output out {
 		CacheItem item = new CacheItem()
 		item.key = key
 		item.content = content
+		item.timeStamp = calendar.getTime()
 		while ((cacheSize + item.content.arrayLength) > Cache.CACHE_MAX_SIZE) {
 			removeFromQueue()
 		}

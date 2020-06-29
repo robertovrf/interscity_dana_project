@@ -77,35 +77,51 @@ component provides App requires io.Output out, data.mysql.MySQL,
 	}
 
 	int App:main(AppParam params[]) {
-		if (processParams(params) == 0) { return 1 }
 		ConfigFile configFile = new ConfigFile("../../configs/build/dc/database/database.config")
-		host = configFile.getValue("database")
+		if (params.arrayLength == 0) { host = configFile.getValue("database") }
+		else if (processParams(params) == 0) { return 1 }
 		char user[] = configFile.getValue("db_user")
 		char pass[] = configFile.getValue("db_pass")
 		/* mysql object */
-		MySQL mysql = new MySQL(host, 0, user, pass, "data_collector")
+		MySQL mysql = new MySQL(host, 0, user, pass, "")
+		/* queries */
+		char dropDBQuery[] = new char[]("DROP DATABASE IF EXISTS data_collector;")
+		char createDBQuery[] = new char[]("CREATE DATABASE data_collector;")
+		char useDBQuery[] = new char[]("USE data_collector;")
+		char createDataTableQuery[] = new char[]("CREATE TABLE `data` (",
+		  "`id_data` int(11) NOT NULL AUTO_INCREMENT,",
+		  "`value` varchar(512) DEFAULT NULL,",
+       "`uuid` varchar(512) DEFAULT NULL,",
+		  "PRIMARY KEY (`id_data`)",
+		") ENGINE=InnoDB DEFAULT CHARSET=latin1;")
+		/* queries execution ... */
+		out.println("$(debugMSG) Welcome to DataCollector database creator!")
+		out.println("$(debugMSG) Creating database...")
+		mysql.execute(dropDBQuery)
+		mysql.execute(createDBQuery)
+		mysql.execute(useDBQuery)
+		mysql.execute(createDataTableQuery)
+		/* data insertion - execution */
 		out.println("$(debugMSG) Adding 5000 registers...")
 		char egData[] = null
-		int count = 0
-		for (int i = 0; i < 10; i++) {
-			for (int k = 0; k < i; k++) {
-				for (int j = 0; j < 100; j++) {
-					count++ 
-					PublicBusData bus = new PublicBusData()
-					bus.location = new Location()
-					bus.location.lat = "-10.00032"
-					bus.location.lon = "-23.559615"
-					bus.speed = 54
-					bus.uuid = iu.intToString(i+1)
-					bus.busline = "875c-10-1"
-					bus.timestamp = "2017-06-14T17:52:25.428Z"
-					PublicBusData myData[] = new PublicBusData[](bus)
-					egData = jencoder.jsonFromArray(myData, null)
-					mysql.execute(new char[]("INSERT INTO data (value, uuid) VALUES (\"", 
-						encoder.encode(egData) 
-						,"\" ,\"", iu.intToString(i+1),"\");"))
-					out.print("\r$(debugMSG) $(iu.intToString(count))...      ")
-				}
+		int count = 1
+		for (int i = 0; i < 50; i++) {
+			for (int j = 0; j < 100; j++) {
+				count = (j+1) + (i*100)
+				PublicBusData bus = new PublicBusData()
+				bus.location = new Location()
+				bus.location.lat = "-10.00032"
+				bus.location.lon = "-23.559615"
+				bus.speed = 54
+				bus.uuid = iu.intToString(i+1)
+				bus.busline = "875c-10-1"
+				bus.timestamp = "2017-06-14T17:52:25.428Z"
+				PublicBusData myData[] = new PublicBusData[](bus)
+				egData = jencoder.jsonFromArray(myData, null)
+				mysql.execute(new char[]("INSERT INTO data (value, uuid) VALUES (\"", 
+					encoder.encode(egData) 
+					,"\" ,\"", iu.intToString(i+1),"\");"))
+				out.print("\r$(debugMSG) $(iu.intToString(count))...      ")
 			}
 		}
 		out.print("\r$(debugMSG) 5000 registers\n")
