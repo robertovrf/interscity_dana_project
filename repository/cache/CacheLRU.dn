@@ -62,8 +62,14 @@ component provides cache.Cache requires cache.Hash hashFunc, io.Output out,
 	// ----- managing cache items
 	bool isStale(CacheItem item) {
 		int diff = dateUtil.toMilliseconds(dateUtil.diff(item.timeStamp, calendar.getTime()))
-		if (diff >= Cache.MAX_AGE) {
-			return true
+		if (item.maxAge == 0) {
+			if (diff > Cache.MAX_AGE) {
+				return true
+			}
+		} else {
+			if (diff > item.maxAge) {
+				return true
+			}
 		}
 		return false
 	}
@@ -75,7 +81,6 @@ component provides cache.Cache requires cache.Hash hashFunc, io.Output out,
 		} else {
 			if (table[index].key == key) {
 				if (isStale(table[index])) {
-					out.println("removing stale item")
 					delete(key)
 				} else {
 					updateTailOfQueue(table[index])
@@ -110,7 +115,7 @@ component provides cache.Cache requires cache.Hash hashFunc, io.Output out,
 	} 
 	
 	// not thread safe -- updates and descreases cacheSize variable
-	void Cache:insert(char key[], byte content[]) {
+	void Cache:insert(char key[], byte content[], int maxAge) {
 		if (content.arrayLength > Cache.CACHE_MAX_SIZE) {
 			throw new Exception("Error! Cached item size is bigger than CACHE_MAX_SIZE!")
 		}
@@ -122,6 +127,7 @@ component provides cache.Cache requires cache.Hash hashFunc, io.Output out,
 		item.key = key
 		item.content = content
 		item.timeStamp = calendar.getTime()
+		item.maxAge = maxAge * 1000
 		while ((cacheSize + item.content.arrayLength) > Cache.CACHE_MAX_SIZE) {
 			removeFromQueue()
 		}

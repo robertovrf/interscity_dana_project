@@ -66,7 +66,7 @@ component provides App requires io.Output out, data.IntUtil iu, cache.Cache cach
 		byte content[] = cache.get(item.key)
 		if (content == null) {
 			miss++
-			cache.insert(item.key, item.content)
+			cache.insert(item.key, item.content, 0)
 			if ((cacheSize + item.content.arrayLength) > CACHE_MAX_SIZE) { eviction++ }
 			else { cacheSize += item.content.arrayLength }
 		} else { hit++ }

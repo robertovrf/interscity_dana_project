@@ -7,14 +7,15 @@ data CacheItem {
 	CacheItem evictionNext
 	CacheItem evictionPrior
 	DateTime timeStamp
+	int maxAge //in ms
 }
 
 interface Cache {
 	const int CACHE_MAX_SIZE = 1000000 // 1MB
 	const int TABLE_SIZE = 300
-	const int MAX_AGE = 500 // in ms
+	const int MAX_AGE = 5000 // in ms
 	byte[] get(char key[])
-	void insert(char key[], byte content[])
+	void insert(char key[], byte content[], int maxAge) //maxAge in seconds
 	void delete(char key[])
 	void deleteAll()
 }
