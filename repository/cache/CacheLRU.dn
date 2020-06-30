@@ -75,20 +75,22 @@ component provides cache.Cache requires cache.Hash hashFunc, io.Output out,
 		} else {
 			if (table[index].key == key) {
 				if (isStale(table[index])) {
+					out.println("removing stale item")
 					delete(key)
 				} else {
 					updateTailOfQueue(table[index])
 					return table[index].content
 				}
-			}
-			CacheItem helper = table[index]
-			while ((helper = helper.chainNext) != null) {
-				if (helper.key == key) {
-					if (isStale(helper)) {
-						delete(key)
-					} else {
-						updateTailOfQueue(helper)
-						return helper.content
+			} else {
+				CacheItem helper = table[index]
+				while ((helper = helper.chainNext) != null) {
+					if (helper.key == key) {
+						if (isStale(helper)) {
+							delete(key)
+						} else {
+							updateTailOfQueue(helper)
+							return helper.content
+						}
 					}
 				}
 			}
@@ -143,7 +145,11 @@ component provides cache.Cache requires cache.Hash hashFunc, io.Output out,
 			while (current != null) {
 				if (current.key == key) {
 					// updates eviction queue
-					if (current.key == mru.key) {
+					if ((current.key == mru.key) 
+						&& (mru.key == lru.key)) {
+						deleteAll()
+						return
+					} else if (current.key == mru.key) {
 						mru = mru.evictionPrior
 						mru.evictionNext = null
 					} else if (current.key == lru.key) {
@@ -157,9 +163,9 @@ component provides cache.Cache requires cache.Hash hashFunc, io.Output out,
 					if (previous == null) { table[index] = table[index].chainNext }
 					else { previous.chainNext = current.chainNext }
 					cacheSize = cacheSize - current.content.arrayLength
-					current.chainNext = null
-					current.evictionPrior = null
-					current.evictionNext = null
+					if (current.chainNext != null) { current.chainNext = null }
+					if (current.evictionPrior != null) { current.evictionPrior = null }
+					if (current.evictionNext != null) { current.evictionNext = null }
 					return
 				}
 				previous = current
