@@ -44,7 +44,7 @@ component provides App requires io.Output out, encoding.Encoder:uri encoder,
 				count++
 			}
 		}
-		for (int i = 51; i < 101; i++) {
+		for (int i = 50; i < 101; i++) {
 			for (int j = 0; j < 800; j++) {
 				PublicBusData bus = new PublicBusData()
 				bus.location = new Location()

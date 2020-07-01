@@ -52,14 +52,12 @@ component provides ws.Web, Service requires io.Output out, ws.Web:nfrp web,
 				interceptor.set(stream)
 				result = web.get(path, interceptor, params)
 				if ((result) && (interceptor.get() != null)) {
-					out.println("non-cachable from db!")
 					stream.write(interceptor.get())
 				}
 			} else {
 				mutex (cacheLock) {
 					byte response[] = cache.get(path)
 					if (response != null) {
-						out.println("cachable from cache!")
 						stream.write(response)
 						return true
 					}
@@ -69,7 +67,6 @@ component provides ws.Web, Service requires io.Output out, ws.Web:nfrp web,
 					result = web.get(path, interceptor, params)
 					//cache only if result is true
 					if ((result) && (interceptor.get() != null)) {
-						out.println("cachable from db!")
 						stream.write(interceptor.get())
 						cache.insert(path, interceptor.get(), maxAge)
 					}
