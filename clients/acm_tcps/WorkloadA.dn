@@ -1,7 +1,7 @@
 // This implements low entropy low volume of data -- CACHE should win
 component provides App requires io.Output out, net.http.HTTPRequest request,
 	time.Calendar ic, time.DateUtil dateUtil, data.IntUtil iu {
-	char url[] = "34.67.91.151:2020/collector/resources/1/data/last"
+	char url[] = "35.188.47.150:2020/collector/resources/1/data/last"
 
 	int App:main(AppParam params[]) {
 		while(true) {
