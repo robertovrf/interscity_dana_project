@@ -44,6 +44,28 @@ component provides App requires io.Output out, encoding.Encoder:uri encoder,
 				count++
 			}
 		}
+		for (int i = 51; i < 101; i++) {
+			for (int j = 0; j < 800; j++) {
+				PublicBusData bus = new PublicBusData()
+				bus.location = new Location()
+				bus.location.lat = new char[]("-", iu.intToString(ranInt.get(101)) , ".00032")
+				bus.location.lon = new char[]("-", iu.intToString(ranInt.get(101)), ".559615")
+				bus.speed = ranInt.get(101)
+				bus.uuid = iu.intToString(i+1)
+				bus.busline = new char[](iu.intToString(ranInt.get(1000)), "c-", 
+					iu.intToString(ranInt.get(101)), "-", iu.intToString(ranInt.get(11)))
+				bus.timestamp = new char[]("2017-", iu.intToString(ranInt.get(12)+1), "-",
+				 iu.intToString(ranInt.get(31)+1), "T", iu.intToString(ranInt.get(24)), ":", 
+				 iu.intToString(ranInt.get(60)), ":", iu.intToString(ranInt.get(60)), ".", 
+				 iu.intToString(ranInt.get(1000)), "Z")
+				PublicBusData myData[] = new PublicBusData[](bus)
+				egData = jencoder.jsonFromArray(myData, null)
+				out.println(new char[]("INSERT INTO data (value, uuid) VALUES (\"", 
+					encoder.encode(egData) 
+					,"\" ,\"", iu.intToString(i+1),"\");"))
+				count++
+			}
+		}
 		return 0
 	}
 }
