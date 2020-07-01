@@ -23,8 +23,8 @@ component provides ws.Web, Service requires io.Output out, ws.Web:nfrp web,
 
 		bool isCachable(Header header[]) {
 			for (int i = 0; i < header.arrayLength; i++) {
-				if (header[i].key == "Cache-Control") {
-					if (header[i].value == "no-cache") {
+				if (strUtil.lowercase(header[i].key) == strUtil.lowercase("Cache-Control")) {
+					if (strUtil.lowercase(header[i].value) == strUtil.lowercase("no-cache")) {
 						return false
 					}
 				}
@@ -34,9 +34,9 @@ component provides ws.Web, Service requires io.Output out, ws.Web:nfrp web,
 
 		int getMaxAge(Header header[]) {
 			for (int i = 0; i < header.arrayLength; i++) {
-				if (header[i].key == "Cache-Control") {
+				if (strUtil.lowercase(header[i].key) == strUtil.lowercase("Cache-Control")) {
 					String helper[] = strUtil.explode(header[i].value, "=")
-					if (helper[0].string == "max-age") {
+					if (strUtil.lowercase(helper[0].string) == strUtil.lowercase("max-age")) {
 						return iu.intFromString(helper[1].string)
 					}
 				}

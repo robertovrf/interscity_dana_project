@@ -5,15 +5,17 @@ component provides App requires io.Output out, net.http.HTTPRequest request,
 		Header header[] = null
 		if (params[1] != null) {
 			if (params[1].string == "-1") {
+				out.println("no-cache!")
 				header = new Header[](new Header("Cache-Control", "no-cache"))
 			} else {
+				out.println("max-age $(params[1].string)!")
 				header = new Header[](new Header("Cache-Control", 
 					new char[]("max-age=", params[1].string)))
 			}
 		}
 
 		while(true) {
-			char url[] = new char[]("scc-mc1.lancs.ac.uk:2020/collector/resources/", params[0].string,"/data")
+			char url[] = new char[]("localhost:2020/collector/resources/", params[0].string,"/data")
 			DateTime dt1 = null
 			DateTime dt2 = null
 			int result = 0
