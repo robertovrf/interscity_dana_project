@@ -1,1 +1,0 @@
-add_proxy |../pal/monitoring/proxies/DCProxy.o|*(*:ws.Web[0]:*)|
