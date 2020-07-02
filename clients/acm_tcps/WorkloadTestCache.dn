@@ -12,7 +12,6 @@ component provides App requires io.Output out, net.http.HTTPRequest request,
 
 		if (params[1] != null) {
 			if (params[1].string == "-1") {
-				out.println("no-cache!")
 				header = new Header[](new Header("Cache-Control", "no-cache"))
 			} else {
 				out.println("max-age $(params[1].string)!")
