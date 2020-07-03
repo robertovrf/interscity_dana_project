@@ -1,15 +1,25 @@
-// dana WorkloadTestCache id cache entropy
+// dana WorkloadTestCache id cache-control entropy
 // e.g. dana WorkloadTestCache 3 -1 h
+// id == -1 --- return 1 record
+// id <= 50 --- small returned files (100 records)
+// id > 50 --- big returned files (800 records)
+// cache-control = -1 --- no-cache
+// cache-control = 1 --- 1 second
+// cache-control = 5 --- 5 seconds
+// entropy = h --- high entropy
+// entropy != h --- low entropy
 component provides App requires io.Output out, net.http.HTTPRequest request,
 	data.IntUtil iu, time.Calendar ic, time.DateUtil dateUtil {
+
 	int App:main(AppParam params[]) {
 		Header header[] = null
 		bool entropy = false
 		char url[] = null
 		int id = 0
 		int max = 0
-		int min
+		int min = 0
 
+		// cache-control stuff
 		if (params[1] != null) {
 			if (params[1].string == "-1") {
 				header = new Header[](new Header("Cache-Control", "no-cache"))
@@ -20,6 +30,7 @@ component provides App requires io.Output out, net.http.HTTPRequest request,
 			}
 		}
 
+		// entropy high or low, etc.
 		if (params[2] != null) {
 			if (params[2].string == "h") {
 				entropy = true
@@ -34,12 +45,28 @@ component provides App requires io.Output out, net.http.HTTPRequest request,
 			}
 		}
 
+		// one record or multiple record (if it is not set to -1)
+		if (params[0].string == "-1") {
+			id = 1
+			max = 50
+			min = 1
+		}
+
 		while(true) {
-			if (!entropy) { url = new char[]("35.188.47.150:2020/collector/resources/", params[0].string,"/data") }
-			else {
-				url = new char[]("35.188.47.150:2020/collector/resources/", iu.intToString(id),"/data")
-				id++
-				if (id == (max+1)) { id = min }
+			if (params[0].string == "-1") {
+				if (!entropy) { url = new char[]("35.188.47.150:2020/collector/resources/1/data/last") }
+				else {
+					url = new char[]("35.188.47.150:2020/collector/resources/", iu.intToString(id), "/data/last")
+					id++
+					if (id == (max+1)) { id = min }
+				}
+			} else {
+				if (!entropy) { url = new char[]("35.188.47.150:2020/collector/resources/", params[0].string,"/data") }
+				else {
+					url = new char[]("35.188.47.150:2020/collector/resources/", iu.intToString(id),"/data")
+					id++
+					if (id == (max+1)) { id = min }
+				}	
 			}
 			DateTime dt1 = null
 			DateTime dt2 = null
