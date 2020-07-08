@@ -8,6 +8,10 @@
 // cache-control = 5 --- 5 seconds
 // entropy = h --- high entropy
 // entropy != h --- low entropy
+
+//const char URL[] = "35.188.47.150:2020"
+const char URL[] = "localhost:2012"
+
 component provides App requires io.Output out, net.http.HTTPRequest request,
 	data.IntUtil iu, time.Calendar ic, time.DateUtil dateUtil {
 
@@ -54,16 +58,16 @@ component provides App requires io.Output out, net.http.HTTPRequest request,
 
 		while(true) {
 			if (params[0].string == "-1") {
-				if (!entropy) { url = new char[]("35.188.47.150:2020/collector/resources/1/data/last") }
+				if (!entropy) { url = new char[](URL, "/collector/resources/1/data/last") }
 				else {
-					url = new char[]("35.188.47.150:2020/collector/resources/", iu.intToString(id), "/data/last")
+					url = new char[](URL, "/collector/resources/", iu.intToString(id), "/data/last")
 					id++
 					if (id == (max+1)) { id = min }
 				}
 			} else {
-				if (!entropy) { url = new char[]("35.188.47.150:2020/collector/resources/", params[0].string,"/data") }
+				if (!entropy) { url = new char[](URL, "/collector/resources/", params[0].string,"/data") }
 				else {
-					url = new char[]("35.188.47.150:2020/collector/resources/", iu.intToString(id),"/data")
+					url = new char[](URL, "/collector/resources/", iu.intToString(id),"/data")
 					id++
 					if (id == (max+1)) { id = min }
 				}	
