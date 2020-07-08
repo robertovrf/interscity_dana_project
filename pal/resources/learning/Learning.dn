@@ -1,3 +1,5 @@
+uses rest.RESys
+
 interface Learning {
-	void learns()
+	void learns(store RESys resys, int collectionTime, int explorationTreshold, int rounds)
 }

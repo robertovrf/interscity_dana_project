@@ -18,6 +18,7 @@ const char REMOVE_PROXY[]	 		= "remove_proxy"
 const char GET_PROXIES[]	 		= "get_proxies"
 const char GET_PERCEPTION_DATA[] 	= "get_perception_data"
 const char RUN_TEST[]				= "run_test"
+const char LEARN[]					= "learn"
 const char EXIT[] 			 		= "exit"
 
 /* EmergentSys ip and port */
@@ -45,6 +46,7 @@ component provides App requires io.Output out, data.IntUtil iu, rest.RESys, io.I
 		out.println(" $(debugMSG) $(GET_PROXIES) - get a lits of available proxy")
 		out.println(" $(debugMSG) $(GET_PERCEPTION_DATA) - get perception data of current architecture")
 		out.println(" $(debugMSG) $(RUN_TEST) - runs test")
+		out.println(" $(debugMSG) $(LEARN) - learns the best composition for the operating environment")
 		out.println(" $(debugMSG) $(EXIT) - to finish execution")
 	}
 
@@ -106,6 +108,8 @@ component provides App requires io.Output out, data.IntUtil iu, rest.RESys, io.I
 				}
 				outF.close()
 				out.println("$(debugMSG) Test finished.")
+			} else if (cmdList[0].string == LEARN) {
+				
 			} else { out.println("$(debugMSG) Invalid command.") }
 		} else if (cmdList.arrayLength >= 2) {
 			if (cmdList[0].string == SET_CONFIG) {

@@ -6,9 +6,6 @@
 // March @ 2017
 
 const char debugMSG[]			= "[@Learning]"
-/* learning parameters values */
-const int TRESHOLD 				= 3
-const int COLLECTION_TIME 		= 5000
 /* system info */
 const char IP[]  				= "localhost" // emergent system
 const int PORT 					= 2011
@@ -33,6 +30,9 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 	RESys sys 				= null
 	/* exceeded controls how many times the system can suffer */
 	/* from fluctuations before it changes */
+	/* learning parameters values */
+	int TRESHOLD 				= 3
+	int COLLECTION_TIME 		= 5000
 
 	void waitCollection() {
 		t.sleep(COLLECTION_TIME)
@@ -41,7 +41,8 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 	//NOTE: the way this code is organised we're calling functions twice in LearningCore...
 	// only function that is allowed to change mode variable (phase) is the process function
 	void process(char perceptionData[]) {
-		writeToFile(parsePerceptionData(perceptionData)) //added here...
+		//writeToFile(parsePerceptionData(perceptionData)) //added here...
+		out.println(parsePerceptionData(perceptionData))
 		if (mode == STARTEXPLORING) {
 			char followupAction[] = core.considerData(currentConfig, perceptionData)
 			if (followupAction == LearningCore.CLASS_DETECTED) {
@@ -114,32 +115,21 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 		else if (mode == EXPLOITATION) { /* just return current */ }
 		return currentConfig
 	}
-
-	void Learning:learns() {
-		sys = new RESys(IP, PORT)
-		out.println("$(debugMSG) RESys started!")
-		sys.setMain("../../../dana/components/ws/core.o")
-		out.println("$(debugMSG) Repository built!")
+	void Learning:learns(RESys resys, int collectionTime, int explorationTreshold, int rounds) {
+		sys = resys
+		TRESHOLD = explorationTreshold
+		COLLECTION_TIME = collectionTime
 		configList = sys.getAllConfigs()
-		out.println("$(debugMSG) Got all configs!")
-		proxyList = sys.getProxies()
-		out.println("$(debugMSG) Got all proxies!")
 		core = new LearningCore(configList)
 		mode = STARTEXPLORING
-		sys.addProxy(getProxyExp())
-		out.println("$(debugMSG) Set proxy!")
-		out.println("$(debugMSG) ------------")
-		out.println("$(debugMSG) Learning cycle started!")
-		out.println("$(debugMSG) ------------")
-		out.print("$(debugMSG) waiting to start... ")
-		in.readln()
 		sys.getPerceptionData()//cleaning data...
-		out.println("$(debugMSG) starting learning...")
+		out.println("$(debugMSG) Learning started...")
 		// learning cycle ...
-		while (mode != EXIT) {
+		//int count = 0
+		//while ((mode != EXIT)) {
+		for (int count = 0; count < rounds; count++) {
 			if ((mode == EXPLORATION) || (mode == STARTEXPLORING)) { 
 				char config[] = getConfig()
-				//writeToFile(new char[]("Arch: ", config))
 				sys.setConfig(config)
 			}
 			else if (mode == EXPLOITATION) { /* does nothing ... */ }
@@ -169,12 +159,12 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 		return result
 	}
 
-	void writeToFile(char someText[]) {
-		//out.println("$(someText)")
+	/*void writeToFile(char someText[]) {
+		out.println("$(someText)")
 		File fd = new File("result1.data", File.FILE_ACCESS_WRITE)
         fd.setPos(fd.getSize())
         fd.write(someText)
         fd.write("\n")
         fd.close()
-	}
+	}*/
 }
