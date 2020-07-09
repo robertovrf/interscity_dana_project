@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - command: 
-        image: docker.io/robertovrf/load-balancer:all
+        image: docker.io/robertovrf/emergent-microservice:lb
         name: load-balancer
         ports:
         - containerPort: 2012
