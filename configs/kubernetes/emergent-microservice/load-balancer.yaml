@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: load-balancer
+  name: load-balancer
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: load-balancer
+  template:
+    metadata:
+      labels:
+        run: load-balancer
+    spec:
+      containers:
+      - command: 
+        image: docker.io/robertovrf/load-balancer:all
+        name: load-balancer
+        ports:
+        - containerPort: 2012
+ 
+        resources:
+          requests:
+            cpu: 100m
+        env:
+          - name: POD_ID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
