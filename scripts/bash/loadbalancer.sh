@@ -1,2 +1,2 @@
 #!/bin/bash
-dana dana LoadBalancer.o > LoadBalancer.log
+dana LoadBalancer.o > LoadBalancer.log
