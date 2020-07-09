@@ -6,7 +6,9 @@
 // July @ 2020
 
 const char debugMSG[] = "[@LB]"
-const int BUFF_SIZE = 1000 
+const int BUFF_SIZE = 512
+//const int BUFF_SIZE = 1000 
+//const int BUFF_SIZE = 10000
 
 component provides App requires io.Output out, data.IntUtil iu, net.TCPSocket, 
 	net.TCPServerSocket, time.Calendar ic, time.DateUtil dateUtil {
