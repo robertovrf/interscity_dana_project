@@ -38,8 +38,8 @@ component provides App requires io.Output out, data.IntUtil iu, net.TCPSocket,
 
 	void loadBalance(TCPSocket client) {
 		TCPSocket server = new TCPSocket()
-		//if (!server.connect("35.188.47.150", 2020)) {
-		if (!server.connect("localhost", 2020)) {
+		if (!server.connect("35.188.47.150", 2020)) {
+		//if (!server.connect("localhost", 2020)) {
 			char errorMsg[] = new char[]("$(debugMSG) ERROR! Fails to connect",
 			" to localhost - 2020")
 			out.println(errorMsg)
