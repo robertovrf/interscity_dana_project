@@ -148,7 +148,7 @@ component provides App requires io.Output out, data.IntUtil iu, rest.RESys, io.I
 				dec value = du.decFromString(parser.getValue(childrenMetrics, "value").value)
 				int count = iu.intFromString(parser.getValue(childrenMetrics, "count").value)
 				dec metricValue = value/count
-				 out.println("$(du.decToString(metricValue))")
+				 out.println("$(name): $(du.decToString(metricValue))")
 				if (file != null) { file.writeLine("$(du.decToString(metricValue))") }
 			}
 		}
