@@ -4,7 +4,8 @@ component provides App requires io.Output out, net.http.HTTPRequest request,
 	int App:main(AppParam params[]) {
 		int id = iu.intFromString(params[0].string)
 		while(true) {
-			char url[] = new char[]("35.188.47.150:2020/collector/resources/", iu.intToString(id), "/data")
+			//char url[] = new char[]("35.188.47.150:2020/collector/resources/", iu.intToString(id), "/data")
+			char url[] = new char[]("scc-mc1.lancs.ac.uk:2012/collector/resources/", iu.intToString(id), "/data")
 			DateTime dt1 = null
 			DateTime dt2 = null
 			int result = 0
