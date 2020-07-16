@@ -1,7 +1,7 @@
 const char debugMSG[] = "[@DCProxy]"
 
 component provides hh.HTTPHandler, monitoring.BeingMonitored requires monitoring.Container, 
-	monitoring.ResponseTime, hh.HTTPHandler hh, io.Output out {
+	monitoring.ResponseTime, hh.HTTPHandler hh, io.Output out, interceptor.TCPInterceptor {
 
 	static Container monitor
 
@@ -33,12 +33,14 @@ component provides hh.HTTPHandler, monitoring.BeingMonitored requires monitoring
 				monitor = new Container()
 				monitor.turnMonitorOn()
 			}
+			TCPInterceptor tcp = new TCPInterceptor(s)
 			ResponseTime metric = new ResponseTime()
 			metric.start()
-			hh.process(cmd, s)
+			hh.process(cmd, tcp)
 			metric.finish()
 			int result = metric.result()
 			monitor.addMetric("response_time", result, false)
+			monitor.addMetric("response_size", tcp.getResponseSize(), false)
 			monitor.addEvent(cmd.resource, 1)
 		}
 	}
