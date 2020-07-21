@@ -42,7 +42,7 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 	// only function that is allowed to change mode variable (phase) is the process function
 	void process(char perceptionData[]) {
 		//writeToFile(parsePerceptionData(perceptionData)) //added here...
-		out.println(parsePerceptionData(perceptionData))
+		out.println("$(debugMSG) $(parsePerceptionData(perceptionData))")
 		if (mode == STARTEXPLORING) {
 			char followupAction[] = core.considerData(currentConfig, perceptionData)
 			if (followupAction == LearningCore.CLASS_DETECTED) {
@@ -127,6 +127,8 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 		TRESHOLD = explorationTreshold
 		COLLECTION_TIME = collectionTime
 		configList = sys.getAllConfigs()
+		// core is being instantiated here -- meaning it does not hold information from previous
+		// learning rounds.
 		core = new LearningCore(configList)
 		mode = STARTEXPLORING
 		sys.getPerceptionData()//cleaning data...

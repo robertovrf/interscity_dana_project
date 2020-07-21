@@ -56,8 +56,13 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 	ExplCycle cycle[] 				= null // values (metrics and events) that belong to a specific cycle
 	Exploration exploration 		= null
 
+	//TODO: I WILL LEARN FROM SCRATCH EVERYTIME I CREATE A NEW LearningCore 
 	LearningCore:LearningCore(String configs[]) {
 		exploration = new Exploration(configs)
+		latestKnowledgeInfo 	= null
+		knowledge 				= null 
+		cycle					= null
+		exploration 			= null
 	}
 
 	void LearningCore:exploring(char currentConfig[], char perceptionData[]) {
@@ -91,6 +96,7 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 			for (int pointer = 0; pointer < cycle.arrayLength; pointer++) {
 				// metrics
 				dec cycleRealMetricValue = cycle[pointer].metrics[0].value/cycle[pointer].metrics[0].count
+				out.println("$(debugMSG) cycleRealMetricValue = $(du.decToString(cycleRealMetricValue))")
 				if (ranges[0].lowestValue > cycleRealMetricValue) {
 					ranges[0].lowestValue = cycleRealMetricValue
 					//knowledge[knowledge.arrayLength-1].config = cycle[pointer].config
@@ -126,8 +132,8 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 			latestKnowledgeInfo.ranges = ranges
 			//out.println("$(debugMSG) Winning arch: $(knowledge[knowledge.arrayLength-1].config)")
 			//printInfoArchicture(knowledge[knowledge.arrayLength-1].config)
-			//out.println("$(debugMSG) Winning metric: $(du.decToString(latestKnowledgeInfo.ranges[0].lowestValue)) ms")
-			//out.println("$(debugMSG) Winning arch: $(latestKnowledgeInfo.config)")
+			out.println("$(debugMSG) Winning metric: $(du.decToString(latestKnowledgeInfo.ranges[0].lowestValue)) ms")
+			out.println("$(debugMSG) Winning arch: $(latestKnowledgeInfo.config)")
 			return latestKnowledgeInfo.config
 		}
 		return null
@@ -156,12 +162,6 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 			// events+1 because the first item in ranges is metrics
 			if ((explCycle.events.arrayLength+1) == knowledge[pointer].ranges.arrayLength) {
 				dec metricCycleValue = explCycle.metrics[0].value/explCycle.metrics[0].count
-				// only consider number of request handled
-				//dec metricCycleValue = explCycle.metrics[0].count
-				//out.println("$(debugMSG) $(du.decToString(metricCycleValue)) ms")
-				/*if ((explCycle.metrics[0].value >= knowledge[pointer].ranges[0].lowestValue) &&
-					(explCycle.metrics[0].value <= knowledge[pointer].ranges[0].highestValue)) {*/
-				/* a good fix for this: metricCycleValue <= knowledge[pointer].ranges[0].averageValue */
 				if (metricCycleValue <= knowledge[pointer].ranges[0].highestValue) {
 					bool isWithinRanges = true
 					for (int rangePointer = 1; rangePointer < knowledge[pointer].ranges.arrayLength; rangePointer++) {
@@ -254,20 +254,13 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 				metric.source = parser.getValue(childrenMetrics, "source").value
 				metric.value = du.decFromString(parser.getValue(childrenMetrics, "value").value)
 				metric.count = iu.intFromString(parser.getValue(childrenMetrics, "count").value)
-				dec metricValue = metric.value/metric.count
-				//out.println("$(debugMSG) avg: $(du.decToString(metricValue))")
-				//writeToFile("avg: $(du.decToString(metricValue))")
-				/*if (metricValue < 1) {
-					out.println("$(debugMSG) metric: $(du.decToString(metricValue)) ms")
-				}*/
+				//dec metricValue = metric.value/metric.count
 				if (parser.getValue(childrenMetrics, "preferHigh").value == "true") {
 					metric.preferHigh = true
 				} else { metric.preferHigh = false }
 				metric.startTime = parseDateFromString(parser.getValue(childrenMetrics, "startTime").value)
 				metric.endTime = parseDateFromString(parser.getValue(childrenMetrics, "endTime").value)
 				internalCycle.metrics = new Metric[](internalCycle.metrics, metric)
-				/*if ((metric.startTime != null) && (metric.endTime != null)) { internalCycle.metrics = new Metric[](internalCycle.metrics, metric) }
-				else { out.println("$(debugMSG) Metric: Collected time is NULL !!") }*/
 			}
 		}
 		// events
@@ -283,20 +276,9 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 				eventT.startTime = parseDateFromString(parser.getValue(childrenMetrics, "startTime").value)
 				eventT.endTime = parseDateFromString(parser.getValue(childrenMetrics, "endTime").value)
 				internalCycle.events = new Event[](internalCycle.events, eventT)
-				/*if ((eventT.startTime != null) && (eventT.endTime != null))  { internalCycle.events = new Event[](internalCycle.events, eventT) }
-				else { out.println("$(debugMSG) Event: Collected time is NULL !!") }*/
 			}
 		}
-		//internalCycle.config = currentConfig
 		return internalCycle
-	}
-
-	void writeToFile(char someText[]) {
-		File fd = new File("result123.data", File.FILE_ACCESS_WRITE)
-        fd.setPos(fd.getSize())
-        fd.write(someText)
-        fd.write("\n")
-        fd.close()
 	}
 
 	// I could use the pattern as const char[] stating exactly the pattern then have a set of ifs
