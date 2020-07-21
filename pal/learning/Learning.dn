@@ -94,7 +94,7 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 	void printInfoArchicture(char arch[]) {
 		String compsList[] = strUtil.explode(strUtil.explode(arch, "|")[0].string, ",")
 		for (int pointer = 0; pointer < compsList.arrayLength; pointer++) {
-			if (strUtil.find(compsList[pointer].string, "../repository/http/handler/GET/") != StringUtil.NOT_FOUND) {
+			if (strUtil.find(compsList[pointer].string, "../dc/ws/NFRP") != StringUtil.NOT_FOUND) {
 				String helper[] = strUtil.explode(compsList[pointer].string, "/")
 				out.println("$(debugMSG) Changed to: $(helper[helper.arrayLength-1].string)")
 				return
@@ -102,12 +102,7 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 		}
 		out.println("$(debugMSG) Something bad's happened!")
 	}
-
-	// should return only the exp!
-	char[] getProxyExp() {
-		return new char[]("|../pal/monitoring/proxies/DCProxy.o|*(*:Web[0]:*)|")
-	}
-
+	
 	// WARNING: if this is on the exploration phase and you keep calling this function it will cycle forever...
 	char[] getConfig() {
 		if (mode == STARTEXPLORING) { currentConfig = core.explorationRestart() }
@@ -115,7 +110,7 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 		else if (mode == EXPLOITATION) { /* just return current */ }
 		return currentConfig
 	}
-	
+
 	void Learning:learns(RESys resys, int collectionTime, int explorationTreshold, int rounds) {
 		sys = resys
 		TRESHOLD = explorationTreshold
