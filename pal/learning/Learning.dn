@@ -115,6 +115,7 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 		else if (mode == EXPLOITATION) { /* just return current */ }
 		return currentConfig
 	}
+	
 	void Learning:learns(RESys resys, int collectionTime, int explorationTreshold, int rounds) {
 		sys = resys
 		TRESHOLD = explorationTreshold
