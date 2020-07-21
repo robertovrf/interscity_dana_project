@@ -102,7 +102,18 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 		}
 		out.println("$(debugMSG) Something bad's happened!")
 	}
-	
+
+	char[] getInfoArchitecture(char arch[]) {
+		String compsList[] = strUtil.explode(strUtil.explode(arch, "|")[0].string, ",")
+		for (int pointer = 0; pointer < compsList.arrayLength; pointer++) {
+			if (strUtil.find(compsList[pointer].string, "../dc/ws/NFRP") != StringUtil.NOT_FOUND) {
+				String helper[] = strUtil.explode(compsList[pointer].string, "/")
+				return helper[helper.arrayLength-1].string
+			}
+		}
+		return null
+	}
+
 	// WARNING: if this is on the exploration phase and you keep calling this function it will cycle forever...
 	char[] getConfig() {
 		if (mode == STARTEXPLORING) { currentConfig = core.explorationRestart() }
@@ -145,7 +156,8 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 		if (metricsJSON != null) {
 			for (int pointer = 0; pointer < metricsJSON.children.arrayLength; pointer++) {
 				JSONElement childrenMetrics = metricsJSON.children[pointer]
-				result = new char[](parser.getValue(childrenMetrics, "source").value, ", ")
+				//result = new char[](parser.getValue(childrenMetrics, "source").value, ", ")
+				result = new char[](getInfoArchitecture(parser.getValue(childrenMetrics, "config").value), ", ")
 				value = du.decFromString(parser.getValue(childrenMetrics, "value").value)
 				count = iu.intFromString(parser.getValue(childrenMetrics, "count").value)
 				dec metricValue = value/count
