@@ -62,7 +62,6 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 		latestKnowledgeInfo 	= null
 		knowledge 				= null 
 		cycle					= null
-		exploration 			= null
 	}
 
 	void LearningCore:exploring(char currentConfig[], char perceptionData[]) {
