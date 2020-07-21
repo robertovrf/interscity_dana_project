@@ -121,6 +121,9 @@ component provides App requires io.Output out, data.IntUtil iu, rest.RESys, io.I
 				out.println("$(debugMSG) Number of rounds for learning: ")
 				out.print("learn> ")
 				rounds = iu.intFromString(in.readln())
+				out.print("$(debugMSG) All setup. Press [ENTER] to start learning")
+				in.readln()
+				out.println("$(debugMSG) Starting learning...")
 				learner.learns(sys, collectionTime, explorationTreshold, rounds)
 			} else { out.println("$(debugMSG) Invalid command.") }
 		} else if (cmdList.arrayLength >= 2) {
