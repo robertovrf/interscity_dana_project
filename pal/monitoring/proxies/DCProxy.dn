@@ -33,14 +33,15 @@ component provides hh.HTTPHandler, monitoring.BeingMonitored requires monitoring
 				monitor = new Container()
 				monitor.turnMonitorOn()
 			}
-			TCPInterceptor tcp = new TCPInterceptor(s)
+			//TCPInterceptor tcp = new TCPInterceptor(s)
 			ResponseTime metric = new ResponseTime()
 			metric.start()
-			hh.process(cmd, tcp)
+			//hh.process(cmd, tcp)
+			hh.process(cmd, s)
 			metric.finish()
 			int result = metric.result()
 			monitor.addMetric("response_time", result, false)
-			monitor.addMetric("response_size", tcp.getResponseSize(), false)
+			//monitor.addMetric("response_size", tcp.getResponseSize(), false)
 			monitor.addEvent(cmd.resource, 1)
 		}
 	}

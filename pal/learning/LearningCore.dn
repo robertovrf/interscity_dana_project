@@ -84,6 +84,17 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 		knowledge[knowledge.arrayLength-1].ranges = latestKnowledgeInfo.ranges
 	}
 
+	// TODO: this has to be passed as parameter from the InteractiveEmergentSys
+	// as well as the 
+	int getMetricIndex(Metric metrics[]) {
+		for (int pointer = 0; pointer < metrics.arrayLength; pointer++) {
+			if (metrics[pointer].name == "response_time") {
+				return pointer
+			}
+		}
+		return INT_MAX
+	}
+
 	// this is precisely where the machine learning algorithm is implemented...
 	char[] LearningCore:exploit() {
 		if (cycle != null) {
@@ -93,9 +104,11 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 			Range ranges[] = new Range[](new Range(0,9999999, new char[]("metrics")))
 			int bestArchPointer = 0
 			for (int pointer = 0; pointer < cycle.arrayLength; pointer++) {
-				// metrics
-				dec cycleRealMetricValue = cycle[pointer].metrics[0].value/cycle[pointer].metrics[0].count
-				out.println("$(debugMSG) cycleRealMetricValue = $(du.decToString(cycleRealMetricValue))")
+				// TODO: main metrics
+				int metricRTPointer = getMetricIndex(cycle[pointer].metrics)
+				if (metricRTPointer == INT_MAX) { out.println("$(debugMSG) Something bad happened when picking the main metric.") }
+				dec cycleRealMetricValue = cycle[pointer].metrics[metricRTPointer].value/cycle[pointer].metrics[metricRTPointer].count
+				//out.println("$(debugMSG) cycleRealMetricValue = $(du.decToString(cycleRealMetricValue))")
 				if (ranges[0].lowestValue > cycleRealMetricValue) {
 					ranges[0].lowestValue = cycleRealMetricValue
 					//knowledge[knowledge.arrayLength-1].config = cycle[pointer].config
@@ -131,8 +144,8 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 			latestKnowledgeInfo.ranges = ranges
 			//out.println("$(debugMSG) Winning arch: $(knowledge[knowledge.arrayLength-1].config)")
 			//printInfoArchicture(knowledge[knowledge.arrayLength-1].config)
-			out.println("$(debugMSG) Winning metric: $(du.decToString(latestKnowledgeInfo.ranges[0].lowestValue)) ms")
-			out.println("$(debugMSG) Winning arch: $(latestKnowledgeInfo.config)")
+			//out.println("$(debugMSG) Winning metric: $(du.decToString(latestKnowledgeInfo.ranges[0].lowestValue)) ms")
+			//out.println("$(debugMSG) Winning arch: $(latestKnowledgeInfo.config)")
 			return latestKnowledgeInfo.config
 		}
 		return null
@@ -150,6 +163,8 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 		out.println("$(debugMSG) Something bad's happened!")
 	}*/
 
+	// TODO: I need to pass the main metric as parameter -- and consider other metrics and ways to calculate
+	// the reward!!! 
 	// TODO: this might be problemetic if cycle value fits in more than one	class
 	// return the first config it fits within the range of...
 	// TODO: this needs some URGENT revision (specially when considering
@@ -160,7 +175,9 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 		for (int pointer = 0; pointer < knowledge.arrayLength; pointer++) {
 			// events+1 because the first item in ranges is metrics
 			if ((explCycle.events.arrayLength+1) == knowledge[pointer].ranges.arrayLength) {
-				dec metricCycleValue = explCycle.metrics[0].value/explCycle.metrics[0].count
+				int metricRTPointer = getMetricIndex(explCycle.metrics)
+				if (metricRTPointer == INT_MAX) { out.println("$(debugMSG) Something bad happened when picking the main metric.") }
+				dec metricCycleValue = explCycle.metrics[metricRTPointer].value/explCycle.metrics[metricRTPointer].count
 				if (metricCycleValue <= knowledge[pointer].ranges[0].highestValue) {
 					bool isWithinRanges = true
 					for (int rangePointer = 1; rangePointer < knowledge[pointer].ranges.arrayLength; rangePointer++) {

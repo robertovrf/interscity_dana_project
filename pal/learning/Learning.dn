@@ -72,7 +72,7 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 		} else if (mode == EXPLOITATION) {
 			char status[] = core.checkSysStatus(perceptionData, currentConfig)
 			if (status == LearningCore.CONTINUE_EXPLOITATION) {
-				out.println("$(debugMSG) CONTINUE EXPLOITATION!")
+				//out.println("$(debugMSG) CONTINUE EXPLOITATION!")
 				exceeded = 0
 			} else {
 				exceeded++

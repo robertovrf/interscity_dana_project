@@ -1,5 +1,5 @@
-// dana WorkloadTestCache id cache-control entropy
-// e.g. dana WorkloadTestCache 3 -1 h
+// dana Workload id cache-control entropy
+// e.g. dana Workload 3 -1 h
 // id == -1 --- return 1 record
 // id <= 50 --- small returned files (100 records)
 // id > 50 --- big returned files (800 records)
