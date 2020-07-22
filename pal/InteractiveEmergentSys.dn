@@ -22,8 +22,8 @@ const char LEARN[]					= "learn"
 const char EXIT[] 			 		= "exit"
 
 /* EmergentSys ip and port */
-//const char IP[] = "localhost"
-const char IP[] = "scc-mc1.lancs.ac.uk"
+const char IP[] = "localhost"
+//const char IP[] = "scc-mc1.lancs.ac.uk"
 const int PORT = 2011
 
 
