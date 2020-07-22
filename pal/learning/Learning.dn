@@ -42,7 +42,7 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 	// only function that is allowed to change mode variable (phase) is the process function
 	void process(char perceptionData[]) {
 		//writeToFile(parsePerceptionData(perceptionData)) //added here...
-		out.println("$(debugMSG) $(parsePerceptionData(perceptionData))")
+		out.println("$(parsePerceptionData(perceptionData))")
 		if (mode == STARTEXPLORING) {
 			char followupAction[] = core.considerData(currentConfig, perceptionData)
 			if (followupAction == LearningCore.CLASS_DETECTED) {
@@ -57,11 +57,11 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 			core.exploring(currentConfig, perceptionData)
 			// explorationVisitedAllConfigs for a specific cycle.
 			if (core.explorationVisitedAllConfigs()) {
-				out.println("$(debugMSG) Processing explored data...")
+				//out.println("$(debugMSG) Processing explored data...")
 				char cycleResult[] = core.exploit()
 				core.latestCycleResult(cycleResult)
 				if (core.isLastCycle()) {
-					out.println("$(debugMSG) Changing to EXPLOITATION MODE!")
+					//out.println("$(debugMSG) Changing to EXPLOITATION MODE!")
 					currentConfig = cycleResult
 					core.pushWinningArchToKNowledge() // this was added here
 					sys.setConfig(currentConfig) // only place in process that calls setConfig
