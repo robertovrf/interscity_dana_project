@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: stackdriver-exporter-webserver1
+  name: stackdriver-exporter-webserver1
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: stackdriver-exporter-webserver1
+  template:
+    metadata:
+      labels:
+        run: stackdriver-exporter-webserver1
+    spec:
+      containers:
+      - command: ["./direct-to-sd"]
+        args: ["--metric-name=response_time1", "--pod-id=$(POD_ID)"]
+        image: docker.io/marciopsa/stackdriver_exporter_webserver7
+        name: exporter222
+        ports:
+        - containerPort: 8081
+ 
+        resources:
+          requests:
+            cpu: 100m
+        env:
+          - name: POD_ID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid

@@ -1,0 +1,17 @@
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: interscity-dana-nopal-nomysql1
+  namespace: default
+spec:
+  minReplicas: 1
+  maxReplicas: 8
+  metrics:
+  - type: External
+    external:
+      metricName: "custom.googleapis.com|response_time1"
+      targetValue: 600
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: interscity-dana-nopal-nomysql1
