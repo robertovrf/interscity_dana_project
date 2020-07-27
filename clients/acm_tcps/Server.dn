@@ -73,11 +73,11 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 		out.println("$(debugMSG) Test finished.")
 	}
 
-	void run(int numClients, char workload[]) {
+	void run(int numClients, char workload[], char service[]) {
 		String helper[] = strUtil.explode(workload, "_")
 		for (int i = 0; i < numClients; i++) {
 			asynch::execute(i+1, helper[0].string, helper[1].string, 
-				helper[2].string, helper[3].string)
+				helper[2].string, service)
 		}
 	}
 	
@@ -85,7 +85,8 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 		String helper[] = strUtil.explode(cmd, "|")
 		if (helper[0].string == START) {
 			testRunning = true
-			run(intUtil.intFromString(helper[1].string), helper[2].string)
+			run(intUtil.intFromString(helper[1].string), 
+				helper[2].string, helper[3].string)
 		} else if (helper[0].string == STOP) {
 			testRunning = false
 		}
