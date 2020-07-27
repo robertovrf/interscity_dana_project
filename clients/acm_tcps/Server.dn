@@ -61,9 +61,7 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 			DateTime dt2 = null
 			int result = 0
 			dt1 = ic.getTime()
-			//HTTPResponse response = request.get(url, header)
-			//out.println("$(debugMSG) $(intUtil.intToString(threadID)) $(url)")
-			for (int i = 0; i < 2000000; i++) {}
+			HTTPResponse response = request.get(url, header)
 			dt2 = ic.getTime()
 			if ((dt1 != null) && (dt2 != null)) {
 				result = dateUtil.toMilliseconds(dateUtil.diff(dt1, dt2))
@@ -89,11 +87,10 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 			run(intUtil.intFromString(helper[1].string), 
 				helper[2].string, helper[3].string)
 		} else if (helper[0].string == STOP) {
-			out.println("$(debugMSG) Stopping function")
 			if (testRunning) { out.println("$(debugMSG) Stopping test...") }
 			else { out.println("$debugMSG) No tests are running...") }
 			testRunning = false
-			if(!testRunning) { out.println("$(debugMSG) No tests are running.") }
+			if(!testRunning) { out.println("$(debugMSG) Done.") }
 		}
 	}
 
