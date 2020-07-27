@@ -88,7 +88,7 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 			out.println("$(debugMSG) help - give you a list of commands.")
 			out.println("$(debugMSG) test - to start running tests on the servers.")
 			out.println("$(debugMSG) stop - to stop running tests on all servers.")
-			out.println("$(debugMSG) exut - to exit the client program.")
+			out.println("$(debugMSG) exit - to exit the client program.")
 		} else if (cmd == TEST) {
 			if (!testRunning) {
 				out.println("$(debugMSG) Provide the configuration file to run the test: ")
