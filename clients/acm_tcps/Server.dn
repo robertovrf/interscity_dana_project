@@ -89,9 +89,11 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 			run(intUtil.intFromString(helper[1].string), 
 				helper[2].string, helper[3].string)
 		} else if (helper[0].string == STOP) {
+			out.println("$(debugMSG) Stopping function")
 			if (testRunning) { out.println("$(debugMSG) Stopping test...") }
+			else { out.println("$debugMSG) No tests are running...") }
 			testRunning = false
-			if(!testRunning) { out.println("$(debugMSG) Tests stopped.") }
+			if(!testRunning) { out.println("$(debugMSG) No tests are running.") }
 		}
 	}
 
