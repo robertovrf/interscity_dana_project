@@ -56,7 +56,7 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 				"$(test.servers[serverPointer].string)", 
 				" - 1988"))
 		} 
-		s.send(new char[](STOP, END))
+		s.send(new char[](STOP, "|", END))
 		s.disconnect()
 	}
 
