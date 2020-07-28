@@ -2,23 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    run: stackdriver-exporter-webserver1
-  name: stackdriver-exporter-webserver1
+    run: sd-exporter
+  name: sd-exporter
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: stackdriver-exporter-webserver1
+      run: sd-exporter
   template:
     metadata:
       labels:
-        run: stackdriver-exporter-webserver1
+        run: sd-exporter
     spec:
       containers:
       - command: ["./direct-to-sd"]
         args: ["--metric-name=response_time1", "--pod-id=$(POD_ID)"]
-        image: docker.io/marciopsa/stackdriver_exporter_webserver7
+        image: docker.io/robertovrf/sd-exporter:all
         name: exporter222
         ports:
         - containerPort: 8081

@@ -1,0 +1,37 @@
+const char debugMSG[] = "[@HPAGateway]"
+
+component provides App requires io.Output out, io.Input in, net.http.HTTPRequest request {
+
+	void commandInterpret(char cmd[]) {
+		/*if (cmd == HELP) {
+			out.println("$(debugMSG) help - give you a list of commands.")
+			out.println("$(debugMSG) run - to run experiments.")
+			out.println("$(debugMSG) stop - to stop running tests on all servers.")
+			out.println("$(debugMSG) exit - to exit the client program.")
+		} else if (cmd == TEST) {
+			if (!testRunning) {
+				out.println("$(debugMSG) Provide the configuration file to run the test: ")
+				out.print("$(debugMSG) test> ")
+				getTest(new ConfigFile(in.readln()))
+				startTest()
+				out.println("$(debugMSG) Tests are running!")
+			} else { out.println("$(debugMSG) There is already one test running...") }
+		} else if (cmd == STOP) {
+			if (testRunning) {
+				out.println("$(debugMSG) Stopping tests...")
+				stopTest()
+				out.println("$(debugMSG) Tests are all finished.")
+			} else { out.println("$(debugMSG) No test was running...")}
+		}*/
+	}
+
+	int App:main(AppParam params[]) {
+		char cmd[] = "start"
+		while (cmd != "exit") {
+			if (cmd != "start") { commandInterpret(cmd)	}
+			out.print("$(debugMSG) clients> ")
+			cmd = in.readln()
+		}
+		return 0
+	}
+}

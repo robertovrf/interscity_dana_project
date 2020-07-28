@@ -1,7 +1,7 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: interscity-dana-nopal-nomysql1
+  name: emergent-microservice-hpa
   namespace: default
 spec:
   minReplicas: 1
@@ -14,4 +14,4 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: interscity-dana-nopal-nomysql1
+    name: emergent-microservice-hpa
