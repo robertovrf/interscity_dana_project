@@ -10,7 +10,8 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 	bool testRunning = false
 
 	void execute(int threadID, char size[], char entropy[], char cache[], char service[]) {
-		TextFile file = new TextFile(new char[](intUtil.intToString(threadID), 
+		TextFile file = new TextFile(new char[](intUtil.intToString(threadID), ",",
+			size, "-", entropy, "-", cache, "-",
 			"-result.txt"), File.WRITE)
 		Header header[] = null
 		char url[] = null
