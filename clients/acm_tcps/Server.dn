@@ -9,10 +9,10 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 
 	bool testRunning = false
 
-	void execute(int threadID, char size[], char entropy[], char cache[], char service[]) {
-		TextFile file = new TextFile(new char[](intUtil.intToString(threadID), ",",
-			size, "-", entropy, "-", cache, "-",
-			"-result.txt"), File.WRITE)
+	void execute(int threadID, char size[], char entropy[], 
+		char cache[], char service[], char fileName[]) {
+		TextFile file = new TextFile(new char[](intUtil.intToString(threadID), 
+			"-", fileName), File.WRITE)
 		Header header[] = null
 		char url[] = null
 		int id = 0
@@ -73,11 +73,11 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 		out.println("$(debugMSG) Test finished.")
 	}
 
-	void run(int numClients, char workload[], char service[]) {
+	void run(int numClients, char workload[], char service[], char fileName[]) {
 		String helper[] = strUtil.explode(workload, "_")
 		for (int i = 0; i < numClients; i++) {
 			asynch::execute(i+1, helper[0].string, helper[1].string, 
-				helper[2].string, service)
+				helper[2].string, service, fileName)
 		}
 	}
 	
@@ -86,7 +86,7 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 		if (helper[0].string == START) {
 			testRunning = true
 			run(intUtil.intFromString(helper[1].string), 
-				helper[2].string, helper[3].string)
+				helper[2].string, helper[3].string, helper[4].string)
 		} else if (helper[0].string == STOP) {
 			if (testRunning) { out.println("$(debugMSG) Stopping test...") }
 			else { out.println("$debugMSG) No tests are running...") }

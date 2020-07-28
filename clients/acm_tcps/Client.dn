@@ -11,6 +11,7 @@ data Test {
 	int numClients
 	char workload[]
 	char service[]
+	char fileName[]
 }
 
 //TODO: a lot of code is repeated here... that is not good! 
@@ -26,6 +27,7 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 		test.numClients = intUtil.intFromString(configFile.getValue("num_clients"))
 		test.workload = configFile.getValue("workload")
 		test.service = configFile.getValue("service")
+		test.fileName = configFile.getValue("file_name")
 	}
 
 	void initiateTest(int serverPointer) {
@@ -43,6 +45,8 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 			test.workload, 
 			"|",
 			test.service,
+			"|",
+			test.fileName,
 			"|",
 			END))
 		s.disconnect()
