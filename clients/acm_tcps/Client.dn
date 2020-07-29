@@ -32,7 +32,7 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 
 	void initiateTest(int serverPointer) {
 		TCPSocket s = new TCPSocket()
-		if (!s.connect(test.servers[serverPointer].string, 1988)) { 
+		if (!s.connect(strUtil.trim(test.servers[serverPointer].string), 1988)) { 
 			out.println(new char[]("Error while trying", 
 				"to connect to server", 
 				"$(test.servers[serverPointer].string)", 
@@ -54,7 +54,7 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 
 	void terminateTest(int serverPointer) {
 		TCPSocket s = new TCPSocket()
-		if (!s.connect(test.servers[serverPointer].string, 1988)) { 
+		if (!s.connect(strUtil.trim(test.servers[serverPointer].string), 1988)) { 
 			out.println(new char[]("Error while trying", 
 				"to connect to server", 
 				"$(test.servers[serverPointer].string)", 

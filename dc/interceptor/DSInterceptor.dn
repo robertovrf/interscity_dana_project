@@ -12,8 +12,8 @@ component provides interceptor.DSInterceptor requires ws.DocStream {
 		accumulatedOutput = null
 	}
 
-	DSInterceptor:DSInterceptor(TCPSocket s, Header headers[], bool autoCloseSocket) {
-		super(s, headers, autoCloseSocket)
+	DSInterceptor:DSInterceptor(store TCPSocket s, store Header headers[], store Header responseHeaders[]) {
+		super(s, headers, responseHeaders)
 	}
 
 	Header[] DSInterceptor:getRequestHeaders() {

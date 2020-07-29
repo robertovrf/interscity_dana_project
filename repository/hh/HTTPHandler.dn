@@ -94,7 +94,7 @@ component provides hh.HTTPHandler requires data.IntUtil intUtil, io.FileSystem f
 		bool success = false
 		if (staticFile(cmd.resource)) { success = serveFile(cmd.resource, s) }
 		else {
-			DocStream ds = new DocStream(s, cmd.headers, false)
+			DocStream ds = new DocStream(s, cmd.headers, null)
 			if (cmd.type == Command.GET) { success = serveFunction_GET(ds, handler, resource.string) }
 			else if (cmd.type == Command.POST) {
 				//read the payload first

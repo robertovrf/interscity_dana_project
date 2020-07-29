@@ -9,7 +9,7 @@ component provides ws.Web requires io.Output out, ws.Web:nfrp web,
 	bool Web:get(char path[], DocStream stream, HashTable params) {
 		
 		bool result = false
-		DSInterceptor interceptor = new DSInterceptor(null, null, false)
+		DSInterceptor interceptor = new DSInterceptor(null, null, null)
 		interceptor.set(stream)
 		result = web.get(path, interceptor, params)
 		// compress only if result is true
