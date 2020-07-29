@@ -27,6 +27,7 @@ component provides App requires io.Output out, data.IntUtil iu, io.Input in, dat
 	data.DecUtil du, data.json.JSONParser parser, io.TextFile, net.TCPSocket {
 
 	Perception perception
+	String configsStr[] = null
 
 	void help() {
 		out.println("$(debugMSG) Command list:")
@@ -48,7 +49,6 @@ component provides App requires io.Output out, data.IntUtil iu, io.Input in, dat
 	void commandInterpret(char cmd[]) {
 		int collect_number = 1
 		String cmdList[] = strUtil.explode(cmd, " ")
-		String configsStr[] = null
 		int counter = 0
 		if (cmdList.arrayLength == 1) {
 			if (cmd == HELP) { help() }
@@ -58,7 +58,7 @@ component provides App requires io.Output out, data.IntUtil iu, io.Input in, dat
 				configsStr = perception.getAllConfigs()
 				out.println("$(debugMSG) $(iu.intToString(configsStr.arrayLength)) configs:")
 				for (int i = 0; i < configsStr.arrayLength; i++) {
-					out.println("$(debugMSG) $(configsStr[i].string)")
+					out.println("$(debugMSG) $(iu.intToString(i)): $(configsStr[i].string)")
 				}
 			} else if (cmd == CHANGE_TEST) {
 				perception.addProxy("|../pal/monitoring/proxies/DCProxy.o|*(*:ws.Web[0]:*)|")
@@ -130,7 +130,8 @@ component provides App requires io.Output out, data.IntUtil iu, io.Input in, dat
 			} else { out.println("$(debugMSG) Invalid command.") }
 		} else if (cmdList.arrayLength >= 2) {
 			if (cmdList[0].string == SET_CONFIG) {
-				perception.setConfig(strUtil.subString(cmd, (SET_CONFIG.arrayLength+1),(cmd.arrayLength-SET_CONFIG.arrayLength-1)))
+				int indexConfig = iu.intFromString(cmdList[1].string)
+				perception.setConfig(configsStr[indexConfig].string)
 			} else if (cmdList[0].string == ADD_COMP) {
 				perception.addComp(new String[](new String(strUtil.subString(cmd, (ADD_COMP.arrayLength+1),(cmd.arrayLength-ADD_COMP.arrayLength-1)))))
 			} else if (cmdList[0].string == REMOVE_COMP) {
