@@ -33,6 +33,7 @@ component provides App requires io.Output out, data.IntUtil iu, monitoring.Perce
 
 	Perception perception = null
 	bool started = false
+	Mutex lock = new Mutex()
 
 	HTTPMessage readRequest(TCPSocket client) {
 		HTTPMessage msg = clone httpUtil.readHTTPRequest(client)
@@ -115,8 +116,10 @@ component provides App requires io.Output out, data.IntUtil iu, monitoring.Perce
 			} else { out.println("$(debugMSG) Invalid command.") }
 		} else if (cmdList.arrayLength >= 2) {
 			if (cmdList[0].string == SET_CONFIG) {
-				perception.setConfig(cmdList[1].string)
-				return new String[](new String(OK_STATUS))
+				mutex (lock) {
+					perception.setConfig(cmdList[1].string)
+					return new String[](new String(OK_STATUS))
+				}
 			} else if (cmdList[0].string == ADD_COMP) {
 				perception.addComp(removeFromList(cmdList, 0))
 				return new String[](new String(OK_STATUS))
