@@ -15,9 +15,7 @@ component provides ws.Web requires io.Output out, ws.Web:nfrp web, interceptor.D
 		result = web.get(path, interceptor, params)
 		// compress only if result is true
 		if ((result) && (interceptor.get() != null)) {
-			out.println("HERE1")
 			stream.write(compression.compress(interceptor.get()))
-			out.println("HERE2")
 		}
 		return result
 	}

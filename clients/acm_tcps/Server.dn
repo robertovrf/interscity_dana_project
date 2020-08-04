@@ -5,12 +5,14 @@ const char START[] = "start"
 //TODO: refactor -- a lot of code repeating itself.
 component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSocket, 
 	net.TCPServerSocket, data.StringUtil strUtil, io.TextFile, time.DateUtil dateUtil,
-	time.Calendar ic, net.http.HTTPRequest request {
+	time.Calendar ic, net.http.HTTPRequest request, util.RandomInt ranInt {
 
 	bool testRunning = false
 
 	void execute(int threadID, char size[], char entropy[], 
 		char cache[], char service[], char fileName[]) {
+		DateTime currentDate = ic.getTime()
+		ranInt.setSeed(dateUtil.toMilliseconds(currentDate))
 		TextFile file = new TextFile(new char[](intUtil.intToString(threadID), 
 			"-", fileName), File.WRITE)
 		Header header[] = null
@@ -45,23 +47,30 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 		while(testRunning) {
 			if (entropy == "high") {
 				if (size == "one") {
+					id = ranInt.get(max+1)
+					if (id < min) { id += min }
 					url = new char[](service, "/collector/resources/", intUtil.intToString(id), "/data/last")
-					id++
-					if (id == (max+1)) { id = min }
+					//id++
+					//if (id == (max+1)) { id = min }
 				} else if (size == "small") {
+					id = ranInt.get(max+1)
+					if (id < min) { id += min }
 					url = new char[](service, "/collector/resources/", intUtil.intToString(id),"/data")
-					id++
-					if (id == (max+1)) { id = min }	
-				} else if (size == "big") {					
+					//id++
+					//if (id == (max+1)) { id = min }	
+				} else if (size == "big") {
+					id = ranInt.get(max+1)
+					if (id < min) { id += min }			
 					url = new char[](service, "/collector/resources/", intUtil.intToString(id),"/data")
-					id++
-					if (id == (max+1)) { id = min }
+					//id++
+					//if (id == (max+1)) { id = min }
 				}
 			}
 			DateTime dt1 = null
 			DateTime dt2 = null
 			int result = 0
 			dt1 = ic.getTime()
+			out.println("$url")
 			HTTPResponse response = request.get(url, header)
 			dt2 = ic.getTime()
 			if ((dt1 != null) && (dt2 != null)) {
