@@ -1,36 +1,109 @@
 const char debugMSG[] = "[@HPAGateway]"
 
-component provides App requires io.Output out, io.Input in, net.http.HTTPRequest request {
+const char END[] = "\r\n\r\n"
+const char EXECUTION_TIME = "execution_time"
+const char REGISTER = "register"
 
-	void commandInterpret(char cmd[]) {
-		/*if (cmd == HELP) {
-			out.println("$(debugMSG) help - give you a list of commands.")
-			out.println("$(debugMSG) run - to run experiments.")
-			out.println("$(debugMSG) stop - to stop running tests on all servers.")
-			out.println("$(debugMSG) exit - to exit the client program.")
-		} else if (cmd == TEST) {
-			if (!testRunning) {
-				out.println("$(debugMSG) Provide the configuration file to run the test: ")
-				out.print("$(debugMSG) test> ")
-				getTest(new ConfigFile(in.readln()))
-				startTest()
-				out.println("$(debugMSG) Tests are running!")
-			} else { out.println("$(debugMSG) There is already one test running...") }
-		} else if (cmd == STOP) {
-			if (testRunning) {
-				out.println("$(debugMSG) Stopping tests...")
-				stopTest()
-				out.println("$(debugMSG) Tests are all finished.")
-			} else { out.println("$(debugMSG) No test was running...")}
-		}*/
+component provides App requires io.Output out, data.IntUtil iu, data.DecUtil du, net.TCPSocket, 
+	net.TCPServerSocket, net.http.HTTPRequest request, data.StringUtil strUtil, time.Timer t {
+
+	dec execTime[] = null
+	int pointer = 0
+	Mutex lock = new Mutex()
+	char URL[] = "localhost:8081/"
+	bool started = false
+
+	dec calculateAvg() {
+		mutex(lock) {
+			if (pointer == 0) {
+				out.println("------------------------")
+				out.println("0.0")
+				out.println("------------------------")
+				return 0.0
+			} else if (pointer > 0) {
+				dec helper = 0.0
+				for (int i = 0; i < pointer; i++) {
+					helper += execTime[i]		
+				}
+				dec avg = helper/pointer
+				out.println("------------------------")
+				out.println("$(du.decToString(avg))")
+				out.println("------------------------")
+				startExecTime()
+				return avg
+			} else {
+				out.println("$(debugMSG) Something went wrong!")
+			}
+		}
+		return 0.0
+	}
+
+	void send(dec avg) {
+		int avgInt = avg
+		char req[] = new char[](URL, iu.intToString(avgInt))
+		//request.get(req)
+		out.println("$req")
+	}
+
+	void notifyHPA() {
+		while(true) {
+			t.sleep(1000)
+			dec avg = calculateAvg()
+			if (avg > 0.0) {
+				send(avg)
+			}
+		}
+	}
+
+	void registerResponse(dec time, int index) {
+		mutex(lock) {
+			execTime[index] = time
+		}
+		out.println("[$(iu.intToString(index))] $(du.decToString(time))")
+	}
+
+	void process(TCPSocket socket) {
+		char buf[] = null
+		char last4[] = new char[4]
+		while (last4 != "\r\n\r\n") {
+			char b[] = socket.recv(1)
+			buf = new char[](buf, b)
+			last4[0] = last4[1]
+			last4[1] = last4[2]
+			last4[2] = last4[3]
+			last4[3] = b[0]
+		}
+		String helper[] = strUtil.explode(buf, "|")
+		if (helper[0].string == REGISTER) {
+			socket.send(new char[]("register|", iu.intToString(pointer), END))
+			pointer++
+			if (!started) {
+				asynch::notifyHPA()
+				started = true
+			}
+		} else if (helper[0].string == EXECUTION_TIME) {
+			registerResponse(du.decFromString(helper[1].string), 
+				iu.intFromString(helper[2].string))
+		}
+		socket.disconnect()
+	}
+
+	void startExecTime() {
+		execTime = new dec[100]
+		for (int i = 0; i < 100; i++) {
+			execTime[i] = 0.0
+		}
 	}
 
 	int App:main(AppParam params[]) {
-		char cmd[] = "start"
-		while (cmd != "exit") {
-			if (cmd != "start") { commandInterpret(cmd)	}
-			out.print("$(debugMSG) clients> ")
-			cmd = in.readln()
+		startExecTime()
+		TCPServerSocket s = new TCPServerSocket()
+		if (!s.bind(TCPServerSocket.ANY_ADDRESS, 2006)) {
+			throw new Exception("Failed to bind master socket")
+		}
+		while (true) {
+			TCPSocket cs = new TCPSocket()
+			if (cs.accept(s)) { asynch::process(cs) }
 		}
 		return 0
 	}
