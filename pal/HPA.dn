@@ -85,7 +85,9 @@ component provides App requires io.Output out, data.IntUtil iu, monitoring.Perce
 		perception.setMain("../repository/TCPNetwork.o", params2)
 		perception.addProxy("|../pal/monitoring/proxies/DCProxy.o|*(*:hh.HTTPHandler[0]:*)|")
 		if (registerHPA()) {
+			perception.getPerceptionData()
 			while (true) {
+				t.sleep(5000)
 				send(process(perception.getPerceptionData()))
 			}
 		} else { out.println("$(debugMSG) Something went wrong!") }
