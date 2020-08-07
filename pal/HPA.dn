@@ -39,9 +39,8 @@ component provides App requires io.Output out, data.IntUtil iu, monitoring.Perce
 			last4[2] = last4[3]
 			last4[3] = b[0]
 		}
-		out.println("$buf")
 		s.disconnect()
-		String helper[] = strUtil.explode("|", buf)
+		String helper[] = strUtil.explode(buf, "|")
 		id = iu.intFromString(helper[1].string)
 		return true
 	}
