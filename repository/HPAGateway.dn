@@ -1,3 +1,7 @@
+// HPAGateway: Module that interacts with stackdriver
+//
+// Author: Roberto Rodrigues Filho
+// August @ 2020
 const char debugMSG[] = "[@HPAGateway]"
 
 const char END[] = "\r\n\r\n"
@@ -10,7 +14,8 @@ component provides App requires io.Output out, data.IntUtil iu, data.DecUtil du,
 	dec execTime[] = null
 	int pointer = 0
 	Mutex lock = new Mutex()
-	char URL[] = "localhost:8081/"
+	//char URL[] = "localhost:8081/"
+	char URL[] = "34.66.16.155:8081/"
 	bool started = false
 
 	dec calculateAvg() {
@@ -41,8 +46,8 @@ component provides App requires io.Output out, data.IntUtil iu, data.DecUtil du,
 	void send(dec avg) {
 		int avgInt = avg
 		char req[] = new char[](URL, iu.intToString(avgInt))
-		//request.get(req)
-		out.println("$req")
+		request.get(req)
+		out.println("$(debugMSG) Making request: $req")
 	}
 
 	void notifyHPA() {
@@ -81,6 +86,7 @@ component provides App requires io.Output out, data.IntUtil iu, data.DecUtil du,
 				asynch::notifyHPA()
 				started = true
 			}
+			out.println("$(debugMSG) Registered to HPA.")
 		} else if (helper[0].string == EXECUTION_TIME) {
 			registerResponse(du.decFromString(helper[1].string), 
 				iu.intFromString(helper[2].string))
