@@ -46,7 +46,7 @@ component provides App requires io.Output out, data.IntUtil iu, data.DecUtil du,
 	void send(dec avg) {
 		int avgInt = avg
 		char req[] = new char[](URL, iu.intToString(avgInt))
-		request.get(req)
+		request.get(req, null)
 		out.println("$(debugMSG) Making request: $req")
 	}
 
