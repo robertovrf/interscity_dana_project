@@ -1,8 +1,16 @@
-component provides App requires data_collector.DataCollectorManager dcM, interceptor.DSInterceptor {
+component provides App requires io.Output out, data_collector.DataCollectorManager dcM,
+	interceptor.DSInterceptor, data.IntUtil iu, time.Calendar ic, time.DateUtil dateUtil {
+
 	void exec() {
+		DateTime dt1
+		DateTime dt2
+		dt1 = ic.getTime()
 		DSInterceptor interceptor = new DSInterceptor(null, null, null)
 		interceptor.set(null)
 		dcM.getHistoricalDataResource(10, interceptor)
+		dt2 = ic.getTime() 
+		int result = dateUtil.toMilliseconds(dateUtil.diff(dt1, dt2))
+		out.println("$(iu.intToString(result))")
 	}
 
 	int App:main(AppParam params[]) {
