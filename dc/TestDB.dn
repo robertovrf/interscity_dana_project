@@ -36,10 +36,11 @@ component provides App requires io.Output out, data_collector.DataCollectorManag
 				t[i].join()
 			}
 		}*/
-		MySQL mysql = new MySQL("localhost", 3306, "root", "root", "data_collector")
+		/*MySQL mysql = new MySQL("localhost", 3306, "root", "root", "data_collector")
 		mysql.execute("SELECT * FROM data WHERE uuid = \"10\" ORDER BY id_data;")
 		MySQLRow rows[] = mysql.fetchAll()
 		out.print("$(iu.intToString(rows.arrayLength))")
+		mysql.close()*/
 		return 0
 	}
 }
