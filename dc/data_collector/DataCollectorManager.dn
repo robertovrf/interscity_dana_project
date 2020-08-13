@@ -22,16 +22,12 @@ component provides data_collector.DataCollectorManager requires io.Output out,
 	MySQL getMySQL() {
 		MySQL mysql = null
 		if (configFile == null) {
-			mutex(lock) {
-				if (configFile == null) {
-					configFile = new ConfigFile("../configs/build/dc/database/database.config")	
-				}
-			}
+			configFile = new ConfigFile("../configs/build/dc/database/database.config")	
 		}
 		char host[] = configFile.getValue("database")
 		char user[] = configFile.getValue("db_user")
 		char pass[] = configFile.getValue("db_pass")
-		mysql = new MySQL(host, 0, user, pass, "data_collector")
+		mysql = new MySQL(host, 3306, user, pass, "data_collector")
 		return mysql
 	}
 
@@ -67,20 +63,22 @@ component provides data_collector.DataCollectorManager requires io.Output out,
 
 	// implementing chunked transfer protocol 
 	void queryExec(char query[], DocStream stream) {
-		MySQL mysql = getMySQL()
-		mysql.execute(query)
-		MySQLRow rows[] = mysql.fetchAll()
-		if (rows == null) {
-			stream.write("{\"error\": \"resource data not found\"}")
-		} else {
-			stream.write("{ \"data\": [ ")
-			for (int i = 0; i < rows.arrayLength; i++) {
-				char helper[] = null
-				if (i != 0) { helper = ", " }
-				stream.write(new char[](helper, codifier.decode(rows[i].fields[1].value)))
+		mutex(lock) {
+			MySQL mysql = getMySQL()
+			mysql.execute(query)
+			MySQLRow rows[] = mysql.fetchAll()
+			if (rows == null) {
+				stream.write("{\"error\": \"resource data not found\"}")
+			} else {
+				stream.write("{ \"data\": [ ")
+				for (int i = 0; i < rows.arrayLength; i++) {
+					char helper[] = null
+					if (i != 0) { helper = ", " }
+					stream.write(new char[](helper, codifier.decode(rows[i].fields[1].value)))
+				}
+				stream.write("] }")
 			}
-			stream.write("] }")
+			mysql.close()	
 		}
-		mysql.close()
 	}
 }
