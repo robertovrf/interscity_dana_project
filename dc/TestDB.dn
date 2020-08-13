@@ -8,6 +8,7 @@ component provides App requires io.Output out, data_collector.DataCollectorManag
 		DateTime dt1
 		DateTime dt2
 		dt1 = ic.getTime()
+		MySQL mysql
 		mutex(lock) {
 			MySQL mysql = new MySQL("localhost", 3306, "root", "root", "data_collector")
 		}
