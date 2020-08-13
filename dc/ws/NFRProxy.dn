@@ -2,22 +2,17 @@
  *
  * Author: Roberto Rodrigues Filho - Sept @ 2018
  */
-component provides ws.Web requires io.Output out, ws.Web:nfrp web,
-	monitoring.ResponseTime responseTime, data.IntUtil iu, 
-	net.http.HTTPRequest request, interceptor.DSInterceptor {
+component provides ws.Web requires io.Output out, ws.Web:nfrp web, interceptor.DSInterceptor {
 
 	bool Web:get(char path[], DocStream stream, HashTable params) {
-		
 		bool result = false
 		DSInterceptor interceptor = new DSInterceptor(null, null, null)
 		interceptor.set(stream)
 		result = web.get(path, interceptor, params)
-		// compress only if result is true
 		if ((result) && (interceptor.get() != null)) {
 			stream.write(interceptor.get())
 		}
 		return result
-
 		//return web.get(path, stream, params)
 	}
 

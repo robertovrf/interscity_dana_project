@@ -17,11 +17,16 @@ component provides data_collector.DataCollectorManager requires io.Output out,
 	data.json.JSONEncoder encoder, encoding.Encoder:uri codifier, data.mysql.MySQL, util.ConfigFile {
 
 	static ConfigFile configFile = null
+	Mutex lock = new Mutex()
 
 	MySQL getMySQL() {
 		MySQL mysql = null
 		if (configFile == null) {
-			configFile = new ConfigFile("../configs/build/dc/database/database.config")	
+			mutex(lock) {
+				if (configFile == null) {
+					configFile = new ConfigFile("../configs/build/dc/database/database.config")	
+				}
+			}
 		}
 		char host[] = configFile.getValue("database")
 		char user[] = configFile.getValue("db_user")
