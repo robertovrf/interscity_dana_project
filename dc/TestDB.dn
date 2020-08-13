@@ -3,15 +3,6 @@ component provides App requires io.Output out, data_collector.DataCollectorManag
 	data.mysql.MySQL {
 
 	void exec() {
-		/*DateTime dt1
-		DateTime dt2
-		dt1 = ic.getTime()
-		DSInterceptor interceptor = new DSInterceptor(null, null, null)
-		interceptor.set(null)
-		dcM.getHistoricalDataResource(1, interceptor)
-		dt2 = ic.getTime() 
-		int result = dateUtil.toMilliseconds(dateUtil.diff(dt1, dt2))
-		out.println("$(iu.intToString(result))")*/
 		DateTime dt1
 		DateTime dt2
 		dt1 = ic.getTime()
@@ -26,7 +17,7 @@ component provides App requires io.Output out, data_collector.DataCollectorManag
 	}
 
 	int App:main(AppParam params[]) {
-		/*int numThreads = 40
+		int numThreads = 40
 		while(true) {
 			Thread t[] = new Thread[numThreads]
 			for (int i = 0; i < numThreads; i++) {
@@ -35,12 +26,7 @@ component provides App requires io.Output out, data_collector.DataCollectorManag
 			for (int i = 0; i < numThreads; i++) {
 				t[i].join()
 			}
-		}*/
-		/*MySQL mysql = new MySQL("localhost", 3306, "root", "root", "data_collector")
-		mysql.execute("SELECT * FROM data WHERE uuid = \"10\" ORDER BY id_data;")
-		MySQLRow rows[] = mysql.fetchAll()
-		out.print("$(iu.intToString(rows.arrayLength))")
-		mysql.close()*/
+		}
 		return 0
 	}
 }
