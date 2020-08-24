@@ -65,9 +65,12 @@ component provides App requires io.Output out, data.IntUtil iu, monitoring.Perce
 			for (int pointer = 0; pointer < metricsJSON.children.arrayLength; pointer++) {
 				JSONElement childrenMetrics = metricsJSON.children[pointer]
 				char name[] = parser.getValue(childrenMetrics, "name").value
-				dec value = du.decFromString(parser.getValue(childrenMetrics, "value").value)
+				//dec value = du.decFromString(parser.getValue(childrenMetrics, "value").value)
+				int value = iu.intFromString(parser.getValue(childrenMetrics, "value").value)
 				int count = iu.intFromString(parser.getValue(childrenMetrics, "count").value)
-				dec metricValue = value/count
+				dec metricValue
+				if (value == MAX_INT) { metricValue = 0.0 }
+				else { metricValue = value/count }
 				out.println("$(du.decToString(metricValue))")
 				return metricValue
 			}
