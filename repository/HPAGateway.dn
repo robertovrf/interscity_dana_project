@@ -88,8 +88,13 @@ component provides App requires io.Output out, data.IntUtil iu, data.DecUtil du,
 			}
 			out.println("$(debugMSG) Registered to HPA.")
 		} else if (helper[0].string == EXECUTION_TIME) {
-			registerResponse(du.decFromString(helper[1].string), 
-				iu.intFromString(helper[2].string))
+			if (iu.intFromString(helper[1].string) == INT_MAX) {
+				registerResponse(0.0, 
+					iu.intFromString(helper[2].string))
+			} else {
+				registerResponse(du.decFromString(helper[1].string), 
+					iu.intFromString(helper[2].string))
+			}
 		}
 		socket.disconnect()
 	}
