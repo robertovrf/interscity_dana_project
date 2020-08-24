@@ -69,7 +69,7 @@ component provides App requires io.Output out, data.IntUtil iu, monitoring.Perce
 				int value = iu.intFromString(parser.getValue(childrenMetrics, "value").value)
 				int count = iu.intFromString(parser.getValue(childrenMetrics, "count").value)
 				dec metricValue
-				if (value == MAX_INT) { metricValue = 0.0 }
+				if (value == INT_MAX) { metricValue = 0.0 }
 				else { metricValue = value/count }
 				out.println("$(du.decToString(metricValue))")
 				return metricValue
