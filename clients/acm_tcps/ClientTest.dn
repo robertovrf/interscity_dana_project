@@ -34,7 +34,7 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 	int App:main(AppParam params[]) {
 		while (true) {
 			t.sleep(1000)
-			asynch::threadExec(5)
+			asynch::threadExec(20)
 		}
 		return 0
 	}
