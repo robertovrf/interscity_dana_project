@@ -136,7 +136,8 @@ component provides App requires io.Output out, data.IntUtil iu, rest.RESys, io.I
 			} else if (cmdList[0].string == REMOVE_COMP) {
 				sys.removeComp(new String[](new String(strUtil.subString(cmd, (REMOVE_COMP.arrayLength+1),(cmd.arrayLength-REMOVE_COMP.arrayLength-1)))))
 			} else if (cmdList[0].string == REMOVE_PROXY) {
-				sys.removeProxy(new String[](new String(strUtil.subString(cmd, (REMOVE_PROXY.arrayLength+1),(cmd.arrayLength-REMOVE_PROXY.arrayLength-1)))))
+				sys.removeProxy(strUtil.subString(cmd, (REMOVE_PROXY.arrayLength+1),(cmd.arrayLength-REMOVE_PROXY.arrayLength-1)))
+				//sys.removeProxy(new String[](new String(strUtil.subString(cmd, (REMOVE_PROXY.arrayLength+1),(cmd.arrayLength-REMOVE_PROXY.arrayLength-1)))))
 			} else if (cmdList[0].string == ADD_PROXY) {
 				sys.addProxy(strUtil.subString(cmd, (ADD_PROXY.arrayLength+1),(cmd.arrayLength-ADD_PROXY.arrayLength-1)))
 			} else { out.println("$(debugMSG) Invalid command.") }
@@ -178,7 +179,7 @@ component provides App requires io.Output out, data.IntUtil iu, rest.RESys, io.I
 			//char wsCore[] = new char[](info.getVariable("DANA_HOME"), "/components/ws/core.o")
 			char tcpNetwork[] = new char[]("../repository/TCPNetwork.o")
 			out.println("$(debugMSG) Starting up the system...")
-			sys.setMain(tcpNetwork)
+			sys.setMain(tcpNetwork, null)
 			out.println("$(debugMSG) System running.")
 			out.println("$(debugMSG) Adding proxy...")
 			sys.addProxy("|../pal/monitoring/proxies/DCProxy.o|*(*:hh.HTTPHandler[0]:*)|")

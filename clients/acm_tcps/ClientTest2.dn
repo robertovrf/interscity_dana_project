@@ -7,7 +7,7 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 
 	int id = 1
 	//char SERVERADDR[] = "35.222.51.36:2020"
-	char SERVERADDR[] = "localhost:2020"
+	char SERVERADDR[] = "scc-mc1.lancs.ac.uk:2020"
 
 	void execute(char url[]) {
 		Header header[] = new Header[](new Header("Cache-Control", 

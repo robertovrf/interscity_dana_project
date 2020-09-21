@@ -16,7 +16,7 @@ const char EXPLORATION[] 		= "exploration"
 const char EXPLOITATION[] 		= "exploitation"
 
 component provides learning.Learning requires io.Output out, data.IntUtil iu, time.Timer t, 
-	learning.LearningCore, rest.RESys, data.StringUtil strUtil, io.File, 
+	learning.LearningCore, monitoring.Perception, data.StringUtil strUtil, io.File, 
 	data.json.JSONParser parser, data.DecUtil du, io.Input in {
 
 	// external modules
@@ -27,7 +27,7 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 	char mode[] 			= null // this controls the learning status
 	char currentConfig[]	= null // stores the current config in array
 	int exceeded 			= 0
-	RESys sys 				= null
+	Perception sys 			= null
 	/* exceeded controls how many times the system can suffer */
 	/* from fluctuations before it changes */
 	/* learning parameters values */
@@ -122,7 +122,7 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 		return currentConfig
 	}
 
-	void Learning:learns(RESys resys, int collectionTime, int explorationTreshold, int rounds) {
+	void Learning:learns(Perception resys, int collectionTime, int explorationTreshold, int rounds) {
 		sys = resys
 		TRESHOLD = explorationTreshold
 		COLLECTION_TIME = collectionTime

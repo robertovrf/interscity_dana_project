@@ -32,7 +32,7 @@ component provides rest.RESys requires io.Output out, data.IntUtil iu, net.TCPSo
 	}
 
 	// update this to return bool?	
-	void RESys:setMain(char path[]) {
+	void RESys:setMain(char path[], AppParam params[]) {
 		char payload[] = new char[]("{\"comp\":\"", path, "\"}")
 		HTTPMessage msg = makeRequest("POST", SET_MAIN, payload)
 		if (msg.status != 200) { out.println("$(debugMSG) Something went wrong!") }
@@ -74,8 +74,8 @@ component provides rest.RESys requires io.Output out, data.IntUtil iu, net.TCPSo
 		if (msg.status != 200) { out.println("$(debugMSG) Something went wrong!") }
 	}
 
-	void RESys:removeProxy(String proxyPaths[]) {
-		char payload[] = new char[]("{\"proxies\": \"", parseListToJSON(proxyPaths), "\"}")
+	void RESys:removeProxy(char proxyPaths[]) {
+		char payload[] = new char[]("{\"proxies\": \"", proxyPaths, "\"}")
 		HTTPMessage msg = makeRequest("POST", REMOVE_PROXY, payload)
 		if (msg.status != 200) { out.println("$(debugMSG) Something went wrong!") }
 	}
