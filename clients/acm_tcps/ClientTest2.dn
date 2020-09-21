@@ -6,6 +6,8 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 	time.Calendar ic, net.http.HTTPRequest request, util.RandomInt ranInt, time.Timer t {
 
 	int id = 1
+	//char SERVERADDR[] = "35.222.51.36:2020"
+	char SERVERADDR[] = "localhost:2020"
 
 	void execute(char url[]) {
 		Header header[] = new Header[](new Header("Cache-Control", 
@@ -23,7 +25,7 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 		dt1 = ic.getTime()
 		Thread thread[] = new Thread[numThread]
 		for (int i = 0; i < numThread; i++) {
-			url = new char[]("35.222.51.36:2020", "/collector/resources/", intUtil.intToString(id), "/data/last")
+			url = new char[](SERVERADDR, "/collector/resources/", intUtil.intToString(id), "/data/last")
 			thread[i] = asynch::execute(url)
 			id++
 			if (id > 101) { id = 1 }
@@ -40,8 +42,8 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 
 	int App:main(AppParam params[]) {
 		while (true) {
-			t.sleep(1000)
 			asynch::threadExec(5)
+			t.sleep(1000)
 		}
 		return 0
 	}

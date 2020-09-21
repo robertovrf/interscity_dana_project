@@ -5,10 +5,13 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 	net.TCPServerSocket, data.StringUtil strUtil, io.TextFile, time.DateUtil dateUtil,
 	time.Calendar ic, net.http.HTTPRequest request, util.RandomInt ranInt, time.Timer t {
 
+	//char SERVERADDR[] = "35.222.51.36:2020"
+	char SERVERADDR[] = "localhost:2020"
+
 	void execute() {
 		Header header[] = new Header[](new Header("Cache-Control", 
 				new char[]("max-age=5")))
-		char url[] = new char[]("35.222.51.36:2020", "/collector/resources/1/data/last")
+		char url[] = new char[](SERVERADDR, "/collector/resources/1/data/last")
 		HTTPResponse response = request.get(url, header)
 	}
 
@@ -33,8 +36,8 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 
 	int App:main(AppParam params[]) {
 		while (true) {
-			t.sleep(1000)
 			asynch::threadExec(20)
+			t.sleep(1000)
 		}
 		return 0
 	}

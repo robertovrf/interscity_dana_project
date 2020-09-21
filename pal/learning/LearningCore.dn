@@ -175,10 +175,11 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 		for (int pointer = 0; pointer < knowledge.arrayLength; pointer++) {
 			// events+1 because the first item in ranges is metrics
 			if ((explCycle.events.arrayLength+1) == knowledge[pointer].ranges.arrayLength) {
-				int metricRTPointer = getMetricIndex(explCycle.metrics)
-				if (metricRTPointer == INT_MAX) { out.println("$(debugMSG) Something bad happened when picking the main metric.") }
-				dec metricCycleValue = explCycle.metrics[metricRTPointer].value/explCycle.metrics[metricRTPointer].count
-				if (metricCycleValue <= knowledge[pointer].ranges[0].highestValue) {
+				//not considering the metrics anymore -- only the events
+				//int metricRTPointer = getMetricIndex(explCycle.metrics)
+				//if (metricRTPointer == INT_MAX) { out.println("$(debugMSG) Something bad happened when picking the main metric.") }
+				//dec metricCycleValue = explCycle.metrics[metricRTPointer].value/explCycle.metrics[metricRTPointer].count
+				//if (metricCycleValue <= knowledge[pointer].ranges[0].highestValue) {
 					bool isWithinRanges = true
 					for (int rangePointer = 1; rangePointer < knowledge[pointer].ranges.arrayLength; rangePointer++) {
 						int eCPointer = getExplCycleMatchingDimension(explCycle, knowledge[pointer].ranges[rangePointer].dimension)
@@ -200,7 +201,7 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 						/* a good fix for this: eventCycleValue >= knowledge[pointer].ranges[rangePointer].averageValue */
 					}
 					if (isWithinRanges) { return knowledge[pointer].config }
-				}
+				//}
 			} else { /* verify next item in knowledge list */ }
 		}
 		//out.println("$(debugMSG) Did not find a class match!")
@@ -282,16 +283,31 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 		// events
 		JSONElement eventsJSON = parser.getValue(document, "events")
 		if (eventsJSON != null) {
-			for (int pointer = 0; pointer < eventsJSON.children.arrayLength; pointer++) {
-				JSONElement childrenMetrics = eventsJSON.children[pointer]
+			//TODO: THIS IS A HACK TO DETECT HIGH ENTROPY TYPE OF REQUESTS
+			// specific change for ACM TCPS
+			// if there is more than 3 event types -- this means we are on high entropy
+			if (eventsJSON.children.arrayLength > 3) {
+				JSONElement childrenMetrics = eventsJSON.children[0]
 				Event eventT = new Event()
-				eventT.name = parser.getValue(childrenMetrics, "name").value
+				eventT.name = "high_entropy"
 				eventT.source = parser.getValue(childrenMetrics, "source").value
-				eventT.value = du.decFromString(parser.getValue(childrenMetrics, "value").value)
-				eventT.count = iu.intFromString(parser.getValue(childrenMetrics, "count").value)
+				eventT.value = eventsJSON.children.arrayLength
+				eventT.count = eventsJSON.children.arrayLength
 				eventT.startTime = parseDateFromString(parser.getValue(childrenMetrics, "startTime").value)
 				eventT.endTime = parseDateFromString(parser.getValue(childrenMetrics, "endTime").value)
-				internalCycle.events = new Event[](internalCycle.events, eventT)
+				internalCycle.events = new Event[](eventT)
+			} else {
+				for (int pointer = 0; pointer < eventsJSON.children.arrayLength; pointer++) {
+					JSONElement childrenMetrics = eventsJSON.children[pointer]
+					Event eventT = new Event()
+					eventT.name = parser.getValue(childrenMetrics, "name").value
+					eventT.source = parser.getValue(childrenMetrics, "source").value
+					eventT.value = du.decFromString(parser.getValue(childrenMetrics, "value").value)
+					eventT.count = iu.intFromString(parser.getValue(childrenMetrics, "count").value)
+					eventT.startTime = parseDateFromString(parser.getValue(childrenMetrics, "startTime").value)
+					eventT.endTime = parseDateFromString(parser.getValue(childrenMetrics, "endTime").value)
+					internalCycle.events = new Event[](internalCycle.events, eventT)
+				}	
 			}
 		}
 		return internalCycle
