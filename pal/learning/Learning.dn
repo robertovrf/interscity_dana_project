@@ -122,7 +122,8 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 		return currentConfig
 	}
 
-	void Learning:learns(Perception resys, int collectionTime, int explorationTreshold, int rounds) {
+	void Learning:learns(Perception resys, int collectionTime, int explorationTreshold,
+	 int rounds, HPANotifier notifier) {
 		sys = resys
 		TRESHOLD = explorationTreshold
 		COLLECTION_TIME = collectionTime
@@ -144,7 +145,11 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 			else if (mode == EXPLOITATION) { /* does nothing ... */ }
 			else { throw new Exception("Invalid phase.") }
 			waitCollection()
-			process(sys.getPerceptionData())
+			if (notifier != null) {
+				char pdata[] = sys.getPerceptionData()
+				notifier.notify(pdata)
+				process(pdata)
+			} else { process(sys.getPerceptionData()) }
 		}
 	}
 

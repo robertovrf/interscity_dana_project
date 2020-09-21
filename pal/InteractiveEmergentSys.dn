@@ -125,7 +125,7 @@ component provides App requires io.Output out, data.IntUtil iu, rest.RESys, io.I
 				out.print("$(debugMSG) All setup. Press [ENTER] to start learning")
 				in.readln()
 				out.println("$(debugMSG) Starting learning...")
-				learner.learns(sys, collectionTime, explorationTreshold, rounds)
+				learner.learns(sys, collectionTime, explorationTreshold, rounds, null)
 			} else { out.println("$(debugMSG) Invalid command.") }
 		} else if (cmdList.arrayLength >= 2) {
 			if (cmdList[0].string == SET_CONFIG) {

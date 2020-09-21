@@ -3,7 +3,7 @@
 // Author: Roberto Rodrigues Filho
 // August @ 2020
 
-const char debugMSG[] = "[@HPA]"
+const char debugMSG[] = "[@HPANotifier]"
 
 /* HPA gateway info */
 const char URL[] = "scc-mc1.lancs.ac.uk"
@@ -13,14 +13,13 @@ const char END[] = "\r\n\r\n"
 const char EXECUTION_TIME = "execution_time"
 const char REGISTER = "register"
 
-component provides App requires io.Output out, data.IntUtil iu, monitoring.Perception,
-	net.TCPSocket, data.StringUtil strUtil, data.json.JSONParser parser, time.Timer t,
+component provides hpa.HPANotifier requires io.Output out, data.IntUtil iu, 
+	net.TCPSocket, data.StringUtil strUtil, data.json.JSONParser parser,
 	data.DecUtil du {
 
-	Perception perception = null
 	int id = 0
 
-	bool registerHPA() {
+	bool HPANotifier:registerHPA() {
 		TCPSocket s = new TCPSocket()
 		if (!s.connect(URL, PORT)) { 
 			out.println(new char[]("Error while trying", 
@@ -65,7 +64,6 @@ component provides App requires io.Output out, data.IntUtil iu, monitoring.Perce
 			for (int pointer = 0; pointer < metricsJSON.children.arrayLength; pointer++) {
 				JSONElement childrenMetrics = metricsJSON.children[pointer]
 				char name[] = parser.getValue(childrenMetrics, "name").value
-				//dec value = du.decFromString(parser.getValue(childrenMetrics, "value").value)
 				int value = iu.intFromString(parser.getValue(childrenMetrics, "value").value)
 				int count = iu.intFromString(parser.getValue(childrenMetrics, "count").value)
 				dec metricValue
@@ -78,22 +76,8 @@ component provides App requires io.Output out, data.IntUtil iu, monitoring.Perce
 		return 0.0
 	}
 
-	int App:main(AppParam params[]) {
-		perception = new Perception(false)
-		AppParam params2[] = new AppParam[2]
-		params2[0] = new AppParam()
-		params2[0].string = "-p"
-		params2[1] = new AppParam()
-		params2[1].string = "2020"
-		perception.setMain("../repository/TCPNetwork.o", params2)
-		perception.addProxy("|../pal/monitoring/proxies/DCProxy.o|*(*:hh.HTTPHandler[0]:*)|")
-		if (registerHPA()) {
-			perception.getPerceptionData()
-			while (true) {
-				t.sleep(5000)
-				send(process(perception.getPerceptionData()))
-			}
-		} else { out.println("$(debugMSG) Something went wrong!") }
-		return 0
+	void HPANotifier:notify(char perceptionData[]) {
+		send(process(perceptionData))
 	}
+
 } 
