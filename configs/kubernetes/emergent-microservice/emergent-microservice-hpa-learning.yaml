@@ -2,25 +2,25 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    run: load-balancer
-  name: load-balancer
+    run: emergent-microservice
+  name: emergent-microservice
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: load-balancer
+      run: emergent-microservice
   template:
     metadata:
       labels:
-        run: load-balancer
+        run: emergent-microservice
     spec:
       containers:
       - command: 
-        image: docker.io/robertovrf/emergent-microservice:lb
-        name: load-balancer
+        image: docker.io/robertovrf/em-hpa:learning
+        name: emergent-microservice
         ports:
-        - containerPort: 2012
+        - containerPort: 2020
  
         resources:
           requests:
