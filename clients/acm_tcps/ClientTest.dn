@@ -5,7 +5,7 @@ component provides App requires io.Output out, data.IntUtil intUtil, net.TCPSock
 	net.TCPServerSocket, data.StringUtil strUtil, io.TextFile, time.DateUtil dateUtil,
 	time.Calendar ic, net.http.HTTPRequest request, util.RandomInt ranInt, time.Timer t {
 
-	char SERVERADDR[] = "35.222.51.36:2020"
+	char SERVERADDR[] = "34.69.215.148:2020"
 	//char SERVERADDR[] = "scc-mc1.lancs.ac.uk:2020"
 
 	void execute() {
