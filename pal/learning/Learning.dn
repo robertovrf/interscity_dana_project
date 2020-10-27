@@ -128,15 +128,9 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 		TRESHOLD = explorationTreshold
 		COLLECTION_TIME = collectionTime
 		configList = sys.getAllConfigs()
-		// core is being instantiated here -- meaning it does not hold information from previous
-		// learning rounds.
 		core = new LearningCore(configList)
 		mode = STARTEXPLORING
-		sys.getPerceptionData()//cleaning data...
 		out.println("$(debugMSG) Learning started...")
-		// learning cycle ...
-		//int count = 0
-		//while ((mode != EXIT)) {
 		for (int count = 0; count < rounds; count++) {
 			if ((mode == EXPLORATION) || (mode == STARTEXPLORING)) { 
 				char config[] = getConfig()
@@ -144,6 +138,16 @@ component provides learning.Learning requires io.Output out, data.IntUtil iu, ti
 			}
 			else if (mode == EXPLOITATION) { /* does nothing ... */ }
 			else { throw new Exception("Invalid phase.") }
+			if (count == 0) {
+				if (notifier != null) {
+					if (!notifier.registerHPA()) { 
+						out.println("$(debugMSG) Something went wrong!")
+						return
+					}
+				}
+				// clean perception data
+				sys.getPerceptionData()
+			}
 			waitCollection()
 			if (notifier != null) {
 				char pdata[] = sys.getPerceptionData()

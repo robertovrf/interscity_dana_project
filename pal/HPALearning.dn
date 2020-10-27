@@ -27,10 +27,7 @@ component provides App requires io.Output out, monitoring.Perception,
 		params2[1].string = "2020"
 		perception.setMain("../repository/TCPNetwork.o", params2)
 		perception.addProxy("|../pal/monitoring/proxies/DCProxy.o|*(*:hh.HTTPHandler[0]:*)|")
-		if (notifier.registerHPA()) {
-			perception.getPerceptionData()
-			learner.learns(perception, 5000, 3, 72, notifier)
-		} else { out.println("$(debugMSG) Something went wrong!") }
+		learner.learns(perception, 5000, 3, 72, notifier)
 		return 0
 	}
 } 
