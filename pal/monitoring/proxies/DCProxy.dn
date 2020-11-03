@@ -42,7 +42,7 @@ component provides hh.HTTPHandler, monitoring.BeingMonitored requires monitoring
 			// defining environment feature values
 			char cacheControl[] = null
 			for (int i =0; i < cmd.headers.arrayLength; i++) {
-				if (cmd.headers[i].key == "Cache-Control") {
+				if (cmd.headers[i].key == "cache-control") {
 					cacheControl = cmd.headers[i].value
 				}
 			}
