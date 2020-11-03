@@ -290,6 +290,7 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 				JSONElement childrenMetrics = eventsJSON.children[0]
 				Event eventT = new Event()
 				eventT.name = "high_entropy"
+				out.println("----- $(eventT.name)")
 				eventT.source = parser.getValue(childrenMetrics, "source").value
 				eventT.value = eventsJSON.children.arrayLength
 				eventT.count = eventsJSON.children.arrayLength
@@ -301,6 +302,7 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 					JSONElement childrenMetrics = eventsJSON.children[pointer]
 					Event eventT = new Event()
 					eventT.name = parser.getValue(childrenMetrics, "name").value
+					out.println("hey ----- $(eventT.name)")
 					eventT.source = parser.getValue(childrenMetrics, "source").value
 					eventT.value = du.decFromString(parser.getValue(childrenMetrics, "value").value)
 					eventT.count = iu.intFromString(parser.getValue(childrenMetrics, "count").value)
