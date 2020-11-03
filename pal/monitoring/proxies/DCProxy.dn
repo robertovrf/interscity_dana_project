@@ -33,16 +33,25 @@ component provides hh.HTTPHandler, monitoring.BeingMonitored requires monitoring
 				monitor = new Container()
 				monitor.turnMonitorOn()
 			}
-			//TCPInterceptor tcp = new TCPInterceptor(s)
 			ResponseTime metric = new ResponseTime()
 			metric.start()
-			//hh.process(cmd, tcp)
 			hh.process(cmd, s)
 			metric.finish()
 			int result = metric.result()
 			monitor.addMetric("response_time", result, false)
-			//monitor.addMetric("response_size", tcp.getResponseSize(), false)
-			monitor.addEvent(cmd.resource, 1)
+			// defining environment feature values
+			char cacheControl[] = null
+			for (int i =0; i < cmd.headers.arrayLength; i++) {
+				if (cmd.headers[i].key == "Cache-Control") {
+					cacheControl = cmd.headers[i].value
+				}
+			}
+			if (cacheControl == null) { monitor.addEvent(cmd.resource, 1) }
+			else { 
+				monitor.addEvent(new char[](cmd.resource,
+					"+",
+					cacheControl), 1)
+			}
 		}
 	}
 }
