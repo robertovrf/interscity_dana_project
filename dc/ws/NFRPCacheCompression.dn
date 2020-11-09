@@ -57,11 +57,9 @@ component provides ws.Web, Service requires io.Output out, ws.Web:nfrp web,
 				mutex (cacheLock) {
 					byte response[] = cache.get(path)
 					if (response != null) {
-						out.println("HIT!!")
 						stream.write(response)
 						return true
 					}
-					out.println("MISS!!")
 					int maxAge = getMaxAge(stream.getRequestHeaders())// in seconds
 					DSInterceptor interceptor = new DSInterceptor(null, null, null)
 					interceptor.set(stream)

@@ -63,22 +63,25 @@ component provides data_collector.DataCollectorManager requires io.Output out,
 
 	// implementing chunked transfer protocol 
 	void queryExec(char query[], DocStream stream) {
+		MySQL mysql
+		MySQLRow rows[]
 		mutex(lock) {
-			MySQL mysql = getMySQL()
+			mysql = getMySQL()
 			mysql.execute(query)
-			MySQLRow rows[] = mysql.fetchAll()
-			if (rows == null) {
-				stream.write("{\"error\": \"resource data not found\"}")
-			} else {
-				stream.write("{ \"data\": [ ")
-				for (int i = 0; i < rows.arrayLength; i++) {
-					char helper[] = null
-					if (i != 0) { helper = ", " }
-					stream.write(new char[](helper, codifier.decode(rows[i].fields[1].value)))
-				}
-				stream.write("] }")
-			}
-			mysql.close()	
+			rows = mysql.fetchAll()
 		}
+		if (rows == null) {
+			stream.write("{\"error\": \"resource data not found\"}")
+		} else {
+			stream.write("{ \"data\": [ ")
+			for (int i = 0; i < rows.arrayLength; i++) {
+				char helper[] = null
+				if (i != 0) { helper = ", " }
+				stream.write(new char[](helper, codifier.decode(rows[i].fields[1].value)))
+			}
+			stream.write("] }")
+		}
+		mysql.close()
+		//}
 	}
 }
