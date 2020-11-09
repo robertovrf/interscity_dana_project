@@ -65,11 +65,11 @@ component provides data_collector.DataCollectorManager requires io.Output out,
 	void queryExec(char query[], DocStream stream) {
 		MySQL mysql
 		MySQLRow rows[]
-		mutex(lock) {
+		//mutex(lock) {
 			mysql = getMySQL()
 			mysql.execute(query)
 			rows = mysql.fetchAll()
-		}
+		//}
 		if (rows == null) {
 			stream.write("{\"error\": \"resource data not found\"}")
 		} else {
