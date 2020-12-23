@@ -10,7 +10,7 @@
 // entropy != h --- low entropy
 
 //const char URL[] = "35.188.47.150:2020"
-const char URL[] = "scc-mc2.lancs.ac.uk:2020"
+const char URL[] = "scc-mc1.lancs.ac.uk:2020"
 //const char URL[] = "35.222.51.36:2012"
 
 component provides App requires io.Output out, net.http.HTTPRequest request,
