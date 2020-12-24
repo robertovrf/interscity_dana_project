@@ -192,6 +192,7 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 								break
 							}
 						} else {
+							out.println("$(debugMSG) HERE!!!")
 							isWithinRanges = false
 							break
 						}
@@ -297,6 +298,7 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 				eventT.startTime = parseDateFromString(parser.getValue(childrenMetrics, "startTime").value)
 				eventT.endTime = parseDateFromString(parser.getValue(childrenMetrics, "endTime").value)
 				internalCycle.events = new Event[](eventT)
+				out.println("$(debugMSG) GOT IN HIGH ENTROPY")
 			} else {
 				for (int pointer = 0; pointer < eventsJSON.children.arrayLength; pointer++) {
 					JSONElement childrenMetrics = eventsJSON.children[pointer]
