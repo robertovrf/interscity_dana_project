@@ -187,6 +187,7 @@ component provides learning.LearningCore requires io.Output out, data.IntUtil iu
 							dec eventCycleValue = explCycle.events[eCPointer].value/explCycle.events[eCPointer].count
 							if (eventCycleValue >= knowledge[pointer].ranges[rangePointer].lowestValue) { /* is within the range */ }
 							else {
+								out.println("$(debugMSG) $(du.decToString(eventCycleValue)) < $(du.decToString(knowledge[pointer].ranges[rangePointer].lowestValue))")
 								isWithinRanges = false
 								break
 							}
