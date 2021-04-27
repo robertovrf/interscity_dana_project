@@ -7,7 +7,7 @@ interface LearningCore {
 	const char TRIGGER_EXPLORATION[] 	= "trigger_exploration"
 	const char CONTINUE_EXPLOITATION[] 	= "continue_exploitation"
 
-	LearningCore(String configs[])
+	LearningCore(store String configs[])
 	void exploring(char currentConfig[], char perceptionData[])
 	char[] exploit()// returns process exploring data and get bestConfig
 	// the exploit function should always be called after some exploring function calls
