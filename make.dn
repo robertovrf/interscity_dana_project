@@ -2,7 +2,7 @@
 // This program compiles emergent systems' projects as according to configuration files.
 // Author: Roberto Rodrigues Filho
 // July @ 2019
-//const char debugMSG[] = "[@make]"
+const char debugMSG[] = "[@make]"
 
 component provides App requires io.Output out, data.IntUtil iu, util.ConfigFile, os.Run run, data.StringUtil strUtil {
 
