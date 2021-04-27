@@ -47,9 +47,9 @@ component provides data_collector.DataCollectorManager requires io.Output out,
 
 	// "/collector/resources/{uuid}/data" Get historical data of sensor capabilities of a specific city resource
 	void DataCollectorManager:getHistoricalDataResource(char uuid[], DocStream stream) {
-		queryExec(new char[]("SELECT * FROM data LIMIT 1000;"), stream)
+		//queryExec(new char[]("SELECT * FROM data LIMIT 1000;"), stream)
 		//queryExec(new char[]("SELECT * FROM data LIMIT ", uuid, ";"), stream)
-		//queryExec(new char[]("SELECT * FROM data WHERE uuid = \"", uuid, "\" ORDER BY id_data;"), stream)
+		queryExec(new char[]("SELECT * FROM data WHERE uuid = \"", uuid, "\" ORDER BY id_data;"), stream)
 	}
 
 	// "/collector/resources/data/last" Get the most recent data of sensor capabilities from all city resources
