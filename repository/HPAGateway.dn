@@ -55,7 +55,7 @@ component provides App requires io.Output out, data.IntUtil iu, data.DecUtil du,
 			t.sleep(60000)
 			dec avg = calculateAvg()
 			if (avg > 0.0) {
-				//send(avg)
+				send(avg)
 			}
 		}
 	}
